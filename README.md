@@ -75,6 +75,25 @@ Available models (smaller = faster, larger = more accurate):
 - `Systran/faster-whisper-medium` (~1.5GB)
 - `Systran/faster-whisper-large-v3` (~3GB)
 
+### Alternative: Native GPU Whisper Servers
+
+For local development, LIMA provides platform-specific GPU-accelerated servers:
+- **macOS**: Lightning Whisper MLX (Apple Silicon Metal)
+- **Linux/Windows**: faster-whisper with CUDA (NVIDIA GPU)
+
+**Quick start:**
+```bash
+cd services/whisper-mlx
+uv sync
+./run_server.sh --port 9002  # macOS/Linux
+```
+
+**Performance:** Docker Speaches (above) is recommended for production. Native servers are best for:
+- Linux with NVIDIA GPU: ~71x real-time transcription
+- macOS development/testing (similar to Docker speed)
+
+See [services/whisper-mlx/README.md](services/whisper-mlx/README.md) for detailed setup, Windows support, and benchmarks.
+
 ## Service URLs
 
 | Service | URL | Purpose |
@@ -111,6 +130,8 @@ lima/
 │   ├── audio/              # Meeting recordings (input)
 │   ├── transcripts/        # Transcriptions (output)
 │   └── notes/              # Markdown notes (output)
+├── services/
+│   └── whisper-mlx/        # Native GPU whisper servers (optional)
 └── workflows/              # n8n workflow exports
 ```
 
@@ -118,7 +139,8 @@ lima/
 
 - **PostgreSQL 17** with pgvector extension
 - **n8n** workflow automation (custom image with ffmpeg)
-- **Whisper** (speaches) local speech-to-text
+- **Whisper** (speaches) local speech-to-text via Docker
+  - Alternative: Native GPU servers ([see docs](services/whisper-mlx/README.md)) for macOS Metal / NVIDIA CUDA
 - **n8n-mcp** AI assistant for workflow development (dev)
 - **Ollama/LMStudio** local LLM inference (runs on host, configure in n8n)
 

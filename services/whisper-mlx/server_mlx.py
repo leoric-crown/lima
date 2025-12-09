@@ -9,6 +9,7 @@ OpenAI-compatible API at /v1/audio/transcriptions
 
 import tempfile
 import os
+import argparse
 from pathlib import Path
 from typing import Optional
 
@@ -115,19 +116,31 @@ async def transcribe(
 
 def main():
     """Run the server."""
-    port = int(os.environ.get("PORT", "9001"))
-    host = os.environ.get("HOST", "0.0.0.0")
+    parser = argparse.ArgumentParser(description="LIMA Lightning Whisper MLX Server")
+    parser.add_argument("--port", type=int, default=9001, help="Port to run server on (default: 9001)")
+    parser.add_argument("--host", type=str, default="0.0.0.0", help="Host to bind to (default: 0.0.0.0)")
+    parser.add_argument("--model", type=str, default=None, help="Whisper model to use (overrides env var)")
+    parser.add_argument("--batch-size", type=int, default=None, help="Batch size for inference (default: 12)")
+
+    args = parser.parse_args()
+
+    # Override globals if specified
+    global DEFAULT_MODEL, BATCH_SIZE
+    if args.model:
+        DEFAULT_MODEL = args.model
+    if args.batch_size:
+        BATCH_SIZE = args.batch_size
 
     print(f"=" * 60)
     print(f"LIMA Lightning Whisper MLX Server")
     print(f"=" * 60)
-    print(f"Host: {host}:{port}")
+    print(f"Host: {args.host}:{args.port}")
     print(f"Model: {DEFAULT_MODEL}")
     print(f"Batch size: {BATCH_SIZE}")
     print(f"GPU: Apple Silicon Metal acceleration")
     print(f"=" * 60)
 
-    uvicorn.run(app, host=host, port=port)
+    uvicorn.run(app, host=args.host, port=args.port)
 
 
 if __name__ == "__main__":

@@ -11,4 +11,4 @@ dependencies = [
 ]
 
 [project.scripts]
-lima-whisper = "server:main"
+lima-whisper-mlx = "server_mlx:main"

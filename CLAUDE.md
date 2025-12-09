@@ -54,13 +54,30 @@ Uses IVFFlat index for cosine similarity search on embeddings.
 
 ### Native Whisper Alternative
 
-`services/whisper-mlx/` contains a native Lightning Whisper MLX server for Apple Silicon / Linux GPU. Uses `uv` for dependency management:
+**Default: Use Docker Speaches** - More consistent performance, especially on macOS.
 
+`services/whisper-mlx/` provides platform-specific native GPU servers for local development:
+- **macOS**: Lightning Whisper MLX (Apple Silicon Metal)
+- **Linux**: faster-whisper with CUDA (NVIDIA GPU)
+
+**Quick start** (auto-detects platform):
 ```bash
 cd services/whisper-mlx
 uv sync
-uv run server.py  # Runs on port 9001
+./run_server.sh --port 9002
 ```
+
+**Linux CUDA setup** (NVIDIA GPU required):
+```bash
+uv pip install nvidia-cudnn-cu12  # Required for GPU acceleration
+```
+
+**Performance notes** (vs Docker Speaches):
+- macOS M4 24GB: Similar speed on small files, slower on large files
+- Linux RTX 4090: ~71x real-time (much faster than Docker)
+- **Recommendation**: Use Docker Speaches unless you need maximum speed on Linux NVIDIA GPU
+
+See `services/whisper-mlx/README.md` for detailed setup and performance benchmarks.
 
 ## MCP Server Integration
 
