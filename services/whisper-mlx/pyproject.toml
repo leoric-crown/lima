@@ -1,0 +1,14 @@
+[project]
+name = "lima-whisper-mlx"
+version = "0.1.0"
+description = "MLX Whisper server for LIMA - GPU-accelerated transcription on Apple Silicon"
+requires-python = ">=3.11"
+dependencies = [
+    "lightning-whisper-mlx>=0.0.10",
+    "fastapi>=0.115.0",
+    "uvicorn>=0.32.0",
+    "python-multipart>=0.0.12",
+]
+
+[project.scripts]
+lima-whisper = "server:main"

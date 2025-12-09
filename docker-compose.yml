@@ -1,0 +1,123 @@
+# LIMA - Local Intelligence Meeting Assistant
+# Production Docker Compose Stack
+#
+# Services:
+#   - postgres: PostgreSQL 17 with pgvector for embeddings
+#   - n8n: Workflow automation engine (with ffmpeg for audio processing)
+#   - whisper: Local speech-to-text (OpenAI-compatible API)
+#
+# Usage:
+#   docker compose up -d
+#
+# Build custom n8n image (first time or after Dockerfile changes):
+#   docker compose build n8n
+#
+# For development with n8n-mcp:
+#   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+
+services:
+  # PostgreSQL 17 with pgvector extension
+  postgres:
+    image: pgvector/pgvector:pg17
+    container_name: lima-postgres
+    restart: unless-stopped
+    environment:
+      POSTGRES_USER: ${POSTGRES_USER:-postgres}
+      POSTGRES_PASSWORD: ${POSTGRES_PASSWORD:?POSTGRES_PASSWORD is required}
+      POSTGRES_DB: ${POSTGRES_DB:-lima}
+      # Pass n8n credentials to init script
+      N8N_DB_USER: ${N8N_DB_USER:-n8n_user}
+      N8N_DB_PASSWORD: ${N8N_DB_PASSWORD:?N8N_DB_PASSWORD is required}
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./init-data.sh:/docker-entrypoint-initdb.d/init-data.sh:ro
+    ports:
+      - "${POSTGRES_PORT:-5432}:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-lima}"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+      start_period: 10s
+
+  # n8n Workflow Automation (with ffmpeg for audio processing)
+  n8n:
+    build:
+      context: .
+      dockerfile: n8n.Dockerfile
+    image: lima-n8n:latest
+    container_name: lima-n8n
+    restart: unless-stopped
+    depends_on:
+      postgres:
+        condition: service_healthy
+    environment:
+      # Database
+      DB_TYPE: postgresdb
+      DB_POSTGRESDB_HOST: postgres
+      DB_POSTGRESDB_PORT: 5432
+      DB_POSTGRESDB_DATABASE: ${POSTGRES_DB:-lima}
+      DB_POSTGRESDB_USER: ${N8N_DB_USER:-n8n_user}
+      DB_POSTGRESDB_PASSWORD: ${N8N_DB_PASSWORD:?N8N_DB_PASSWORD is required}
+      # n8n Configuration
+      N8N_PROTOCOL: ${N8N_PROTOCOL:-http}
+      N8N_HOST: ${N8N_HOST:-localhost}
+      N8N_PORT: ${N8N_PORT:-5678}
+      N8N_ENCRYPTION_KEY: ${N8N_ENCRYPTION_KEY:?N8N_ENCRYPTION_KEY is required}
+      WEBHOOK_URL: ${WEBHOOK_URL:-http://localhost:5678/}
+      GENERIC_TIMEZONE: ${TIMEZONE:-America/Mexico_City}
+      TZ: ${TIMEZONE:-America/Mexico_City}
+      # Security
+      N8N_BLOCK_ENV_ACCESS_IN_NODE: "true"
+      N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
+      # Features
+      N8N_RUNNERS_ENABLED: "true"
+      N8N_DIAGNOSTICS_ENABLED: "false"
+      N8N_VERSION_NOTIFICATIONS_ENABLED: "false"
+      # Long-running workflow support
+      EXECUTIONS_TIMEOUT: ${EXECUTIONS_TIMEOUT:-3600}
+      EXECUTIONS_TIMEOUT_MAX: ${EXECUTIONS_TIMEOUT_MAX:-7200}
+    volumes:
+      - n8n_data:/home/node/.n8n
+      - ./workflows:/home/node/.n8n/workflows:ro
+      - ./data/audio:/data/audio
+      - ./data/transcripts:/data/transcripts
+      - ./data/notes:/data/notes
+    ports:
+      - "${N8N_PORT:-5678}:5678"
+    healthcheck:
+      test: ["CMD-SHELL", "wget -qO- http://localhost:5678/healthz || exit 1"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+
+  # Whisper - Local Speech-to-Text
+  # OpenAI-compatible API at /v1/audio/transcriptions
+  whisper:
+    image: ghcr.io/speaches-ai/speaches:latest-cpu
+    container_name: lima-whisper
+    restart: unless-stopped
+    environment:
+      WHISPER__MODEL: ${WHISPER_MODEL:-Systran/faster-whisper-base}
+      WHISPER__COMPUTE_TYPE: ${WHISPER_COMPUTE_TYPE:-int8}
+      DEFAULT_LANGUAGE: ${WHISPER_LANGUAGE:-en}
+    volumes:
+      - whisper_cache:/home/ubuntu/.cache/huggingface/hub
+      - ./data/audio:/data/audio:ro
+    ports:
+      - "${WHISPER_PORT:-9000}:8000"
+    healthcheck:
+      test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)\""]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 60s
+
+volumes:
+  postgres_data:
+    name: lima_postgres_data
+  n8n_data:
+    name: lima_n8n_data
+  whisper_cache:
+    name: lima_whisper_cache
