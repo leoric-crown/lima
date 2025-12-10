@@ -1,6 +1,7 @@
 #!/usr/bin/env python3
 """Benchmark script to compare Whisper server performance."""
 
+import argparse
 import json
 import sys
 import time
@@ -17,21 +18,27 @@ if sys.platform == "win32":
     sys.stdout.reconfigure(encoding="utf-8")
     sys.stderr.reconfigure(encoding="utf-8")
 
-# Server configurations
-SERVERS = {
-    "speaches-cpu": {
-        "transcribe_url": "http://localhost:9000/v1/audio/transcriptions",
-        "base_url": "http://localhost:9000",
-        "model_id": "Systran/faster-whisper-base",
-        "model_name": "Systran/faster-whisper-base",  # Full name for API requests
-    },
-    "cuda-gpu": {
-        "transcribe_url": "http://localhost:9001/v1/audio/transcriptions",
-        "base_url": "http://localhost:9001",
-        "model_id": None,  # Native server, model loaded at startup
-        "model_name": "base",  # Short name works for native server
-    },
-}
+# Default ports
+DEFAULT_SPEACHES_PORT = 9000
+DEFAULT_NATIVE_PORT = 9001
+
+
+def get_server_configs(speaches_port: int, native_port: int) -> dict:
+    """Build server configurations with specified ports."""
+    return {
+        "speaches-cpu": {
+            "transcribe_url": f"http://localhost:{speaches_port}/v1/audio/transcriptions",
+            "base_url": f"http://localhost:{speaches_port}",
+            "model_id": "Systran/faster-whisper-base",
+            "model_name": "Systran/faster-whisper-base",  # Full name for API requests
+        },
+        "native-gpu": {
+            "transcribe_url": f"http://localhost:{native_port}/v1/audio/transcriptions",
+            "base_url": f"http://localhost:{native_port}",
+            "model_id": None,  # Native server, model loaded at startup
+            "model_name": "base",  # Short name works for native server
+        },
+    }
 
 # Audio files to test (will be sorted by size)
 AUDIO_DIR = Path(__file__).parent.parent / "data" / "audio"
@@ -235,12 +242,12 @@ def print_summary(results: list[BenchmarkResult]) -> None:
 
     # Calculate speedup
     print(f"\n{'=' * 60}")
-    print("SPEEDUP COMPARISON (CUDA vs CPU)")
+    print("SPEEDUP COMPARISON (Native GPU vs Docker CPU)")
     print(f"{'=' * 60}\n")
 
     for file_name in files:
         cpu_results = [r for r in files[file_name].get("speaches-cpu", []) if r.success]
-        gpu_results = [r for r in files[file_name].get("cuda-gpu", []) if r.success]
+        gpu_results = [r for r in files[file_name].get("native-gpu", []) if r.success]
 
         if cpu_results and gpu_results:
             # Use last run (after warmup)
@@ -254,16 +261,49 @@ def print_summary(results: list[BenchmarkResult]) -> None:
             print(f"  Speedup: {speedup:.1f}x faster on GPU\n")
 
 
+def parse_args() -> argparse.Namespace:
+    """Parse command line arguments."""
+    parser = argparse.ArgumentParser(
+        description="Benchmark Whisper transcription servers",
+        formatter_class=argparse.ArgumentDefaultsHelpFormatter,
+    )
+    parser.add_argument(
+        "--speaches-port",
+        type=int,
+        default=DEFAULT_SPEACHES_PORT,
+        help="Port for speaches (Docker CPU) server",
+    )
+    parser.add_argument(
+        "--native-port",
+        type=int,
+        default=DEFAULT_NATIVE_PORT,
+        help="Port for native GPU server (CUDA or MLX)",
+    )
+    parser.add_argument(
+        "--audio-dir",
+        type=Path,
+        default=AUDIO_DIR,
+        help="Directory containing audio files to benchmark",
+    )
+    return parser.parse_args()
+
+
 def main():
+    args = parse_args()
+
+    # Build server configs with specified ports
+    servers = get_server_configs(args.speaches_port, args.native_port)
+
     # Gather system info first
     system_info = get_system_info()
 
     # Find and sort audio files by size
-    audio_files = sorted(AUDIO_DIR.glob("*"), key=lambda f: f.stat().st_size if f.is_file() else 0)
+    audio_dir = args.audio_dir
+    audio_files = sorted(audio_dir.glob("*"), key=lambda f: f.stat().st_size if f.is_file() else 0)
     audio_files = [f for f in audio_files if f.is_file() and f.suffix.lower() in (".mp3", ".flac", ".wav", ".m4a")]
 
     if not audio_files:
-        print(f"No audio files found in {AUDIO_DIR}")
+        print(f"No audio files found in {audio_dir}")
         return
 
     print("WHISPER SERVER BENCHMARK")
@@ -279,7 +319,9 @@ def main():
         print(f"GPU: {system_info.gpu.name} ({system_info.gpu.vram_mb / 1024:.1f} GB VRAM)")
 
     print(f"\n{'=' * 60}")
-    print(f"Servers: {', '.join(SERVERS.keys())}")
+    print(f"Servers:")
+    for name, cfg in servers.items():
+        print(f"  - {name}: {cfg['base_url']}")
     print(f"Audio files ({len(audio_files)}):")
     for f in audio_files:
         size = f.stat().st_size / 1024 / 1024
@@ -288,7 +330,7 @@ def main():
         print(f"  - {f.name}: {size:.2f} MB, {duration_str}")
 
     # Run benchmarks
-    results = run_benchmark(audio_files, SERVERS, warmup_file=audio_files[0])
+    results = run_benchmark(audio_files, servers, warmup_file=audio_files[0])
 
     # Print summary
     print_summary(results)
@@ -297,7 +339,7 @@ def main():
     output_data = {
         "timestamp": system_info.timestamp,
         "system": system_info.to_dict(),
-        "servers": {name: {"model": cfg["model_name"]} for name, cfg in SERVERS.items()},
+        "servers": {name: {"url": cfg["base_url"], "model": cfg["model_name"]} for name, cfg in servers.items()},
         "results": [
             {
                 "server": r.server,
@@ -321,11 +363,13 @@ def main():
     output_file = results_dir / f"benchmark_{timestamp_str}.json"
     with open(output_file, "w") as f:
         json.dump(output_data, f, indent=2)
+        f.write("\n")  # Ensure newline at end of file
 
     # Also save as latest
     latest_file = results_dir / "benchmark_latest.json"
     with open(latest_file, "w") as f:
         json.dump(output_data, f, indent=2)
+        f.write("\n")  # Ensure newline at end of file
 
     print(f"\nResults saved to:")
     print(f"  {output_file}")

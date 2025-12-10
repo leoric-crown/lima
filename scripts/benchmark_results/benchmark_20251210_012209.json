@@ -20,7 +20,7 @@
     "speaches-cpu": {
       "model": "Systran/faster-whisper-base"
     },
-    "cuda-gpu": {
+    "native-gpu": {
       "model": "base"
     }
   },
@@ -46,7 +46,7 @@
       "error": null
     },
     {
-      "server": "cuda-gpu",
+      "server": "native-gpu",
       "file": "test-sample.flac",
       "file_size_bytes": 74760,
       "audio_duration_sec": 4.055,
@@ -56,7 +56,7 @@
       "error": null
     },
     {
-      "server": "cuda-gpu",
+      "server": "native-gpu",
       "file": "test-sample.flac",
       "file_size_bytes": 74760,
       "audio_duration_sec": 4.055,
@@ -76,7 +76,7 @@
       "error": null
     },
     {
-      "server": "cuda-gpu",
+      "server": "native-gpu",
       "file": "gitlab-meeting-5min.mp3",
       "file_size_bytes": 2282420,
       "audio_duration_sec": 300.024,
@@ -96,7 +96,7 @@
       "error": null
     },
     {
-      "server": "cuda-gpu",
+      "server": "native-gpu",
       "file": "gitlab-meeting.mp3",
       "file_size_bytes": 20266388,
       "audio_duration_sec": 2562.912,
