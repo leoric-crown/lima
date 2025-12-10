@@ -138,7 +138,22 @@ Long files (>60 min) should be chunked for parallel transcription. See `docs/aud
 
 ## Data Directories
 
-- `data/audio/`: Input audio files
-- `data/transcripts/`: Output transcriptions
+The `data/` folder is an Obsidian vault for viewing processed notes:
+
+- `data/voice-memos/`: Drop zone for audio files (workflow input)
+- `data/voice-memos/webhook/`: Webhook uploads land here
+- `data/audio-archive/`: Processed originals moved here after transcription
 - `data/notes/`: Output markdown notes
 - `workflows/`: n8n workflow exports (mounted read-only)
+
+Benchmark test files are in `scripts/test_audio/` (not mounted to containers).
+
+## LM Studio Configuration
+
+If using LM Studio as the LLM backend, enable these settings for reliable n8n integration:
+
+- **Just-in-Time Model Loading**: ON
+- **Auto unload unused JIT loaded models**: ON (5 min idle TTL recommended)
+- **Only Keep Last JIT Loaded Model**: ON
+
+This ensures the model loads on first request and unloads when idle, preventing memory issues.

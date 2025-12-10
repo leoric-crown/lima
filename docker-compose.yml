@@ -81,9 +81,8 @@ services:
     volumes:
       - n8n_data:/home/node/.n8n
       - ./workflows:/home/node/.n8n/workflows:ro
-      - ./data/audio:/data/audio
       - ./data/voice-memos:/data/voice-memos
-      - ./data/transcripts:/data/transcripts
+      - ./data/audio-archive:/data/audio-archive
       - ./data/notes:/data/notes
     ports:
       - "${N8N_PORT:-5678}:5678"
@@ -106,7 +105,6 @@ services:
       DEFAULT_LANGUAGE: ${WHISPER_LANGUAGE:-en}
     volumes:
       - whisper_cache:/home/ubuntu/.cache/huggingface/hub
-      - ./data/audio:/data/audio:ro
     ports:
       - "${WHISPER_PORT:-9000}:8000"
     healthcheck:
