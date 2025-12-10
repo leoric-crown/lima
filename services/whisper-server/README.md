@@ -207,13 +207,12 @@ curl http://localhost:9002/v1/models
 
 **File Structure:**
 ```
-services/whisper-mlx/
+services/whisper-server/
 ├── run_server.sh          # Launcher for macOS/Linux (auto-detects OS)
 ├── run_server.ps1         # Launcher for Windows (PowerShell)
 ├── server_mlx.py          # macOS MLX implementation
 ├── server_cuda.py         # Linux/Windows CUDA implementation
 ├── pyproject.toml         # macOS dependencies (MLX)
-├── pyproject-linux.toml   # Linux/Windows dependencies (faster-whisper)
 └── README.md              # This file
 ```
 

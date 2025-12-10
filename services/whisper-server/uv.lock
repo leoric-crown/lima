@@ -356,9 +356,9 @@ wheels = [
 ]
 
 [[package]]
-name = "lima-whisper-mlx"
+name = "lima-whisper-server"
 version = "0.1.0"
-source = { virtual = "." }
+source = { editable = "." }
 dependencies = [
     { name = "fastapi" },
     { name = "faster-whisper", marker = "sys_platform == 'linux' or sys_platform == 'win32'" },

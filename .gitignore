@@ -20,13 +20,13 @@ __pycache__/
 venv/
 *.egg-info/
 
-# whisper-mlx local models and cache
-services/whisper-mlx/mlx_models/
-services/whisper-mlx/.cache/
-services/whisper-mlx/.venv/
+# whisper-server local models and cache
+services/whisper-server/mlx_models/
+services/whisper-server/.cache/
+services/whisper-server/.venv/
 
 # uv lock file (optional - uncomment if you want to track it)
-# services/whisper-mlx/uv.lock
+# services/whisper-server/uv.lock
 
 # IDE
 .idea/

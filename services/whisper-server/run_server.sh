@@ -41,6 +41,7 @@ case "$OS" in
     *)
         echo "Error: Unsupported operating system: $OS"
         echo "Supported platforms: macOS (Darwin), Linux"
+        echo "On Windows, run ./run_server.ps1 instead."
         exit 1
         ;;
 esac

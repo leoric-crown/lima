@@ -56,13 +56,13 @@ Uses IVFFlat index for cosine similarity search on embeddings.
 
 **Default: Use Docker Speaches** - More consistent performance, especially on macOS.
 
-`services/whisper-mlx/` provides platform-specific native GPU servers for local development:
+`services/whisper-server/` provides platform-specific native GPU servers for local development:
 - **macOS**: Lightning Whisper MLX (Apple Silicon Metal)
 - **Linux**: faster-whisper with CUDA (NVIDIA GPU)
 
 **Quick start** (auto-detects platform):
 ```bash
-cd services/whisper-mlx
+cd services/whisper-server
 uv sync
 ./run_server.sh --port 9002
 ```
@@ -77,7 +77,7 @@ uv pip install nvidia-cudnn-cu12  # Required for GPU acceleration
 - Linux RTX 4090: ~71x real-time (much faster than Docker)
 - **Recommendation**: Use Docker Speaches unless you need maximum speed on Linux NVIDIA GPU
 
-See `services/whisper-mlx/README.md` for detailed setup and performance benchmarks.
+See `services/whisper-server/README.md` for detailed setup.
 
 ## MCP Server Integration
 

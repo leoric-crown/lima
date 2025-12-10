@@ -318,20 +318,9 @@ LIMA includes an optional native Whisper server using Lightning Whisper MLX for 
 - **Apple Silicon**: Available but benchmarks show Docker CPU is often faster
 - **No Docker**: When you need a lightweight native solution
 
-### Benchmarks (42-minute meeting, M4 Pro)
-
-| Method | Model | Time | Speed |
-|--------|-------|------|-------|
-| **Speaches (Docker CPU)** | faster-whisper-base | **78 sec** | 32x real-time |
-| Lightning MLX (Native GPU) | base | 199 sec | 13x real-time |
-| Lightning MLX (Native GPU) | distil-large-v3 | 191 sec | 13x real-time |
-
-> **Note**: On Apple Silicon, the Docker CPU version with faster-whisper outperforms MLX.
-> Linux with NVIDIA GPUs may see different results - testing recommended.
-
 ### Setup
 
-The MLX Whisper server is located in `services/whisper-mlx/`.
+The Native Whisper server is located in `services/whisper-server/`.
 
 **Requirements:**
 - Python 3.11+
@@ -341,7 +330,7 @@ The MLX Whisper server is located in `services/whisper-mlx/`.
 **Installation:**
 
 ```bash
-cd services/whisper-mlx
+cd services/whisper-server
 uv sync
 ```
 
@@ -398,15 +387,15 @@ http://host.docker.internal:9001/v1/audio/transcriptions
 Create a launchd plist for automatic startup:
 
 ```xml
-<!-- ~/Library/LaunchAgents/com.lima.whisper-mlx.plist -->
+<!-- ~/Library/LaunchAgents/com.lima.whisper-server.plist -->
 <?xml version="1.0" encoding="UTF-8"?>
 <!DOCTYPE plist PUBLIC "-//Apple//DTD PLIST 1.0//EN" "http://www.apple.com/DTDs/PropertyList-1.0.dtd">
 <plist version="1.0">
 <dict>
     <key>Label</key>
-    <string>com.lima.whisper-mlx</string>
+    <string>com.lima.whisper-server</string>
     <key>WorkingDirectory</key>
-    <string>/path/to/lima/services/whisper-mlx</string>
+    <string>/path/to/lima/services/whisper-server</string>
     <key>ProgramArguments</key>
     <array>
         <string>/path/to/.local/bin/uv</string>
@@ -418,19 +407,19 @@ Create a launchd plist for automatic startup:
     <key>KeepAlive</key>
     <true/>
     <key>StandardOutPath</key>
-    <string>/tmp/lima-whisper-mlx.log</string>
+    <string>/tmp/lima-whisper-server.log</string>
     <key>StandardErrorPath</key>
-    <string>/tmp/lima-whisper-mlx.err</string>
+    <string>/tmp/lima-whisper-server.err</string>
 </dict>
 </plist>
 ```
 
-Load with: `launchctl load ~/Library/LaunchAgents/com.lima.whisper-mlx.plist`
+Load with: `launchctl load ~/Library/LaunchAgents/com.lima.whisper-server.plist`
 
 ### Running as a Service (Linux systemd)
 
 ```ini
-# /etc/systemd/system/lima-whisper-mlx.service
+# /etc/systemd/system/lima-whisper-server.service
 [Unit]
 Description=LIMA Whisper MLX Server
 After=network.target
@@ -438,7 +427,7 @@ After=network.target
 [Service]
 Type=simple
 User=youruser
-WorkingDirectory=/path/to/lima/services/whisper-mlx
+WorkingDirectory=/path/to/lima/services/whisper-server
 Environment="WHISPER_MODEL=distil-large-v3"
 Environment="PORT=9001"
 ExecStart=/path/to/.local/bin/uv run server.py
@@ -449,7 +438,7 @@ RestartSec=10
 WantedBy=multi-user.target
 ```
 
-Enable with: `sudo systemctl enable --now lima-whisper-mlx`
+Enable with: `sudo systemctl enable --now lima-whisper-server`
 
 ---
 

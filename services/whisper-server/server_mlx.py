@@ -2,7 +2,7 @@
 LIMA Lightning Whisper MLX Server
 GPU-accelerated transcription on Apple Silicon using Metal.
 
-Uses lightning-whisper-mlx for 10x faster transcription than whisper.cpp.
+Uses lightning-whisper-mlx
 
 OpenAI-compatible API at /v1/audio/transcriptions
 """

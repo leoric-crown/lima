@@ -83,7 +83,7 @@ For local development, LIMA provides platform-specific GPU-accelerated servers:
 
 **Quick start:**
 ```bash
-cd services/whisper-mlx
+cd services/whisper-server
 uv sync
 ./run_server.sh --port 9002  # macOS/Linux
 ```
@@ -92,7 +92,7 @@ uv sync
 - Linux with NVIDIA GPU: ~71x real-time transcription
 - macOS development/testing (similar to Docker speed)
 
-See [services/whisper-mlx/README.md](services/whisper-mlx/README.md) for detailed setup, Windows support, and benchmarks.
+See [services/whisper-server/README.md](services/whisper-server/README.md) for detailed setup and Windows support.
 
 ## Service URLs
 
@@ -131,7 +131,7 @@ lima/
 │   ├── transcripts/        # Transcriptions (output)
 │   └── notes/              # Markdown notes (output)
 ├── services/
-│   └── whisper-mlx/        # Native GPU whisper servers (optional)
+│   └── whisper-server/        # Native GPU whisper servers (optional)
 └── workflows/              # n8n workflow exports
 ```
 
@@ -140,7 +140,7 @@ lima/
 - **PostgreSQL 17** with pgvector extension
 - **n8n** workflow automation (custom image with ffmpeg)
 - **Whisper** (speaches) local speech-to-text via Docker
-  - Alternative: Native GPU servers ([see docs](services/whisper-mlx/README.md)) for macOS Metal / NVIDIA CUDA
+  - Alternative: Native GPU servers ([see docs](services/whisper-server/README.md)) for macOS Metal / NVIDIA CUDA
 - **n8n-mcp** AI assistant for workflow development (dev)
 - **Ollama/LMStudio** local LLM inference (runs on host, configure in n8n)
 
