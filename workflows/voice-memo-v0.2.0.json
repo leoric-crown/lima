@@ -256,8 +256,7 @@
         "triggerOn": "folder",
         "path": "/data/voice-memos/",
         "events": [
-          "add",
-          "change"
+          "add"
         ],
         "options": {
           "depth": 0
