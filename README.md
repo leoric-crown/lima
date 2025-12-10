@@ -7,7 +7,9 @@
 ### Prerequisites
 
 - Docker & Docker Compose
-- Ollama (installed on host for local LLM inference)
+- Local LLM server (one of):
+  - [LM Studio](https://lmstudio.ai/) (recommended) - GUI app with OpenAI-compatible API
+  - [Ollama](https://ollama.ai/) - CLI-based, simpler setup
 
 ### 1. Setup Environment
 
@@ -60,20 +62,96 @@ make dev-up
    docker compose -f docker-compose.yml -f docker-compose.dev.yml restart n8n-mcp
    ```
 
-### 4. Download Whisper Model
+### 4. Configure Local LLM
 
-The whisper service requires a model to be downloaded before first use:
+The Voice Memo workflow uses a local LLM for extracting insights from transcripts.
+
+**Option A: LM Studio (recommended)**
+
+1. Download and install [LM Studio](https://lmstudio.ai/)
+2. Download a model (e.g., `Qwen2.5-7B-Instruct` or similar)
+3. Start the local server: **Developer → Start Server** (runs on `http://localhost:1234`)
+4. In n8n, create an OpenAI API credential:
+   - **Settings → Credentials → Add Credential → OpenAI API**
+   - Name: `LM Studio Local`
+   - API Key: `lm-studio` (any non-empty string works)
+   - Base URL: `http://host.docker.internal:1234/v1`
+
+   > **macOS/Windows**: Use `host.docker.internal` to reach host services
+   > **Linux**: Use your machine's IP address (e.g., `http://192.168.1.100:1234/v1`) - `host.docker.internal` doesn't work on Linux by default
+
+**Option B: Ollama**
+
+1. Install Ollama: `curl -fsSL https://ollama.com/install.sh | sh`
+2. Pull a model: `ollama pull llama3.2`
+3. Ollama runs automatically on `http://localhost:11434`
+4. In n8n, create an OpenAI API credential:
+   - Name: `Ollama Local`
+   - API Key: `ollama`
+   - Base URL: `http://host.docker.internal:11434/v1` (or your IP on Linux)
+
+### 5. Create Data Directories
+
+The workflow requires these directories to exist and be writable:
 
 ```bash
-curl -X POST "http://localhost:9000/v1/models/Systran/faster-whisper-base"
+# Create directory structure
+mkdir -p data/voice-memos/webhook data/notes
+
+# Make writable (choose one):
+chmod 777 data/voice-memos data/voice-memos/webhook data/notes
+# Or change ownership to match your user
 ```
 
-Available models (smaller = faster, larger = more accurate):
-- `Systran/faster-whisper-tiny` (~75MB)
-- `Systran/faster-whisper-base` (~145MB) - recommended
-- `Systran/faster-whisper-small` (~488MB)
-- `Systran/faster-whisper-medium` (~1.5GB)
-- `Systran/faster-whisper-large-v3` (~3GB)
+- `data/voice-memos/` - Drop audio files here for automatic processing
+- `data/voice-memos/webhook/` - Webhook uploads are saved here (to avoid re-triggering)
+- `data/notes/` - Generated markdown notes output
+
+### 6. Import Voice Memo Workflow
+
+Import the pre-built workflow from `workflows/voice-memo.json`:
+
+1. In n8n, go to **Workflows → Import from File**
+2. Select `workflows/voice-memo.json`
+3. Update the LLM credential if needed (click the Agent node → select your credential)
+4. **Activate** the workflow (toggle in top-right)
+
+Or create it manually - see [docs/voice-memo-workflow.md](docs/voice-memo-workflow.md) for details.
+
+### 7. Test the Workflow
+
+**Option A: File Drop (recommended)**
+
+Simply copy or move audio files to the watch folder:
+
+```bash
+cp your-recording.mp3 data/voice-memos/
+# Workflow triggers automatically, check output:
+ls -la data/notes/
+```
+
+**Option B: Webhook**
+
+Send an audio file via HTTP:
+
+```bash
+curl -X POST -F "file=@data/audio/test-sample.flac" http://localhost:5678/webhook/memo
+
+# Expected response:
+# {"status":"ok","note":"2025-12-10-your-memo-title-abc123de.md","title":"Your Memo Title"}
+```
+
+Check the output:
+```bash
+ls -la data/notes/
+cat data/notes/2025-12-10-*.md
+```
+
+The workflow:
+1. Transcribes audio via Whisper
+2. Extracts title, summary, key points, action items via LLM
+3. Generates Obsidian-compatible markdown with YAML frontmatter
+4. Saves to `data/notes/` with hash-based filename (idempotent - same audio = same file)
 
 ### Alternative: Native GPU Whisper Servers
 
@@ -180,11 +258,13 @@ lima/
 ├── init-data.sh            # PostgreSQL initialization
 ├── Makefile                # Convenience commands
 ├── data/
-│   ├── audio/              # Meeting recordings (input)
+│   ├── voice-memos/        # Drop audio files here (auto-processed)
+│   │   └── webhook/        # Webhook uploads (not watched)
+│   ├── audio/              # Meeting recordings (manual input)
 │   ├── transcripts/        # Transcriptions (output)
 │   └── notes/              # Markdown notes (output)
 ├── services/
-│   └── whisper-server/        # Native GPU whisper servers (optional)
+│   └── whisper-server/     # Native GPU whisper servers (optional)
 └── workflows/              # n8n workflow exports
 ```
 
@@ -195,7 +275,7 @@ lima/
 - **Whisper** (speaches) local speech-to-text via Docker
   - Alternative: Native GPU servers ([see docs](services/whisper-server/README.md)) for macOS Metal / NVIDIA CUDA
 - **n8n-mcp** AI assistant for workflow development (dev)
-- **Ollama/LMStudio** local LLM inference (runs on host, configure in n8n)
+- **LM Studio** or **Ollama** - local LLM inference (runs on host, configure in n8n)
 
 ## Audio Processing
 

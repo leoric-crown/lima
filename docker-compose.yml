@@ -82,6 +82,7 @@ services:
       - n8n_data:/home/node/.n8n
       - ./workflows:/home/node/.n8n/workflows:ro
       - ./data/audio:/data/audio
+      - ./data/voice-memos:/data/voice-memos
       - ./data/transcripts:/data/transcripts
       - ./data/notes:/data/notes
     ports:
