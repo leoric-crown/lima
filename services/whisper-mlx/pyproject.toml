@@ -4,7 +4,9 @@ version = "0.1.0"
 description = "MLX Whisper server for LIMA - GPU-accelerated transcription on Apple Silicon"
 requires-python = ">=3.11"
 dependencies = [
-    "lightning-whisper-mlx>=0.0.10",
+    "lightning-whisper-mlx>=0.0.10; sys_platform == 'darwin'",
+    "faster-whisper>=1.0.0; sys_platform == 'linux' or sys_platform == 'win32'",
+    "nvidia-cudnn-cu12>=8.9.2; sys_platform == 'linux' or sys_platform == 'win32'",
     "fastapi>=0.115.0",
     "uvicorn>=0.32.0",
     "python-multipart>=0.0.12",
@@ -12,3 +14,4 @@ dependencies = [
 
 [project.scripts]
 lima-whisper-mlx = "server_mlx:main"
+lima-whisper-cuda = "server_cuda:main"
