@@ -23,16 +23,33 @@ case "$OS" in
         echo "Detected Linux - using faster-whisper with CUDA"
         echo "============================================================"
 
-        # Find the venv python site-packages for cuDNN libraries
+        # Find the venv python site-packages for CUDA libraries
         VENV_PATH="$SCRIPT_DIR/.venv"
-        CUDNN_LIB="$VENV_PATH/lib/python3.11/site-packages/nvidia/cudnn/lib"
 
-        # Add cuDNN libraries to LD_LIBRARY_PATH (required for CUDA acceleration)
+        # Auto-detect Python version in venv
+        PYTHON_VER=$(find "$VENV_PATH/lib" -maxdepth 1 -name 'python3.*' -type d | head -n1 | xargs basename)
+        SITE_PACKAGES="$VENV_PATH/lib/$PYTHON_VER/site-packages"
+
+        CUDNN_LIB="$SITE_PACKAGES/nvidia/cudnn/lib"
+        CUBLAS_LIB="$SITE_PACKAGES/nvidia/cublas/lib"
+
+        # Add CUDA libraries to LD_LIBRARY_PATH (required for CUDA acceleration)
+        CUDA_PATHS=""
         if [ -d "$CUDNN_LIB" ]; then
-            export LD_LIBRARY_PATH="$CUDNN_LIB:$LD_LIBRARY_PATH"
-            echo "✓ Added cuDNN library path for GPU acceleration"
+            CUDA_PATHS="$CUDNN_LIB"
+            echo "✓ Added cuDNN library path"
+        fi
+
+        if [ -d "$CUBLAS_LIB" ]; then
+            CUDA_PATHS="$CUBLAS_LIB${CUDA_PATHS:+:$CUDA_PATHS}"
+            echo "✓ Added cuBLAS library path"
+        fi
+
+        if [ -n "$CUDA_PATHS" ]; then
+            export LD_LIBRARY_PATH="$CUDA_PATHS:$LD_LIBRARY_PATH"
         else
-            echo "⚠ Warning: cuDNN libraries not found. Run 'uv pip install nvidia-cudnn-cu12'"
+            echo "⚠ Warning: CUDA libraries not found."
+            echo "  Run: uv sync"
             echo "  Falling back to CPU mode..."
         fi
 

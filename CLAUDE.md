@@ -54,17 +54,17 @@ Uses IVFFlat index for cosine similarity search on embeddings.
 
 ### Native Whisper Alternative
 
-**Default: Use Docker Speaches** - More consistent performance, especially on macOS.
-
 `services/whisper-server/` provides platform-specific native GPU servers for local development:
 - **macOS**: Lightning Whisper MLX (Apple Silicon Metal)
-- **Linux**: faster-whisper with CUDA (NVIDIA GPU)
+- **Linux/Windows**: faster-whisper with CUDA (NVIDIA GPU)
 
 **Quick start** (auto-detects platform):
 ```bash
 cd services/whisper-server
 uv sync
-./run_server.sh --port 9002
+./run_server.sh --port 9002  # macOS/Linux
+# or
+.\run_server.ps1 -Port 9002  # Windows PowerShell
 ```
 
 **Linux CUDA setup** (NVIDIA GPU required):
@@ -72,12 +72,17 @@ uv sync
 uv pip install nvidia-cudnn-cu12  # Required for GPU acceleration
 ```
 
-**Performance notes** (vs Docker Speaches):
-- macOS M4 24GB: Similar speed on small files, slower on large files
-- Linux RTX 4090: ~71x real-time (much faster than Docker)
-- **Recommendation**: Use Docker Speaches unless you need maximum speed on Linux NVIDIA GPU
+**Performance comparison** (`scripts/benchmark_whisper.py` - 42min file):
+- **macOS M4 Pro MLX**: 166x realtime (~15s) - **5.3x faster** than Docker, but slow cold start
+- **Linux RTX 4090 CUDA**: 71x realtime (~36s) - **4.3x faster** than Docker
+- **Windows RTX 4090 CUDA**: 39x realtime (~66s) - **2.8x faster** than Docker
+- **Docker Speaches**: 14-33x realtime depending on platform - consistent, no warmup
 
-See `services/whisper-server/README.md` for detailed setup.
+**Recommendation**:
+- **Production**: Docker Speaches for consistency and predictable cold starts
+- **Development**: Native GPU for 3-5x speedup (macOS MLX fastest, but needs warmup handling)
+
+See `services/whisper-server/README.md` for detailed benchmarks and setup.
 
 ## MCP Server Integration
 

@@ -9,47 +9,9 @@ OpenAI-compatible API at /v1/audio/transcriptions
 
 import tempfile
 import os
-import sys
 import argparse
 from pathlib import Path
 from typing import Optional
-
-# Add NVIDIA cuDNN and cuBLAS libraries to path
-def setup_cuda_paths():
-    """Add NVIDIA CUDA libraries from venv to library path."""
-    venv_path = Path(sys.prefix)
-
-    if sys.platform == "win32":
-        # Windows .venv structure: Lib/site-packages
-        site_packages = venv_path / "Lib" / "site-packages"
-        libs = [
-            site_packages / "nvidia" / "cudnn" / "bin",
-            site_packages / "nvidia" / "cublas" / "bin"
-        ]
-
-        for lib_path in libs:
-            if lib_path.exists():
-                os.environ["PATH"] = str(lib_path) + ";" + os.environ.get("PATH", "")
-                print(f"Added CUDA path: {lib_path}")
-    else:
-        # Linux .venv structure: lib/pythonX.Y/site-packages
-        # We need to find the python version directory
-        lib_dir = venv_path / "lib"
-        # Simple heuristic: find first python* directory
-        python_dirs = list(lib_dir.glob("python3*"))
-        if python_dirs:
-            site_packages = python_dirs[0] / "site-packages"
-            cudnn_lib = site_packages / "nvidia" / "cudnn" / "lib"
-
-            if cudnn_lib.exists():
-                ld_library_path = os.environ.get("LD_LIBRARY_PATH", "")
-                new_paths = [str(cudnn_lib)]
-                if ld_library_path:
-                    new_paths.append(ld_library_path)
-                os.environ["LD_LIBRARY_PATH"] = ":".join(new_paths)
-                print(f"Added cuDNN path: {cudnn_lib}")
-
-setup_cuda_paths()
 
 from faster_whisper import WhisperModel
 from fastapi import FastAPI, File, Form, UploadFile, HTTPException

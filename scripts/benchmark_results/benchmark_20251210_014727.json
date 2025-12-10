@@ -1,7 +1,7 @@
 {
-  "timestamp": "2025-12-10T01:57:30.028935+00:00",
+  "timestamp": "2025-12-10T01:44:23.508662+00:00",
   "system": {
-    "timestamp": "2025-12-10T01:57:30.028935+00:00",
+    "timestamp": "2025-12-10T01:44:23.508662+00:00",
     "hostname": "RichiFED",
     "os": "Linux",
     "os_version": "#1 SMP PREEMPT_DYNAMIC Mon Nov 24 22:28:05 UTC 2025",
@@ -32,8 +32,8 @@
       "file": "test-sample.flac",
       "file_size_bytes": 74760,
       "audio_duration_sec": 4.055,
-      "request_time_sec": 1.259,
-      "realtime_factor": 3.22,
+      "request_time_sec": 1.761,
+      "realtime_factor": 2.3,
       "success": true,
       "error": null
     },
@@ -42,8 +42,8 @@
       "file": "test-sample.flac",
       "file_size_bytes": 74760,
       "audio_duration_sec": 4.055,
-      "request_time_sec": 1.246,
-      "realtime_factor": 3.26,
+      "request_time_sec": 1.267,
+      "realtime_factor": 3.2,
       "success": true,
       "error": null
     },
@@ -52,28 +52,28 @@
       "file": "test-sample.flac",
       "file_size_bytes": 74760,
       "audio_duration_sec": 4.055,
-      "request_time_sec": 0.121,
-      "realtime_factor": 33.65,
-      "success": true,
-      "error": null
+      "request_time_sec": 3.679,
+      "realtime_factor": null,
+      "success": false,
+      "error": "('Connection aborted.', RemoteDisconnected('Remote end closed connection without response'))"
     },
     {
       "server": "native-gpu",
       "file": "test-sample.flac",
       "file_size_bytes": 74760,
       "audio_duration_sec": 4.055,
-      "request_time_sec": 0.106,
-      "realtime_factor": 38.22,
-      "success": true,
-      "error": null
+      "request_time_sec": 0.002,
+      "realtime_factor": null,
+      "success": false,
+      "error": "HTTPConnectionPool(host='localhost', port=9101): Max retries exceeded with url: /v1/audio/transcriptions (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=9101): Failed to establish a new connection: [Errno 111] Connection refused\"))"
     },
     {
       "server": "speaches-cpu",
       "file": "gitlab-meeting-5min.mp3",
       "file_size_bytes": 2282420,
       "audio_duration_sec": 300.024,
-      "request_time_sec": 17.178,
-      "realtime_factor": 17.47,
+      "request_time_sec": 17.14,
+      "realtime_factor": 17.5,
       "success": true,
       "error": null
     },
@@ -82,18 +82,18 @@
       "file": "gitlab-meeting-5min.mp3",
       "file_size_bytes": 2282420,
       "audio_duration_sec": 300.024,
-      "request_time_sec": 3.999,
-      "realtime_factor": 75.02,
-      "success": true,
-      "error": null
+      "request_time_sec": 0.005,
+      "realtime_factor": null,
+      "success": false,
+      "error": "HTTPConnectionPool(host='localhost', port=9101): Max retries exceeded with url: /v1/audio/transcriptions (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=9101): Failed to establish a new connection: [Errno 111] Connection refused\"))"
     },
     {
       "server": "speaches-cpu",
       "file": "gitlab-meeting.mp3",
       "file_size_bytes": 20266388,
       "audio_duration_sec": 2562.912,
-      "request_time_sec": 154.837,
-      "realtime_factor": 16.55,
+      "request_time_sec": 154.767,
+      "realtime_factor": 16.56,
       "success": true,
       "error": null
     },
@@ -102,10 +102,10 @@
       "file": "gitlab-meeting.mp3",
       "file_size_bytes": 20266388,
       "audio_duration_sec": 2562.912,
-      "request_time_sec": 35.769,
-      "realtime_factor": 71.65,
-      "success": true,
-      "error": null
+      "request_time_sec": 0.037,
+      "realtime_factor": null,
+      "success": false,
+      "error": "HTTPConnectionPool(host='localhost', port=9101): Max retries exceeded with url: /v1/audio/transcriptions (Caused by NewConnectionError(\"HTTPConnection(host='localhost', port=9101): Failed to establish a new connection: [Errno 111] Connection refused\"))"
     }
   ]
 }

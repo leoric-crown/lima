@@ -35,11 +35,12 @@ uv sync  # Installs lightning-whisper-mlx
 ./run_server.sh --port 9002
 ```
 
-**Performance Notes:**
-- Best for: Interactive development, quick tests
-- Small files: Similar to Docker Speaches
-- Large files: May be slower than Docker Speaches
-- Recommendation: **Use Docker Speaches for production** (more consistent performance)
+**Performance Notes (M4 Pro 24GB, see benchmark):**
+- **First request (cold)**: Slow - model loading overhead (~8.7s for 4s audio)
+- **After warmup**: Extremely fast - 155-166x realtime
+- 42-minute meeting transcribed in ~15 seconds
+- **Scales better with longer files** than Docker Speaches
+- Benchmark: `scripts/benchmark_whisper.py`
 
 ### Linux (NVIDIA GPU)
 
@@ -60,11 +61,12 @@ uv pip install nvidia-cudnn-cu12
 nvidia-smi
 ```
 
-**Performance:**
-Tested on RTX 4090:
+**Performance (RTX 4090 on Linux, see benchmark):**
 - **~71x real-time** transcription speed
-- 42-minute meeting transcribed in 36 seconds
+- 42-minute meeting transcribed in ~36 seconds
 - Excellent for batch processing
+- **Note**: Windows CUDA shows ~39x realtime (1.8x slower than Linux)
+- Benchmark: `scripts/benchmark_whisper.py`
 
 **Troubleshooting:**
 
@@ -109,8 +111,12 @@ nvidia-smi
 .\run_server.ps1 -Port 9002 -Model "large-v3" -Device "cuda"
 ```
 
-**Performance:**
-Similar to Linux - excellent speed with NVIDIA GPUs (e.g., ~71x real-time on RTX 4090).
+**Performance (RTX 4090 on Windows, see benchmark):**
+- **~39x real-time** transcription speed (slower than Linux)
+- 42-minute meeting transcribed in ~66 seconds
+- **Note**: Linux CUDA is ~1.8x faster on identical hardware
+- Possible causes: driver differences, OS overhead, or WSL2 virtualization
+- Benchmark: `scripts/benchmark_whisper.py`
 
 ## Command-Line Options
 
@@ -179,29 +185,48 @@ curl http://localhost:9002/v1/models
 
 ## Performance Comparison
 
-| Platform | Hardware | Speed | Recommendation |
-|----------|----------|-------|----------------|
-| **Docker (Speaches)** | CPU/GPU agnostic | Consistent | ✅ **Recommended for production** |
-| **macOS Native (MLX)** | Apple Silicon M4 24GB | Variable | Development/testing only |
-| **Linux Native (CUDA)** | RTX 4090 | ~71x realtime | Excellent for batch processing |
+**Benchmark Results** (`scripts/benchmark_whisper.py` - 42-minute test file):
+
+| Platform | Implementation | Speed (RTF) | 42min → Time | vs Docker |
+|----------|---------------|-------------|--------------|-----------|
+| **macOS M4 Pro 24GB** | Docker Speaches (CPU) | 31-33x | ~82s | baseline |
+| **macOS M4 Pro 24GB** | Native MLX (GPU) | **166x** | ~15s | **5.3x faster** |
+| **Linux RTX 4090** | Docker Speaches (CPU) | 16.6x | ~155s | baseline |
+| **Linux RTX 4090** | Native CUDA (GPU) | **71.6x** | ~36s | **4.3x faster** |
+| **Windows RTX 4090** | Docker Speaches (CPU) | 14x | ~184s | baseline |
+| **Windows RTX 4090** | Native CUDA (GPU) | **39x** | ~66s | **2.8x faster** |
 
 **Key Findings:**
-- Docker Speaches provides the most consistent performance across platforms
-- macOS MLX: Small files ~same as Docker, large files slower than Docker
-- Linux CUDA: Significantly faster than Docker on NVIDIA GPUs
+- **macOS MLX is fastest overall** (166x realtime after warmup)
+- **Linux CUDA > Windows CUDA** (~1.8x faster on identical hardware - driver/OS difference)
+- **Docker Speaches faster on macOS** than Windows/Linux (M4 Pro advantage)
+- **Native GPU scales better** with longer files
+- **MLX warmup critical** - first request ~60x slower (model loading)
+
+**Caveat**: These are initial findings from limited testing. Performance varies by:
+- Audio quality, silence detection, language complexity
+- System load, thermal throttling, background processes
+- CUDA driver versions, Docker resource limits
 
 ## When to Use Native vs Docker
 
 **Use Docker Speaches (default):**
-- Production workflows
-- Consistent performance needs
-- macOS users (better than MLX in testing)
+- Production workflows requiring consistency
 - Multi-platform deployments
+- Quick setup without GPU drivers
+- When you need predictable cold-start performance
 
 **Use Native Server:**
-- Linux development with NVIDIA GPU (very fast)
-- Testing model variations quickly
+- **macOS development** - MLX gives 5x speedup after warmup (best for batch processing)
+- **Linux with NVIDIA GPU** - CUDA gives 4x speedup (excellent performance)
+- **Windows with NVIDIA GPU** - CUDA gives 3x speedup (consider Linux instead for 2x more)
+- Testing different model sizes quickly
 - Offline development without Docker
+
+**Production Recommendation:**
+- **macOS**: Native MLX is significantly faster but needs warmup handling
+- **Linux**: Native CUDA for maximum speed, Docker for simplicity
+- **Windows**: Docker is simpler; native CUDA has OS overhead issues
 
 ## Development
 
