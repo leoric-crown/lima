@@ -94,6 +94,59 @@ uv sync
 
 See [services/whisper-server/README.md](services/whisper-server/README.md) for detailed setup and Windows support.
 
+## Remote Access with Tailscale
+
+Tailscale lets you access LIMA from your phone or laptop anywhere, without exposing ports to the internet.
+
+### Why Tailscale?
+
+- **No port forwarding** - Works through NAT and firewalls automatically
+- **No dynamic DNS** - Stable hostname for your machine
+- **Encrypted** - WireGuard encryption built-in
+- **Private** - Only your devices can access your tailnet
+
+### Setup
+
+**1. Install on your Mac (LIMA server):**
+```bash
+brew install tailscale
+sudo tailscaled &      # Start the daemon
+tailscale up           # Authenticate
+```
+
+Follow the browser link to authenticate.
+
+**2. Install on your phone:**
+- iOS: App Store → "Tailscale"
+- Android: Play Store → "Tailscale"
+- Sign in with the same account
+
+**3. Verify connection:**
+```bash
+tailscale status
+# Shows all devices on your tailnet with their IPs and hostnames
+```
+
+**4. Access LIMA remotely:**
+```
+http://<tailscale-hostname>:5678          # n8n UI
+http://<tailscale-hostname>:5678/webhook/memo  # Voice memo webhook
+```
+
+### iOS Shortcut Example
+
+Create a Shortcut to send voice memos to LIMA:
+1. **Record Audio** action
+2. **Get Contents of URL** action:
+   - URL: `http://<tailscale-hostname>:5678/webhook/memo`
+   - Method: POST
+   - Request Body: File (the audio)
+3. **Show Notification** with result
+
+### Cost
+
+The free tier (100 devices, 3 users) is plenty for personal use.
+
 ## Service URLs
 
 | Service | URL | Purpose |
