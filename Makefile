@@ -8,7 +8,8 @@
 #   make dev-up   - Start with development tools (n8n-mcp)
 
 .PHONY: help init up down dev-up dev-down restart logs status pull validate \
-        db-shell db-backup db-restore clean prune env-setup
+        db-shell db-backup db-restore clean prune env-setup \
+        hooks lint
 
 # Colors for output (disabled on Windows where they render as garbage)
 ifeq ($(OS),Windows_NT)
@@ -37,7 +38,7 @@ help: ## Show this help message
 	@echo "$(CYAN)LIMA - Local Intelligence Meeting Assistant$(RESET)"
 	@echo ""
 	@echo "$(GREEN)Setup:$(RESET)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep -E '(init|env)' | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(CYAN)%-15s$(RESET) %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep -E '(init|env|hooks)' | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(CYAN)%-15s$(RESET) %s\n", $$1, $$2}'
 	@echo ""
 	@echo "$(GREEN)Production:$(RESET)"
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep -vE '(dev-|init|env|db-|clean|prune|help)' | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(CYAN)%-15s$(RESET) %s\n", $$1, $$2}'
@@ -49,7 +50,7 @@ help: ## Show this help message
 	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep -E 'db-' | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(CYAN)%-15s$(RESET) %s\n", $$1, $$2}'
 	@echo ""
 	@echo "$(GREEN)Maintenance:$(RESET)"
-	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep -E '(clean|prune)' | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(CYAN)%-15s$(RESET) %s\n", $$1, $$2}'
+	@grep -E '^[a-zA-Z_-]+:.*?## .*$$' $(MAKEFILE_LIST) | grep -E '(clean|prune|lint)' | awk 'BEGIN {FS = ":.*?## "}; {printf "  $(CYAN)%-15s$(RESET) %s\n", $$1, $$2}'
 	@echo ""
 
 # =============================================================================
@@ -74,6 +75,17 @@ env-setup: ## Create .env from .env.example
 	else \
 		echo "$(GREEN).env already exists$(RESET)"; \
 	fi
+
+hooks: ## Install pre-commit hooks for repo hygiene
+	@echo "$(CYAN)Installing pre-commit hooks...$(RESET)"
+	@command -v pre-commit >/dev/null 2>&1 || { \
+		echo "$(YELLOW)Installing pre-commit...$(RESET)"; \
+		pip install pre-commit || pip3 install pre-commit; \
+	}
+	pre-commit install
+	@echo "$(GREEN)Pre-commit hooks installed!$(RESET)"
+	@echo "$(CYAN)Hooks will run automatically on git commit.$(RESET)"
+	@echo "$(CYAN)Run 'make lint' to check all files manually.$(RESET)"
 
 # =============================================================================
 # Production Commands
@@ -190,6 +202,10 @@ prune: ## Deep clean (WARNING: removes all unused Docker resources)
 	@read -p "Are you sure? [y/N] " confirm && [ "$$confirm" = "y" ] || exit 1
 	docker system prune -af
 	@echo "$(GREEN)Deep clean complete$(RESET)"
+
+lint: ## Run pre-commit hooks on all files
+	@echo "$(CYAN)Running pre-commit checks on all files...$(RESET)"
+	pre-commit run --all-files
 
 # =============================================================================
 # Data Directories

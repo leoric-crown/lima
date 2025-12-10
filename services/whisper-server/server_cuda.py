@@ -26,7 +26,7 @@ def setup_cuda_paths():
             site_packages / "nvidia" / "cudnn" / "bin",
             site_packages / "nvidia" / "cublas" / "bin"
         ]
-        
+
         for lib_path in libs:
             if lib_path.exists():
                 os.environ["PATH"] = str(lib_path) + ";" + os.environ.get("PATH", "")
@@ -40,7 +40,7 @@ def setup_cuda_paths():
         if python_dirs:
             site_packages = python_dirs[0] / "site-packages"
             cudnn_lib = site_packages / "nvidia" / "cudnn" / "lib"
-            
+
             if cudnn_lib.exists():
                 ld_library_path = os.environ.get("LD_LIBRARY_PATH", "")
                 new_paths = [str(cudnn_lib)]
