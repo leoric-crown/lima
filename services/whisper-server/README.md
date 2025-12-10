@@ -208,6 +208,39 @@ curl http://localhost:9002/v1/models
 - System load, thermal throttling, background processes
 - CUDA driver versions, Docker resource limits
 
+### Why is MLX faster than RTX 4090?
+
+We're not entirely sure! Some hypotheses:
+- **Unified memory** - Apple Silicon avoids PCIe bottlenecks when moving tensors between CPU/GPU
+- **MLX optimization** - Lightning Whisper MLX may be more optimized than faster-whisper for this workload
+- **Memory bandwidth** - M4 Pro has excellent memory bandwidth relative to its compute
+- **Our test setup** - The RTX 4090 was paired with an older Ryzen 7 3700X (2019), which could be a bottleneck
+
+**Further reading:**
+- [MLX vs CUDA Benchmark](https://towardsdatascience.com/mlx-vs-mps-vs-cuda-a-benchmark-c5737ca6efc9/) - Comprehensive MLX/MPS/CUDA comparison
+- [Whisper GPU Benchmarks (Tom's Hardware)](https://www.tomshardware.com/news/whisper-audio-transcription-gpus-benchmarked) - 18 GPUs tested
+- [RTX 4090 vs M1 Pro MLX](https://owehrens.com/whisper-nvidia-rtx-4090-vs-m1pro-with-mlx/) - Direct comparison with insanely-fast-whisper
+- [faster-whisper GitHub](https://github.com/SYSTRAN/faster-whisper) - CUDA implementation we use
+- [MLX Benchmark Repo](https://github.com/TristanBilot/mlx-benchmark) - Community benchmarks across Apple Silicon chips
+
+### Contribute Your Results!
+
+We're missing benchmarks for:
+- **AMD GPUs** (ROCm) - Linux/Windows
+- **Intel Arc** GPUs - Linux/Windows
+- **Older NVIDIA** (3080, 3090, A100, etc.)
+- **Other Apple Silicon** (M1, M2, M3, M1/M2/M3 Ultra)
+- **Different Whisper models** (large-v3, distil-large-v3)
+
+**Note:** The run scripts currently support CUDA and MLX. AMD ROCm, Intel Arc, or other backends may require modifications to `run_server.sh` and potentially new server implementations. PRs welcome!
+
+Run the benchmark and open a PR:
+```bash
+cd scripts
+uv run python benchmark_whisper.py --native-port 9002
+# Results saved to scripts/benchmark_results/
+```
+
 ## When to Use Native vs Docker
 
 **Use Docker Speaches (default):**
