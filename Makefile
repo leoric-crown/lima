@@ -10,12 +10,20 @@
 .PHONY: help init up down dev-up dev-down restart logs status pull validate \
         db-shell db-backup db-restore clean prune env-setup
 
-# Colors for output
+# Colors for output (disabled on Windows where they render as garbage)
+ifeq ($(OS),Windows_NT)
+CYAN :=
+GREEN :=
+YELLOW :=
+RED :=
+RESET :=
+else
 CYAN := \033[36m
 GREEN := \033[32m
 YELLOW := \033[33m
 RED := \033[31m
 RESET := \033[0m
+endif
 
 # Default target
 .DEFAULT_GOAL := help
