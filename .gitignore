@@ -2,6 +2,11 @@
 .env
 *.env.local
 
+# Script Test Data
+scripts/test_audio
+scripts/transcripts
+scripts/reference
+
 # Data directories (audio, transcripts, notes)
 data/
 

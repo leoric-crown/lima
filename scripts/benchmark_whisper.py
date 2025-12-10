@@ -41,7 +41,7 @@ def get_server_configs(speaches_port: int, native_port: int) -> dict:
     }
 
 # Audio files to test (will be sorted by size)
-AUDIO_DIR = Path(__file__).parent.parent / "data" / "audio"
+AUDIO_DIR = Path(__file__).parent / "test_audio"
 
 
 def ensure_model_installed(server_name: str, server_config: dict) -> bool:
