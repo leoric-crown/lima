@@ -70,8 +70,17 @@ The Voice Memo workflow uses a local LLM for extracting insights from transcript
 
 1. Download and install [LM Studio](https://lmstudio.ai/)
 2. Download a model (e.g., `Qwen2.5-7B-Instruct` or similar)
-3. Start the local server: **Developer → Start Server** (runs on `http://localhost:1234`)
-4. In n8n, create an OpenAI API credential:
+3. Configure recommended settings in **Developer** tab:
+
+   | Setting | Value | Why |
+   |---------|-------|-----|
+   | Just-in-Time Model Loading | ON | Loads model on first request |
+   | Auto unload unused JIT loaded models | ON | Frees memory when idle |
+   | Max idle TTL | 5 minutes | Balance responsiveness vs memory |
+   | Only Keep Last JIT Loaded Model | ON | Prevents memory issues |
+
+4. Start the local server: **Developer → Start Server** (runs on `http://localhost:1234`)
+5. In n8n, create an OpenAI API credential:
    - **Settings → Credentials → Add Credential → OpenAI API**
    - Name: `LM Studio Local`
    - API Key: `lm-studio` (any non-empty string works)
@@ -96,27 +105,28 @@ The workflow requires these directories to exist and be writable:
 
 ```bash
 # Create directory structure
-mkdir -p data/voice-memos/webhook data/notes
+mkdir -p data/voice-memos/webhook data/notes data/audio-archive
 
 # Make writable (choose one):
-chmod 777 data/voice-memos data/voice-memos/webhook data/notes
+chmod 777 data/voice-memos data/voice-memos/webhook data/notes data/audio-archive
 # Or change ownership to match your user
 ```
 
 - `data/voice-memos/` - Drop audio files here for automatic processing
 - `data/voice-memos/webhook/` - Webhook uploads are saved here (to avoid re-triggering)
 - `data/notes/` - Generated markdown notes output
+- `data/audio-archive/` - Original audio files are moved here after processing (linked from notes)
 
 ### 6. Import Voice Memo Workflow
 
-Import the pre-built workflow from `workflows/voice-memo.json`:
+Import the pre-built workflow from `workflows/voice-memo-v0.2.0.json`:
 
 1. In n8n, go to **Workflows → Import from File**
-2. Select `workflows/voice-memo.json`
-3. Update the LLM credential if needed (click the Agent node → select your credential)
+2. Select `workflows/voice-memo-v0.2.0.json`
+3. Update the LLM credential if needed (click the **LM Studio Model** node → select your credential)
 4. **Activate** the workflow (toggle in top-right)
 
-Or create it manually - see [docs/voice-memo-workflow.md](docs/voice-memo-workflow.md) for details.
+See [docs/PRD-voice-memo-workflow.md](docs/PRD-voice-memo-workflow.md) for full architecture details, or [docs/demo-voice-memo.md](docs/demo-voice-memo.md) for a quick demo guide.
 
 ### 7. Test the Workflow
 
@@ -257,9 +267,10 @@ lima/
 ├── .env.example            # Environment template
 ├── init-data.sh            # PostgreSQL initialization
 ├── Makefile                # Convenience commands
-├── data/
+├── data/                   # Obsidian vault (open this folder in Obsidian)
 │   ├── voice-memos/        # Drop audio files here (auto-processed)
-│   │   └── webhook/        # Webhook uploads (not watched)
+│   │   └── webhook/        # Webhook uploads (not re-watched)
+│   ├── audio-archive/      # Processed originals (linked from notes)
 │   ├── audio/              # Meeting recordings (manual input)
 │   ├── transcripts/        # Transcriptions (output)
 │   └── notes/              # Markdown notes (output)

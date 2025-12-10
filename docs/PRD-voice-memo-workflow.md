@@ -10,6 +10,8 @@ A demonstration n8n workflow that processes voice memos into structured, Obsidia
 
 **Target Users:** Developers, BAs, PMs, and power users who want to tinker with local AI solutions for capturing and organizing spoken thoughts.
 
+**Current Version:** v0.2.0 - See [Changelog](#changelog) for version history.
+
 ---
 
 ## Goals
@@ -53,32 +55,65 @@ A demonstration n8n workflow that processes voice memos into structured, Obsidia
 
 ---
 
-## Workflow Architecture
+## Workflow Architecture (v0.2.0)
 
 ```
-┌─────────────────────────────────────────────────────────────────────────────┐
-│                           n8n Workflow                                      │
-├─────────────────────────────────────────────────────────────────────────────┤
-│                                                                             │
-│  ┌──────────────┐    ┌─────────────────┐    ┌──────────────────────────┐   │
-│  │   Webhook    │───▶│ Install Model   │───▶│   HTTP Request           │   │
-│  │   Trigger    │    │ (idempotent)    │    │   (Whisper)              │   │
-│  │              │    │                 │    │                          │   │
-│  │ POST /memo   │    │ Ensures model   │    │ POST multipart/form-data │   │
-│  │ + audio file │    │ is available    │    │ → transcript JSON        │   │
-│  └──────────────┘    └─────────────────┘    └────────────┬─────────────┘   │
-│                                                          │                  │
-│                                                          ▼                  │
-│  ┌──────────────┐    ┌─────────────────┐    ┌──────────────────────────┐   │
-│  │ Read/Write   │◀───│   Code Node     │◀───│   OpenAI Chat Model      │   │
-│  │ File         │    │   (Format)      │    │   (LM Studio)            │   │
-│  │              │    │                 │    │                          │   │
-│  │ /data/notes/ │    │ Generate slug   │    │ Extract insights from    │   │
-│  │ YYYY-MM-DD-  │    │ Build markdown  │    │ transcript via prompt    │   │
-│  │ slug.md      │    │                 │    │ → JSON response          │   │
-│  └──────────────┘    └─────────────────┘    └──────────────────────────┘   │
-│                                                                             │
-└─────────────────────────────────────────────────────────────────────────────┘
+┌──────────────────────────────────────────────────────────────────────────────────────┐
+│                              n8n Workflow v0.2.0                                     │
+├──────────────────────────────────────────────────────────────────────────────────────┤
+│                                                                                      │
+│  TRIGGERS (either/or)                                                                │
+│  ┌──────────────┐     ┌──────────────┐                                               │
+│  │   Webhook    │     │ Local File   │                                               │
+│  │   Trigger    │     │   Trigger    │                                               │
+│  │ POST /memo   │     │ /data/voice- │                                               │
+│  │ + audio file │     │ memos/*.mp3  │                                               │
+│  └──────┬───────┘     └──────┬───────┘                                               │
+│         │                    │                                                       │
+│         ▼                    │                                                       │
+│  ┌──────────────┐            │                                                       │
+│  │ Save to Disk │────────────┘                                                       │
+│  │ (webhook/)   │                                                                    │
+│  └──────┬───────┘                                                                    │
+│         │                                                                            │
+│         ▼                                                                            │
+│  ┌──────────────┐    ┌─────────────────┐    ┌──────────────────────────┐             │
+│  │  Set Data    │───▶│    ffprobe      │───▶│   Read Voice Memo        │             │
+│  │  (normalize) │    │  (duration)     │    │   (binary data)          │             │
+│  └──────────────┘    └─────────────────┘    └────────────┬─────────────┘             │
+│                                                          │                           │
+│                                                          ▼                           │
+│  ┌──────────────┐    ┌─────────────────┐    ┌──────────────────────────┐             │
+│  │   Crypto     │───▶│ Detect Input    │───▶│   Route by Type          │             │
+│  │  (hash file) │    │   Type          │    │   (audio/unsupported)    │             │
+│  └──────────────┘    └─────────────────┘    └────────────┬─────────────┘             │
+│                                                          │                           │
+│                                              ┌───────────┴───────────┐               │
+│                                              ▼                       ▼               │
+│                                       [audio branch]          [error branch]         │
+│                                                                                      │
+│  ┌──────────────┐    ┌─────────────────┐    ┌──────────────────────────┐             │
+│  │Install Model │    │    Whisper      │───▶│   Extract Insights       │             │
+│  │ (parallel)   │    │  Transcription  │    │   (AI Agent + LLM)       │             │
+│  └──────────────┘    └─────────────────┘    └────────────┬─────────────┘             │
+│                                                          │                           │
+│                                                          ▼                           │
+│  ┌──────────────┐    ┌─────────────────┐    ┌──────────────────────────┐             │
+│  │   Respond    │◀───│  Archive Audio  │◀───│   Write Note             │             │
+│  │   Success    │    │  (mv to archive)│    │   /data/notes/*.md       │             │
+│  └──────────────┘    └─────────────────┘    └──────────────────────────┘             │
+│                                                          ▲                           │
+│                                              ┌───────────┴───────────┐               │
+│                                              │  Delete Old Hash      │               │
+│                                              │  (idempotent update)  │               │
+│                                              └───────────────────────┘               │
+│                                                          ▲                           │
+│                                              ┌───────────┴───────────┐               │
+│                                              │  Format Markdown      │               │
+│                                              │  (Code node)          │               │
+│                                              └───────────────────────┘               │
+│                                                                                      │
+└──────────────────────────────────────────────────────────────────────────────────────┘
 
 External Services (running on host):
 ┌─────────────────┐    ┌─────────────────┐
@@ -97,17 +132,26 @@ Remote Access:
 └─────────────────┘
 ```
 
-### Data Flow
+### Data Flow (v0.2.0)
 
 | Step | Node | Input | Output |
 |------|------|-------|--------|
-| 1 | Webhook | POST with audio file | Binary data + metadata |
-| 2 | HTTP Request (Model Install) | Model ID | Success (idempotent) |
-| 3 | HTTP Request (Whisper) | Binary audio | `{ "text": "Full transcript..." }` |
-| 4 | OpenAI Chat Model | Transcript + prompt | `{ "title": "...", "summary": "...", ... }` |
-| 5 | Code (Format) | LLM JSON | `{ "filename": "...", "markdown": "..." }` |
-| 6 | Read/Write File | Markdown content | File written to disk |
-| 7 | Respond to Webhook | Success message | `{ "status": "ok", "note": "2025-02-12-new-api-idea.md" }` |
+| 1 | Webhook OR Local File Trigger | POST with audio file OR file event | Binary data + metadata |
+| 2 | Save to Disk (webhook only) | Binary from webhook | File path in `/data/voice-memos/webhook/` |
+| 3 | Set Data | File path | Normalized path + webhook flag |
+| 4 | ffprobe | File path | Duration in seconds |
+| 5 | Read Voice Memo | File path | Binary audio data |
+| 6 | Crypto | Binary audio | SHA256 hash (first 8 chars for filename) |
+| 7 | Detect Input Type | Binary + metadata | `{ inputType: "audio", mimeType, ... }` |
+| 8 | Route by Input Type | Input type | Audio branch OR error branch |
+| 9 | Install Whisper Model (parallel) | Model ID | Success (idempotent) |
+| 10 | Whisper Transcription | Binary audio | `{ "text": "Full transcript..." }` |
+| 11 | Extract Insights (AI Agent) | Transcript + prompt | `{ "title": "...", "summary": "...", ... }` |
+| 12 | Format Full Markdown | LLM JSON + transcript | `{ filename, filepath, archivePath, markdown }` |
+| 13 | Delete Old Hash Files | File hash | Removes previous versions with same hash |
+| 14 | Write Note | Markdown binary | File written to `/data/notes/` |
+| 15 | Archive Audio | Source path, archive path | Original moved to `/data/audio-archive/` |
+| 16 | Respond to Webhook | Success message | `{ "status": "ok", "note": "...", "title": "..." }` |
 
 The webhook response confirms completion and returns the filename, useful for mobile clients to show a notification.
 
@@ -176,6 +220,19 @@ Use the **OpenAI Chat Model** node with LM Studio's OpenAI-compatible API.
 2. Go to **Developer** tab → Start server (default port: 1234)
 3. Server exposes OpenAI-compatible endpoints at `http://localhost:1234/v1`
 
+#### LM Studio Recommended Settings
+
+For reliable n8n integration, enable these settings in LM Studio (**Developer** tab):
+
+| Setting | Value | Why |
+|---------|-------|-----|
+| Just-in-Time Model Loading | ON | Loads model on first request (no manual loading needed) |
+| Auto unload unused JIT loaded models | ON | Frees memory when idle |
+| Max idle TTL | 5 minutes | Balance between responsiveness and memory usage |
+| Only Keep Last JIT Loaded Model | ON | Prevents memory issues with multiple models |
+
+These settings ensure the model loads automatically when n8n sends a request and unloads when idle, preventing memory exhaustion during long-running workflows.
+
 #### n8n Credential Configuration
 Create an **OpenAI API** credential with:
 
@@ -185,22 +242,23 @@ Create an **OpenAI API** credential with:
 | Base URL | `http://host.docker.internal:1234/v1` (from Docker) |
 
 ### Output Format
-- **Location:** `data/notes/YYYY-MM-DD-<title-slug>.md`
+- **Location:** `data/notes/YYYY-MM-DD-<title-slug>-<hash>.md`
 - **Format:** Obsidian-compatible markdown with YAML frontmatter
 
 ---
 
 ## Output Specification
 
-### Filename
+### Filename (v0.2.0)
 ```
-YYYY-MM-DD-<title-slug>.md
+YYYY-MM-DD-<title-slug>-<hash>.md
 ```
-Example: `2024-01-15-api-integration-idea.md`
+Example: `2024-01-15-api-integration-idea-a1b2c3d4.md`
 
-Title slug derived from:
-1. LLM-generated title (preferred)
-2. Fallback: timestamp
+Components:
+1. **Date:** ISO date of processing
+2. **Slug:** LLM-generated title (sanitized, max 50 chars)
+3. **Hash:** First 8 characters of file's SHA256 hash (enables idempotent updates)
 
 #### Slug Generation (Code Node)
 
@@ -229,13 +287,16 @@ return {
 };
 ```
 
-### Markdown Structure
+### Markdown Structure (v0.2.0)
 
 ```markdown
 ---
-title: API Integration Idea
-date: 2024-01-15T10:30:00
-type: memo
+title: "API Integration Idea"
+date: 2024-01-15T10:30:00.000Z
+type: voice-memo
+duration: 127.5
+original_filename: "voice-memo-2024-01-15.m4a"
+audio_archive: "[[audio-archive/2024-01-15-api-integration-idea-a1b2c3d4.m4a]]"
 tags:
   - memo
   - api
@@ -245,7 +306,7 @@ status: processed
 
 # API Integration Idea
 
-**Date:** 2024-01-15 10:30 AM
+**Date:** January 15, 2024 at 10:30 AM
 **Type:** Voice Memo
 
 ---
@@ -282,13 +343,16 @@ Full transcript text here...
 </details>
 ```
 
-### YAML Frontmatter Fields
+### YAML Frontmatter Fields (v0.2.0)
 
 | Field | Type | Description |
 |-------|------|-------------|
 | `title` | string | Memo title (LLM-generated) |
-| `date` | ISO 8601 | Recording date/time |
-| `type` | string | Always `memo` |
+| `date` | ISO 8601 | Processing date/time |
+| `type` | string | Always `voice-memo` |
+| `duration` | string | Audio duration in seconds (from ffprobe) |
+| `original_filename` | string | Original uploaded filename |
+| `audio_archive` | string | Obsidian wikilink to archived audio file |
 | `tags` | list | Always includes `memo`, plus extracted topics |
 | `status` | string | `processed` |
 
@@ -483,33 +547,72 @@ Create an **OpenAI API** credential named "LM Studio Local":
 
 ---
 
-## Future Enhancements (Out of Scope for v1)
+## Future Enhancements
 
 1. **Web recording UI:** Simple page to record directly in browser
-2. **File deduplication:** Track processed files in Postgres
+2. ~~**File deduplication:** Track processed files in Postgres~~ ✅ Done in v0.2.0 (hash-based)
 3. **Embeddings:** Generate vectors for semantic search (pgvector ready)
 4. **Categories:** Auto-categorize memos (idea, task, reminder, analysis)
 5. **Obsidian plugin:** Custom view for memo dashboard
 6. **Apple Watch:** Direct recording from watch
+7. **Multi-modal support:** Process images, videos, PDFs (v0.2.0 has detection, not processing)
 
 ---
 
 ## Success Criteria
 
-1. User can send audio via webhook and receive structured note
-2. Output markdown opens correctly in Obsidian
-3. Tags appear in Obsidian's tag pane
-4. Checkboxes are interactive
-5. Transcript is preserved but collapsed
-6. Workflow is readable and modifiable by developers
-7. Remote access works via Tailscale
+1. ✅ User can send audio via webhook and receive structured note
+2. ✅ User can drop audio file and have it auto-processed
+3. ✅ Output markdown opens correctly in Obsidian
+4. ✅ Tags appear in Obsidian's tag pane
+5. ✅ Checkboxes are interactive
+6. ✅ Transcript is preserved but collapsed
+7. ✅ Workflow is readable and modifiable by developers
+8. ✅ Remote access works via Tailscale
+9. ✅ Re-processing same file updates existing note (idempotent)
+10. ✅ Original audio preserved in archive with Obsidian link
 
 ---
 
 ## Decisions
 
-1. **Webhook trigger** - Enables remote access from any device
+1. **Dual triggers** - Webhook for remote, file watcher for local convenience
 2. **Short memos focus** - 1-5 minutes typical, no chunking needed
 3. **No diarization** - Single-speaker memos don't need it
 4. **Tailscale for remote** - Secure without public exposure
 5. **File-only for v1** - Markdown files are the single source of truth
+6. **Hash-based idempotency** - Same file content = same output filename (v0.2.0)
+7. **Archive originals** - Keep audio files linked from notes for playback (v0.2.0)
+
+---
+
+## Changelog
+
+### v0.2.0 - File Lifecycle Management
+
+**New Features:**
+- **Dual triggers:** Webhook + Local File Trigger (watch `/data/voice-memos/`)
+- **Hash-based deduplication:** Same audio file produces same output filename
+- **Audio archiving:** Original files moved to `/data/audio-archive/` after processing
+- **Duration metadata:** ffprobe extracts audio length into frontmatter
+- **Obsidian audio links:** `[[audio-archive/...]]` wikilinks in frontmatter
+- **Input type detection:** Extensible architecture for future image/video/PDF support
+- **Idempotent reprocessing:** Re-dropping same file updates the note (deletes old hash match first)
+
+**Breaking Changes:**
+- Filename format changed: `YYYY-MM-DD-slug-hash.md` (was `YYYY-MM-DD-slug.md`)
+- New frontmatter fields: `duration`, `original_filename`, `audio_archive`
+
+**Architecture Changes:**
+- Added Crypto node for file hashing
+- Added ffprobe Execute Command node for duration
+- Added "Delete Old Hash" node for idempotent updates
+- Added "Archive Audio" node for file lifecycle
+
+### v0.1.0 - Initial Release
+
+- Webhook trigger for remote audio upload
+- Whisper transcription via local Speaches container
+- LLM insight extraction (title, summary, key points, action items, questions, tags)
+- Obsidian-compatible markdown output with YAML frontmatter
+- Collapsible raw transcript section

@@ -150,10 +150,18 @@ Benchmark test files are in `scripts/test_audio/` (not mounted to containers).
 
 ## LM Studio Configuration
 
-If using LM Studio as the LLM backend, enable these settings for reliable n8n integration:
+If using LM Studio as the LLM backend, enable these settings in the **Developer** tab for reliable n8n integration:
 
-- **Just-in-Time Model Loading**: ON
-- **Auto unload unused JIT loaded models**: ON (5 min idle TTL recommended)
-- **Only Keep Last JIT Loaded Model**: ON
+| Setting | Value | Why |
+|---------|-------|-----|
+| Just-in-Time Model Loading | ON | Loads model on first request (no manual loading) |
+| Auto unload unused JIT loaded models | ON | Frees memory when idle |
+| Max idle TTL | 5 minutes | Balance between responsiveness and memory |
+| Only Keep Last JIT Loaded Model | ON | Prevents memory issues with multiple models |
 
-This ensures the model loads on first request and unloads when idle, preventing memory issues.
+This ensures the model loads automatically when n8n sends a request and unloads when idle, preventing memory exhaustion.
+
+**n8n Credential Setup:**
+- Name: `LM Studio Local`
+- API Key: `lm-studio` (any non-empty string)
+- Base URL: `http://host.docker.internal:1234/v1` (macOS/Windows) or your machine's IP (Linux)
