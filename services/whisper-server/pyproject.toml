@@ -12,6 +12,13 @@ dependencies = [
     "python-multipart>=0.0.12",
 ]
 
+[build-system]
+requires = ["setuptools>=61.0"]
+build-backend = "setuptools.build_meta"
+
+[tool.setuptools]
+py-modules = ["server_mlx", "server_cuda"]
+
 [tool.uv]
 package = true
 
