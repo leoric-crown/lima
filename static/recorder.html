@@ -5,6 +5,8 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=no">
   <title>LIMA Voice Recorder</title>
+  <link rel="icon" type="image/png" href="/static/logo.png">
+  <link href="https://fonts.googleapis.com/css2?family=Montserrat:wght@400;600;700&display=swap" rel="stylesheet">
   <script src="https://cdn.tailwindcss.com"></script>
   <script src="https://cdn.jsdelivr.net/npm/marked/marked.min.js"></script>
   <style>
@@ -64,18 +66,24 @@
   <div class="w-full max-w-md mx-auto text-center">
 
     <!-- Logo -->
-    <div class="mb-8">
-      <h1 class="text-4xl font-bold mb-2">LIMA</h1>
-      <p class="text-gray-400">Local Intelligent Memo Assistant</p>
+    <div class="mb-8 flex flex-col items-center">
+      <img src="/static/logo.png" alt="LIMA Logo"
+        class="w-48 h-48 mb-6 drop-shadow-2xl rounded-full hover:scale-105 transition-transform duration-300">
+      <h1 class="text-5xl font-semibold mb-2 tracking-[0.2em]" style="font-family: 'Montserrat', sans-serif;">LIMA</h1>
+      <p class="text-gray-400 font-light" style="font-family: 'Montserrat', sans-serif;">Local Intelligent Memo
+        Assistant</p>
     </div>
+
+    <!-- Instructions -->
+    <p id="instructions" class="text-gray-400 text-sm mb-6 mt-4">Tap to start recording</p>
 
     <!-- Recording Interface -->
     <div id="recorder" class="mb-8">
       <!-- Record Button -->
       <div class="relative inline-block mb-6">
-        <div class="pulse-ring absolute inset-0 bg-red-500 rounded-full"></div>
+        <div class="pulse-ring absolute inset-0 bg-lime-600 rounded-full"></div>
         <button id="record-btn"
-          class="relative w-24 h-24 bg-red-600 hover:bg-red-500 rounded-full flex items-center justify-center text-4xl transition-all duration-200 active:scale-95 focus:outline-none focus:ring-4 focus:ring-red-500/50"
+          class="relative w-24 h-24 bg-lime-600 hover:bg-lime-500 rounded-full flex items-center justify-center text-4xl transition-all duration-200 active:scale-95 focus:outline-none focus:ring-4 focus:ring-lime-600/50 text-white shadow-[0_0_15px_rgba(101,163,13,0.5)]"
           aria-label="Record">
           <span id="btn-icon">🎙️</span>
         </button>
@@ -86,31 +94,26 @@
 
       <!-- Waveform Visualization -->
       <div id="waveform" class="hidden h-16 flex items-center justify-center gap-1">
-        <div class="wave-bar w-1 bg-red-500 rounded-full"></div>
-        <div class="wave-bar w-1 bg-red-500 rounded-full"></div>
-        <div class="wave-bar w-1 bg-red-500 rounded-full"></div>
-        <div class="wave-bar w-1 bg-red-500 rounded-full"></div>
-        <div class="wave-bar w-1 bg-red-500 rounded-full"></div>
+        <div class="wave-bar w-1 bg-lime-600 rounded-full"></div>
+        <div class="wave-bar w-1 bg-lime-600 rounded-full"></div>
+        <div class="wave-bar w-1 bg-lime-600 rounded-full"></div>
+        <div class="wave-bar w-1 bg-lime-600 rounded-full"></div>
+        <div class="wave-bar w-1 bg-lime-600 rounded-full"></div>
       </div>
-
-      <!-- Instructions -->
-      <p id="instructions" class="text-gray-500 text-sm">Tap to start recording</p>
 
       <!-- Upload Option -->
-      <div class="mt-6 pt-6 border-t border-gray-700">
-        <p class="text-gray-400 text-sm mb-3">Or upload an audio file</p>
-        <input type="file" id="file-input" accept="audio/*,.mp3,.wav,.m4a,.ogg,.opus,.webm,.aac,.flac" class="hidden">
-        <button id="upload-btn"
-          class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg transition-colors text-sm flex items-center gap-2 mx-auto">
-          📁 Choose Audio File
-        </button>
-      </div>
+      <p class="text-gray-400 text-sm mb-4">Or upload an audio file</p>
+      <input type="file" id="file-input" accept="audio/*,.mp3,.wav,.m4a,.ogg,.opus,.webm,.aac,.flac" class="hidden">
+      <button id="upload-btn"
+        class="bg-lime-900/20 hover:bg-lime-900/40 border border-lime-500/30 hover:border-lime-500/50 text-lime-100 px-6 py-3 rounded-lg transition-all duration-200 text-sm flex items-center gap-2 mx-auto backdrop-blur-sm">
+        📁 Choose Audio File
+      </button>
     </div>
 
     <!-- Processing Status -->
     <div id="status" class="hidden mb-8">
       <div class="flex items-center justify-center gap-3 text-xl">
-        <svg class="animate-spin h-6 w-6 text-blue-500" fill="none" viewBox="0 0 24 24">
+        <svg class="animate-spin h-6 w-6 text-lime-600" fill="none" viewBox="0 0 24 24">
           <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
           <path class="opacity-75" fill="currentColor"
             d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z">
@@ -128,7 +131,8 @@
         <div id="result-preview" class="prose prose-invert prose-sm max-w-none text-gray-300"></div>
       </div>
       <div class="flex gap-3 justify-center">
-        <button id="new-recording" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors">
+        <button id="new-recording"
+          class="bg-lime-600 hover:bg-lime-500 text-white px-8 py-3 rounded-lg transition-all duration-200 shadow-lg shadow-lime-900/20 font-medium hover:scale-105">
           New Recording
         </button>
       </div>
@@ -287,6 +291,7 @@
 
         // Show processing
         recorderDiv.classList.add('hidden');
+        instructions.classList.add('hidden');
         statusDiv.classList.remove('hidden');
       }
     }
@@ -362,6 +367,7 @@
 
       // Reset visibility
       recorderDiv.classList.remove('hidden');
+      instructions.classList.remove('hidden');
       statusDiv.classList.add('hidden');
       resultDiv.classList.add('hidden');
       errorDiv.classList.add('hidden');
@@ -401,6 +407,7 @@
 
       // Show processing UI
       recorderDiv.classList.add('hidden');
+      instructions.classList.add('hidden');
       statusDiv.classList.remove('hidden');
       statusText.textContent = 'Uploading...';
 

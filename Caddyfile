@@ -7,6 +7,11 @@
 }
 
 :8888 {
+	handle_path /static/* {
+		root * /static
+		file_server
+	}
+
 	reverse_proxy n8n:5678
 
 	# Remove n8n's restrictive sandbox CSP for the recorder page

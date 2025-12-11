@@ -164,6 +164,12 @@ Following the three "aha moments" from the talk: **Accessible → Practical → 
 - Fall back to server timezone or configurable default
 - Store timezone in file metadata for audit trail
 
+
+#### Migrate Recorder UI serving from n8n webhook to Caddy (pure static serving)
+  - Purpose: Decouple UI from workflow engine, faster load times
+  - Access: http://localhost:8888/recorder
+  - Keep n8n workflow for API/Backend logic only
+
 ---
 
 ### Path 3: Building AI Systems (The Frontier)
