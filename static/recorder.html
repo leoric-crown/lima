@@ -314,8 +314,19 @@
         });
 
         if (!response.ok) {
-          const error = await response.json();
-          throw new Error(error.message || 'Upload failed');
+          // Try to parse as JSON, but handle HTML error pages gracefully
+          const text = await response.text();
+          let message = `Upload failed (${response.status})`;
+          try {
+            const error = JSON.parse(text);
+            message = error.message || message;
+          } catch {
+            // Response was HTML (error page), not JSON
+            if (text.includes('<!DOCTYPE') || text.includes('<html')) {
+              message = `Server error (${response.status}). Is the webhook endpoint running?`;
+            }
+          }
+          throw new Error(message);
         }
 
         const result = await response.json();
