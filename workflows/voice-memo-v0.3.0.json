@@ -4,7 +4,7 @@
     {
       "parameters": {
         "httpMethod": "POST",
-        "path": "b0745928-ffc5-4b27-a789-3efe90b4447d",
+        "path": "memo",
         "responseMode": "responseNode",
         "options": {}
       },
