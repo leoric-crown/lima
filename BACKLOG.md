@@ -143,6 +143,27 @@ Following the three "aha moments" from the talk: **Accessible → Practical → 
 - Keep prompt engineering separate from workflow engineering
 - Version control prompts independently
 
+#### Timezone-Aware Date Handling
+**Problem:** LLM outputs recording dates in UTC instead of local timezone. This affects both the content of generated notes and file organization.
+**Why this matters:** Memos recorded at "11pm on Tuesday" appear as "Wednesday" if UTC is ahead of local time. This breaks mental models and makes files harder to find.
+
+**Minimal fix:**
+- Make date handling timezone-aware throughout the pipeline
+- Use local timezone for date formatting in LLM output
+- Preserve correct "day of recording" from user's perspective
+
+**Broader enhancements:**
+- More granular timestamps in filenames (include hour, not just day)
+- Better time-based organization: `2025-12-11/14-30-voice-memo.md` instead of `2025-12-11-voice-memo.md`
+- Configurable date format patterns (ISO vs local convention)
+- Handle edge cases: DST transitions, multi-timezone teams, recordings that span midnight
+
+**Implementation considerations:**
+- Detect timezone from browser when using Voice Recorder UI
+- Pass timezone metadata through webhook payload
+- Fall back to server timezone or configurable default
+- Store timezone in file metadata for audit trail
+
 ---
 
 ### Path 3: Building AI Systems (The Frontier)
