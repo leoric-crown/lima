@@ -466,6 +466,70 @@ Create a Shortcut to send voice memos to LIMA:
    - Request Body: File (the audio)
 3. **Show Notification** with result
 
+### Connecting from a Managed macOS Laptop (CLI-only)
+
+Corporate-managed Macs often block the Tailscale GUI app from creating VPN configurations. Use the CLI approach instead:
+
+**1. Install via Homebrew:**
+
+```bash
+brew install tailscale
+```
+
+**2. Start the daemon as a service:**
+
+```bash
+# Start tailscaled via brew services (persists across reboots)
+sudo brew services start tailscale
+
+# Authenticate (first time only)
+sudo tailscale up
+```
+
+> **Note:** The warning about "must be run as non-root" can be ignored - tailscaled requires root to create network interfaces and manage DNS.
+
+**3. Fix MagicDNS for `.ts.net` domains:**
+
+The Homebrew version doesn't automatically configure macOS to resolve `.ts.net` domains. Create the resolver manually:
+
+```bash
+sudo bash -c 'echo "nameserver 100.100.100.100" > /etc/resolver/ts.net'
+```
+
+**4. Verify connection:**
+
+```bash
+# Check tailnet devices
+tailscale status
+
+# Test DNS resolution
+dig +short richifed.tail63f25b.ts.net
+
+# Test HTTPS access to LIMA server
+curl https://<your-lima-server>.tail63f25b.ts.net/webhook/recorder
+```
+
+**Troubleshooting:**
+
+```bash
+# Check service status
+sudo brew services list | grep tailscale
+
+# Check logs
+tail -f /opt/homebrew/var/log/tailscaled.log
+
+# Test DNS directly via Tailscale resolver
+dig +short <hostname>.tail63f25b.ts.net @100.100.100.100
+
+# Restart if needed
+sudo brew services restart tailscale
+```
+
+**Why this works when the GUI app doesn't:**
+- The GUI app requires macOS VPN entitlements that MDM may block
+- The CLI daemon (`tailscaled`) creates a userspace tunnel directly
+- Brew services manages the launchd plist for auto-start
+
 ### Cost
 
 The free tier (100 devices, 3 users) is plenty for personal use.
