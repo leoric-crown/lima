@@ -7,14 +7,12 @@
 }
 
 :8888 {
-	handle_path /static/* {
-		root * /static
+	handle /lima/* {
+		root * /
 		file_server
 	}
 
-	reverse_proxy n8n:5678
-
-	# Remove n8n's restrictive sandbox CSP for the recorder page
-	@recorder path /webhook/recorder*
-	header @recorder -Content-Security-Policy
+	handle {
+		reverse_proxy n8n:5678
+	}
 }

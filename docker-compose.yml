@@ -106,7 +106,7 @@ services:
       - "${CADDY_PORT:-8888}:8888"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
-      - ./static:/static:ro
+      - ./static:/lima:ro
     healthcheck:
       test: ["CMD-SHELL", "wget --spider -q http://localhost:8888/ || exit 0"]
       interval: 30s
