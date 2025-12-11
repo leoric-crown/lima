@@ -266,11 +266,17 @@ Tailscale lets you access LIMA from your phone or laptop anywhere, without expos
 
 ### Setup
 
-**1. Install on your Mac (LIMA server):**
+**1. Install Tailscale on your LIMA server:**
+
 ```bash
+# Linux (Fedora/Ubuntu/Debian)
+curl -fsSL https://tailscale.com/install.sh | sh
+
+# macOS
 brew install tailscale
-sudo tailscaled &      # Start the daemon
-tailscale up           # Authenticate
+
+# Start and authenticate (sets up operator permissions)
+sudo tailscale up --operator=$USER
 ```
 
 Follow the browser link to authenticate.
@@ -286,11 +292,169 @@ tailscale status
 # Shows all devices on your tailnet with their IPs and hostnames
 ```
 
-**4. Access LIMA remotely:**
+**4. Serve the Voice Recorder with HTTPS:**
+
+The Voice Recorder requires HTTPS for microphone access. Use Tailscale to serve it securely:
+
+```bash
+tailscale serve --bg --https 443 http://localhost:8888
 ```
-http://<tailscale-hostname>:5678          # n8n UI
-http://<tailscale-hostname>:5678/webhook/memo  # Voice memo webhook
+
+This makes the recorder accessible at:
 ```
+https://<your-machine-name>.your-tailnet.ts.net/webhook/recorder
+```
+
+**Certificate Transparency Warning:**
+
+On first access, your phone browser may show a "Certificate Transparency" warning. This is expected with `tailscale serve` (tailnet-only certificates). You can safely bypass it:
+
+- **Android Chrome/Samsung Internet:** Tap "Advanced" → "Proceed to... (unsafe)"
+- **iOS Safari:** Tap "Show Details" → "visit this website"
+
+**Why this is safe:**
+- Tailscale encrypts all traffic with WireGuard end-to-end
+- The certificate is valid, just not CT-logged (Tailscale limitation)
+- Only devices on your tailnet can access this URL
+
+**Make it persistent (auto-start on boot):**
+
+On boot, tailscaled may start before the network is fully ready, leaving it disconnected. We use two mechanisms to handle this:
+
+1. **NetworkManager dispatcher** - Runs `tailscale up` when real connectivity is established
+2. **Systemd service with retry** - Configures serve, retrying until tailscale is connected
+
+**Step 1: Create the NetworkManager dispatcher:**
+
+```bash
+sudo tee /etc/NetworkManager/dispatcher.d/99-tailscale <<'EOF'
+#!/bin/bash
+# Connect tailscale when network connectivity is established
+
+if [ "$2" = "connectivity-change" ] && [ "$CONNECTIVITY_STATE" = "FULL" ]; then
+    # Only if tailscale is disconnected
+    if ! tailscale status >/dev/null 2>&1; then
+        logger -t tailscale-dispatcher "Network up, connecting tailscale..."
+        tailscale up
+    fi
+fi
+EOF
+
+sudo chmod +x /etc/NetworkManager/dispatcher.d/99-tailscale
+```
+
+**Step 2: Create the systemd service:**
+
+```bash
+sudo tee /etc/systemd/system/tailscale-serve-lima.service > /dev/null <<EOF
+[Unit]
+Description=Tailscale Serve for LIMA Voice Recorder
+After=network-online.target tailscaled.service
+Wants=network-online.target
+Requires=tailscaled.service
+
+[Service]
+Type=oneshot
+RemainAfterExit=yes
+ExecStart=/usr/bin/tailscale serve --bg --https 443 http://localhost:8888
+ExecStop=/usr/bin/tailscale serve --https=443 off
+User=root
+# Retry if tailscale not ready yet
+Restart=on-failure
+RestartSec=5
+StartLimitBurst=10
+
+[Install]
+WantedBy=multi-user.target
+EOF
+```
+
+**Step 3: Enable and start:**
+
+```bash
+sudo systemctl daemon-reload
+sudo systemctl enable tailscale-serve-lima.service
+sudo systemctl start tailscale-serve-lima.service
+```
+
+**How it works on boot:**
+1. `tailscaled` starts (may be in NoState if network isn't ready)
+2. NetworkManager detects full connectivity → dispatcher runs `tailscale up`
+3. `tailscale-serve-lima.service` retries every 5s until tailscale connects, then configures serve
+
+**Manual mode:** Alternatively, just use `--bg` and re-run the command after reboots:
+```bash
+# Start serve
+tailscale serve --bg --https 443 http://localhost:8888
+
+# Stop serve
+tailscale serve reset                    # Remove all serve configs
+# or
+tailscale serve --https=443 off          # Stop specific port
+```
+
+**Troubleshooting & Status Commands:**
+
+```bash
+# Check Tailscale network and connected devices
+tailscale status
+
+# Check current serve configuration
+tailscale serve status
+
+# Check tailscaled daemon status
+systemctl status tailscaled.service
+
+# Check serve service status
+systemctl status tailscale-serve-lima.service
+
+# Check if dispatcher ran on boot
+journalctl -b 0 | grep tailscale-dispatcher
+
+# Test connectivity from phone
+tailscale ping <your-phone-hostname>
+
+# View serve logs (if issues)
+journalctl -u tailscaled.service -f
+```
+
+**Expected `serve status` output:**
+```
+https://<your-machine>.tail63f25b.ts.net (tailnet only)
+|-- / proxy http://localhost:8888
+```
+
+### Key Expiry
+
+**Important:** Tailscale machine keys expire after **180 days** (6 months) by default.
+
+**Check your key expiry:**
+```bash
+tailscale status --json | grep KeyExpiry | head -1
+```
+
+**What happens when it expires:**
+- ❌ Tailscale can't connect to your tailnet
+- ❌ The serve service fails (can't configure proxy)
+- ✅ Boot continues normally (no delays or hangs)
+- **Fix:** Re-authenticate with `tailscale up`
+
+**Disable expiry for personal devices (recommended):**
+1. Visit https://login.tailscale.com/admin/machines
+2. Find your machine in the list
+3. Click **⋯** menu → **Disable key expiry**
+4. Confirm
+
+This makes authentication permanent - ideal for personal servers you control.
+
+**5. Access LIMA remotely:**
+```
+https://<tailscale-hostname>.your-tailnet.ts.net/                  # n8n UI
+https://<tailscale-hostname>.your-tailnet.ts.net/webhook/recorder  # Voice Recorder
+https://<tailscale-hostname>.your-tailnet.ts.net/webhook/memo      # Voice memo webhook
+```
+
+All traffic goes through Tailscale (HTTPS) → Caddy → n8n, so no port numbers needed.
 
 ### iOS Shortcut Example
 
