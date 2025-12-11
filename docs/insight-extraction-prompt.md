@@ -70,7 +70,16 @@ Return ONLY a valid JSON object with these exact fields:
 2. All arrays can be empty [] if nothing fits the criteria
 3. Never invent information not in the transcript
 4. Ignore filler words, false starts, and repetition
-5. If transcript is too short/unclear to extract meaning, return:
+5. **Short ≠ unclear**. Brief memos with clear intent are valid:
+   - Shopping lists: "Need to get bread and milk" → action_items: ["Buy bread and milk"]
+   - Quick reminders: "Call mom tomorrow" → action_items: ["Call mom tomorrow"]
+   - Single tasks: "Research GPU pricing for the server upgrade" → valid memo
+6. ONLY use the fallback for truly unintelligible transcripts:
+   - Garbled speech: "uh... maybe... I don't know... something about..."
+   - Background noise transcribed as words: "[inaudible] [music] [crosstalk]"
+   - Incomplete fragments with no clear subject: "and then the... yeah..."
+
+   Fallback format:
    {"title": "Unclear memo", "summary": "Transcript too brief or unclear to extract meaningful content.", "key_points": [], "action_items": [], "questions": [], "tags": ["needs-review"]}
 ```
 
@@ -95,21 +104,25 @@ TRANSCRIPT:
 | Title guidance | "Brief descriptive title" | Concrete examples of good vs bad titles |
 | Action items | "Array of tasks to do" | Must have clear verb + outcome, only explicit commitments |
 | Examples | None | Multiple inline examples |
-| Edge cases | None | Explicit fallback for unclear/short memos |
+| Edge cases | None | Explicit fallback for truly unintelligible transcripts only |
 | Field name | `key_topics` | `tags` (with suggested categories) |
+| Short memos | Treated as "unclear" | Explicitly valid (shopping lists, quick reminders, single tasks) |
 
 ## Testing
 
 After updating the workflow, test with:
 1. A clear, action-heavy memo (should extract good action items)
 2. A rambling/unfocused memo (should still find the core idea)
-3. A very short/unclear memo (should return the fallback response)
+3. A short, simple memo like a shopping list (should extract action items, NOT fallback)
+4. A truly unintelligible memo with garbled speech (should return the fallback response)
 
 ---
 
-## JSON Schema Example (for Output Parser)
+## JSON Schema Examples (for Output Parser)
 
-Use this in the structured output parser / JSON validation node:
+Use these in the structured output parser / JSON validation node:
+
+### Example 1: Complex memo (brainstorming session)
 
 ```json
 {
@@ -131,5 +144,20 @@ Use this in the structured output parser / JSON validation node:
     "Should I seal the butcher block or leave it natural?"
   ],
   "tags": ["idea", "project", "woodworking", "home-office"]
+}
+```
+
+### Example 2: Simple memo (shopping list)
+
+```json
+{
+  "title": "Grocery Shopping Reminder for Tonight",
+  "summary": "Quick reminder to pick up bread and milk on the way home.",
+  "key_points": [],
+  "action_items": [
+    "Buy bread and milk"
+  ],
+  "questions": [],
+  "tags": ["personal", "shopping"]
 }
 ```
