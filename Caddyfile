@@ -1,0 +1,15 @@
+# LIMA Caddy Configuration
+# Reverse proxy to n8n with CSP header removal for voice recorder
+# Access at: http://localhost:8888/webhook/recorder
+
+{
+	auto_https off
+}
+
+:8888 {
+	reverse_proxy n8n:5678
+
+	# Remove n8n's restrictive sandbox CSP for the recorder page
+	@recorder path /webhook/recorder*
+	header @recorder -Content-Security-Policy
+}

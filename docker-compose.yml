@@ -84,6 +84,7 @@ services:
       - ./data/voice-memos:/data/voice-memos
       - ./data/audio-archive:/data/audio-archive
       - ./data/notes:/data/notes
+      - ./static:/static:ro
     ports:
       - "${N8N_PORT:-5678}:5678"
     healthcheck:
@@ -92,6 +93,25 @@ services:
       timeout: 10s
       retries: 3
       start_period: 40s
+
+  # Caddy - Reverse proxy that strips n8n's sandbox CSP for voice recorder
+  # Access recorder at: http://localhost:${CADDY_PORT}/webhook/recorder
+  caddy:
+    image: caddy:2-alpine
+    container_name: lima-caddy
+    restart: unless-stopped
+    depends_on:
+      - n8n
+    ports:
+      - "${CADDY_PORT:-8888}:8888"
+    volumes:
+      - ./Caddyfile:/etc/caddy/Caddyfile:ro
+    healthcheck:
+      test: ["CMD", "wget", "-qO-", "http://localhost:8888/healthz || exit 0"]
+      interval: 30s
+      timeout: 5s
+      retries: 3
+      start_period: 10s
 
   # Whisper - Local Speech-to-Text
   # OpenAI-compatible API at /v1/audio/transcriptions

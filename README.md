@@ -1,6 +1,14 @@
 # LIMA - Local Intelligence Meeting Assistant
 
-> Local-first, privacy-focused meeting intelligence tool
+> Local-first, privacy-focused voice memo to knowledge workflow
+
+**What is LIMA?** A complete voice-to-knowledge pipeline that runs entirely on your machine. Record voice memos, get AI-powered transcription and insight extraction, all without sending data to the cloud.
+
+**Why local-first?**
+- **Privacy**: Your voice recordings and notes never leave your machine
+- **No subscriptions**: No API costs, no monthly fees
+- **Works offline**: Once set up, no internet required
+- **You own your data**: Plain markdown files, open formats
 
 ## Quick Start
 
@@ -10,6 +18,8 @@
 - Local LLM server (one of):
   - [LM Studio](https://lmstudio.ai/) (recommended) - GUI app with OpenAI-compatible API
   - [Ollama](https://ollama.ai/) - CLI-based, simpler setup
+
+> **Note**: You *could* use OpenAI, Anthropic, or other cloud providers instead of a local LLM, but this demo focuses on the **local-first** approach where everything runs on your hardware.
 
 ### 1. Setup Environment
 
@@ -64,7 +74,11 @@ make dev-up
 
 ### 4. Configure Local LLM
 
-The Voice Memo workflow uses a local LLM for extracting insights from transcripts.
+The Voice Memo workflow uses a local LLM for extracting insights from transcripts. This is where LIMA's **local-first** philosophy shines - your transcripts are processed by an AI running on your own hardware.
+
+> **Cloud alternative**: If you prefer, you can use OpenAI, Anthropic, or other providers by creating their respective credentials in n8n. But for true privacy, we recommend local inference.
+
+---
 
 **Option A: LM Studio (recommended)**
 
@@ -80,26 +94,38 @@ The Voice Memo workflow uses a local LLM for extracting insights from transcript
    | Only Keep Last JIT Loaded Model | ON | Prevents memory issues |
 
 4. Start the local server: **Developer → Start Server** (runs on `http://localhost:1234`)
-5. In n8n, create an OpenAI API credential:
-   - **Settings → Credentials → Add Credential → OpenAI API**
-   - Name: `LM Studio Local`
-   - API Key: `lm-studio` (any non-empty string works)
-   - Base URL: `http://host.docker.internal:1234/v1`
 
-   > **macOS/Windows**: Use `host.docker.internal` to reach host services
-   > **Linux**: Use your machine's IP address (e.g., `http://192.168.1.100:1234/v1`) - `host.docker.internal` doesn't work on Linux by default
+---
 
 **Option B: Ollama**
 
 1. Install Ollama: `curl -fsSL https://ollama.com/install.sh | sh`
 2. Pull a model: `ollama pull llama3.2`
 3. Ollama runs automatically on `http://localhost:11434`
-4. In n8n, create an OpenAI API credential:
-   - Name: `Ollama Local`
-   - API Key: `ollama`
-   - Base URL: `http://host.docker.internal:11434/v1` (or your IP on Linux)
 
-### 5. Create Data Directories
+---
+
+### 5. Create LLM Credential in n8n
+
+This step connects n8n to your local LLM server. The credential uses the "OpenAI API" type because LM Studio and Ollama both provide OpenAI-compatible APIs.
+
+1. In n8n, go to **Settings → Credentials → Add Credential**
+2. Search for and select **OpenAI API**
+3. Fill in the fields:
+
+   | Field | LM Studio | Ollama |
+   |-------|-----------|--------|
+   | **Credential Name** | `LM Studio Local` | `Ollama Local` |
+   | **API Key** | `lm-studio` (any non-empty string) | `ollama` (any non-empty string) |
+   | **Base URL** | `http://host.docker.internal:1234/v1` | `http://host.docker.internal:11434/v1` |
+
+4. Click **Save**
+
+> **Platform notes:**
+> - **macOS/Windows**: Use `host.docker.internal` to reach services running on your host machine
+> - **Linux**: Use your machine's IP address instead (e.g., `http://192.168.1.100:1234/v1`) - `host.docker.internal` doesn't work on Linux by default. Find your IP with `hostname -I | awk '{print $1}'`
+
+### 6. Create Data Directories
 
 The workflow requires these directories to exist and be writable:
 
@@ -117,20 +143,50 @@ chmod 777 data/voice-memos data/voice-memos/webhook data/notes data/audio-archiv
 - `data/notes/` - Generated markdown notes output
 - `data/audio-archive/` - Original audio files are moved here after processing (linked from notes)
 
-### 6. Import Voice Memo Workflow
+### 7. Import Workflows
 
-Import the pre-built workflow from `workflows/voice-memo-v0.2.0.json`:
+LIMA requires two workflows to be imported into n8n:
 
-1. In n8n, go to **Workflows → Import from File**
-2. Select `workflows/voice-memo-v0.2.0.json`
-3. Update the LLM credential if needed (click the **LM Studio Model** node → select your credential)
-4. **Activate** the workflow (toggle in top-right)
+| Workflow | File | Purpose |
+|----------|------|---------|
+| **Voice Memo Processor** | `workflows/voice-memo-v0.2.0.json` | Transcribes audio, extracts insights, saves notes |
+| **Voice Recorder UI** | `workflows/voice-recorder-ui.json` | Serves the browser-based recording interface |
+
+**Method A: Import from File**
+
+1. In n8n, click the **+** button or go to **Workflows**
+2. Click **Import from File**
+3. Select `workflows/voice-memo-v0.2.0.json` from this repository
+4. Repeat for `workflows/voice-recorder-ui.json`
+
+**Method B: Copy-Paste JSON**
+
+1. Open the workflow JSON file in a text editor
+2. Copy the entire JSON contents
+3. In n8n, create a new workflow
+4. Press `Ctrl+V` / `Cmd+V` to paste - n8n will import the nodes
+5. Repeat for the second workflow
+
+---
+
+**After importing Voice Memo Processor, configure the LLM credential:**
+
+1. Find the **LM Studio Model** node (or similar OpenAI Chat node) in the workflow
+2. Click on it to open the settings
+3. In the **Credential to connect with** dropdown, select the credential you created in Step 5 (e.g., `LM Studio Local` or `Ollama Local`)
+4. Click outside the node to save
+
+**Activate both workflows:**
+
+1. Toggle the **Active** switch in the top-right corner of each workflow
+2. Voice Memo Processor: Now listening for files in `data/voice-memos/` and webhook requests at `/webhook/memo`
+3. Voice Recorder UI: Now serving the recorder interface at `/webhook/recorder`
 
 See [docs/PRD-voice-memo-workflow.md](docs/PRD-voice-memo-workflow.md) for full architecture details, or [docs/demo-voice-memo.md](docs/demo-voice-memo.md) for a quick demo guide.
 
-### 7. Test the Workflow
+### 8. Test the Workflow
 
-**Option A: File Drop (recommended)**
+**Option A: File Drop**
 
 Simply copy or move audio files to the watch folder:
 
@@ -140,16 +196,30 @@ cp your-recording.mp3 data/voice-memos/
 ls -la data/notes/
 ```
 
-**Option B: Webhook**
+**Option B: Webhook (curl)**
 
 Send an audio file via HTTP:
 
 ```bash
-curl -X POST -F "file=@data/audio/test-sample.flac" http://localhost:5678/webhook/memo
+curl -X POST -F "file=@your-recording.mp3" http://localhost:5678/webhook/memo
 
 # Expected response:
 # {"status":"ok","note":"2025-12-10-your-memo-title-abc123de.md","title":"Your Memo Title"}
 ```
+
+**Option C: Voice Recorder UI (recommended)**
+
+LIMA includes a browser-based voice recorder that lets you record and process memos without any file management:
+
+1. Open http://localhost:8888/webhook/recorder
+2. Click the microphone button to start recording
+3. Click again to stop and upload
+4. Watch the processing status
+5. See your generated note!
+
+> **Why port 8888?** The Voice Recorder uses the browser's microphone API, which requires a "secure context". We use Caddy as a reverse proxy on port 8888 to strip n8n's restrictive security headers that would otherwise block microphone access.
+
+---
 
 Check the output:
 ```bash
@@ -157,11 +227,12 @@ ls -la data/notes/
 cat data/notes/2025-12-10-*.md
 ```
 
-The workflow:
-1. Transcribes audio via Whisper
-2. Extracts title, summary, key points, action items via LLM
+**What the workflow does:**
+1. Transcribes audio via local Whisper (speech-to-text)
+2. Extracts title, summary, key points, action items via local LLM
 3. Generates Obsidian-compatible markdown with YAML frontmatter
 4. Saves to `data/notes/` with hash-based filename (idempotent - same audio = same file)
+5. Archives original audio to `data/audio-archive/` (linked from the note)
 
 ### Alternative: Native GPU Whisper Servers
 
@@ -239,8 +310,10 @@ The free tier (100 devices, 3 users) is plenty for personal use.
 
 | Service | URL | Purpose |
 |---------|-----|---------|
+| **Voice Recorder** | http://localhost:8888/webhook/recorder | Browser-based voice recording UI |
 | n8n | http://localhost:5678 | Workflow automation |
-| whisper | http://localhost:9000 | Speech-to-text API |
+| Caddy | http://localhost:8888 | Reverse proxy (strips CSP for mic access) |
+| Whisper | http://localhost:9000 | Speech-to-text API |
 | n8n-mcp | http://localhost:8042 | AI workflow assistant (dev) |
 | postgres-mcp | http://localhost:8700 | Database MCP server (dev) |
 | pgAdmin | http://localhost:5050 | Database UI (dev) |
@@ -264,15 +337,16 @@ make db-backup     # Backup database
 lima/
 ├── docker-compose.yml      # Production stack
 ├── docker-compose.dev.yml  # Dev overlay (n8n-mcp, pgAdmin)
+├── Caddyfile               # Caddy reverse proxy config
 ├── .env.example            # Environment template
 ├── init-data.sh            # PostgreSQL initialization
 ├── Makefile                # Convenience commands
+├── static/                 # Static assets served by n8n
+│   └── recorder.html       # Voice Recorder UI
 ├── data/                   # Obsidian vault (open this folder in Obsidian)
 │   ├── voice-memos/        # Drop audio files here (auto-processed)
 │   │   └── webhook/        # Webhook uploads (not re-watched)
 │   ├── audio-archive/      # Processed originals (linked from notes)
-│   ├── audio/              # Meeting recordings (manual input)
-│   ├── transcripts/        # Transcriptions (output)
 │   └── notes/              # Markdown notes (output)
 ├── services/
 │   └── whisper-server/     # Native GPU whisper servers (optional)
@@ -283,6 +357,7 @@ lima/
 
 - **PostgreSQL 17** with pgvector extension
 - **n8n** workflow automation (custom image with ffmpeg)
+- **Caddy** reverse proxy (enables microphone access in Voice Recorder)
 - **Whisper** (speaches) local speech-to-text via Docker
   - Alternative: Native GPU servers ([see docs](services/whisper-server/README.md)) for macOS Metal / NVIDIA CUDA
 - **n8n-mcp** AI assistant for workflow development (dev)
