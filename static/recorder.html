@@ -95,6 +95,16 @@
 
       <!-- Instructions -->
       <p id="instructions" class="text-gray-500 text-sm">Tap to start recording</p>
+
+      <!-- Upload Option -->
+      <div class="mt-6 pt-6 border-t border-gray-700">
+        <p class="text-gray-400 text-sm mb-3">Or upload an audio file</p>
+        <input type="file" id="file-input" accept="audio/*,.mp3,.wav,.m4a,.ogg,.opus,.webm,.aac,.flac" class="hidden">
+        <button id="upload-btn"
+          class="bg-gray-700 hover:bg-gray-600 px-6 py-3 rounded-lg transition-colors text-sm flex items-center gap-2 mx-auto">
+          📁 Choose Audio File
+        </button>
+      </div>
     </div>
 
     <!-- Processing Status -->
@@ -118,9 +128,6 @@
         <div id="result-preview" class="prose prose-invert prose-sm max-w-none text-gray-300"></div>
       </div>
       <div class="flex gap-3 justify-center">
-        <a id="obsidian-link" href="#" class="bg-purple-600 hover:bg-purple-500 px-4 py-2 rounded-lg transition-colors">
-          Open in Obsidian
-        </a>
         <button id="new-recording" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors">
           New Recording
         </button>
@@ -159,11 +166,12 @@
     const resultDiv = document.getElementById('result');
     const resultTitle = document.getElementById('result-title');
     const resultPreview = document.getElementById('result-preview');
-    const obsidianLink = document.getElementById('obsidian-link');
     const newRecordingBtn = document.getElementById('new-recording');
     const errorDiv = document.getElementById('error');
     const errorMessage = document.getElementById('error-message');
     const retryBtn = document.getElementById('retry-btn');
+    const uploadBtn = document.getElementById('upload-btn');
+    const fileInput = document.getElementById('file-input');
 
     // Initialize
     async function init() {
@@ -171,6 +179,8 @@
       recordBtn.addEventListener('click', toggleRecording);
       newRecordingBtn.addEventListener('click', resetUI);
       retryBtn.addEventListener('click', retryMicPermission);
+      uploadBtn.addEventListener('click', () => fileInput.click());
+      fileInput.addEventListener('change', handleFileUpload);
 
       // Check mic permission without prompting if possible
       try {
@@ -321,12 +331,10 @@
       resultDiv.classList.remove('hidden');
 
       resultTitle.textContent = result.title || 'Voice Memo';
-      resultPreview.innerHTML = `<p>Note saved: <code>${result.note}</code></p>`;
 
-      // Obsidian deep link
-      const vaultName = 'lima'; // Adjust if needed
-      const notePath = result.note;
-      obsidianLink.href = `obsidian://open?vault=${encodeURIComponent(vaultName)}&file=${encodeURIComponent('notes/' + notePath)}`;
+      // Extract filename from path for display
+      const fileName = result.note.split('/').pop();
+      resultPreview.innerHTML = `<p>Note saved: <code>${fileName}</code></p>`;
     }
 
     function showError(message) {
@@ -347,6 +355,46 @@
       resultDiv.classList.add('hidden');
       errorDiv.classList.add('hidden');
       instructions.textContent = 'Tap to start recording';
+      fileInput.value = ''; // Clear file input
+    }
+
+    async function handleFileUpload(event) {
+      const file = event.target.files?.[0];
+      if (!file) return;
+
+      // Validate file type - only audio, no video
+      const audioExtensions = ['mp3', 'wav', 'flac', 'm4a', 'ogg', 'opus', 'webm', 'aac'];
+      const ext = file.name.split('.').pop()?.toLowerCase() || '';
+      const isAudioMimeType = file.type.startsWith('audio/');
+
+      if (!isAudioMimeType && !audioExtensions.includes(ext)) {
+        showError(`Unsupported file format: ${file.name}. Please upload an audio file (mp3, wav, m4a, etc.)`);
+        fileInput.value = '';
+        return;
+      }
+
+      // Reject video files
+      if (file.type.startsWith('video/')) {
+        showError('Video files are not supported. Please upload an audio file.');
+        fileInput.value = '';
+        return;
+      }
+
+      // Check file size (max 100MB)
+      const maxSize = 100 * 1024 * 1024;
+      if (file.size > maxSize) {
+        showError('File too large. Maximum size is 100MB.');
+        fileInput.value = '';
+        return;
+      }
+
+      // Show processing UI
+      recorderDiv.classList.add('hidden');
+      statusDiv.classList.remove('hidden');
+      statusText.textContent = 'Uploading...';
+
+      // Upload file
+      await uploadAudio(file, file.type);
     }
 
     // Start
