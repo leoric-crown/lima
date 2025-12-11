@@ -147,7 +147,7 @@
     {
       "parameters": {
         "respondWith": "json",
-        "responseBody": "={{ JSON.stringify({ status: 'ok', note: $json.filename, title: $json.title, processingStatus: $json.status }) }}",
+        "responseBody": "={{ JSON.stringify({ status: 'ok', note: $('Write Note').item.json.fileName, title: $json.title, processingStatus: $json.status }) }}",
         "options": {
           "responseCode": 200
         }
@@ -595,7 +595,7 @@
   "settings": {
     "executionOrder": "v1"
   },
-  "versionId": "da847157-b511-495e-bec0-902ecfa25172",
+  "versionId": "3f7269f9-cbcc-4de4-b3c2-cacda25f45d6",
   "meta": {
     "templateCredsSetupCompleted": true,
     "instanceId": "4d0e42bbf4f8ecc7c9e3cdbacf4260ac8e47e8080f1a720bebf06afb4ab184e3"
