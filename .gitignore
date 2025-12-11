@@ -1,3 +1,6 @@
+talk*
+demo*
+
 # Environment and secrets
 .env
 *.env.local

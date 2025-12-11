@@ -12,6 +12,12 @@
 
 ## Quick Start
 
+> **👋 Coming from the talk?** Here's the minimal path to get LIMA running:
+> 1. Install [Docker Desktop](https://docker.com)
+> 2. Install [LM Studio](https://lmstudio.ai/) (beginner-friendly GUI) OR [Ollama](https://ollama.ai/) (CLI)
+> 3. Clone this repo, follow steps 1-8 below (~10 minutes)
+> 4. See `docs/demo-voice-memo.md` for a quick walkthrough
+
 ### Prerequisites
 
 - Docker & Docker Compose
@@ -19,7 +25,7 @@
   - [LM Studio](https://lmstudio.ai/) (recommended) - GUI app with OpenAI-compatible API
   - [Ollama](https://ollama.ai/) - CLI-based, simpler setup
 
-> **Note**: You *could* use OpenAI, Anthropic, or other cloud providers instead of a local LLM, but this demo focuses on the **local-first** approach where everything runs on your hardware.
+> **Note**: You *could* use OpenAI, Anthropic, or other cloud providers instead of a local LLM, but LIMA focuses on the **local-first** approach where everything runs on your hardware. Whisper is included via Docker - no separate installation needed.
 
 ### 1. Setup Environment
 
