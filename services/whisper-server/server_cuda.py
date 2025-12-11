@@ -76,7 +76,7 @@ async def list_models():
 async def transcribe(
     file: UploadFile = File(...),
     model: Optional[str] = Form(None),
-    language: Optional[str] = Form("en"),
+    language: Optional[str] = Form(None),
     response_format: Optional[str] = Form("json"),
 ):
     """

@@ -75,7 +75,7 @@ async def list_models():
 async def transcribe(
     file: UploadFile = File(...),
     model: Optional[str] = Form(None),
-    language: Optional[str] = Form("en"),
+    language: Optional[str] = Form(None),
     response_format: Optional[str] = Form("json"),
 ):
     """
@@ -92,7 +92,11 @@ async def transcribe(
 
     try:
         whisper = get_model()
-        result = whisper.transcribe(audio_path=tmp_path)
+        # Pass language parameter if specified, otherwise auto-detect
+        transcribe_args = {"audio_path": tmp_path}
+        if language:
+            transcribe_args["language"] = language
+        result = whisper.transcribe(**transcribe_args)
 
         text = result.get("text", "")
 
@@ -102,7 +106,7 @@ async def transcribe(
             return JSONResponse(content={
                 "text": text,
                 "segments": result.get("segments", []),
-                "language": language,
+                "language": result.get("language", language),
             })
         else:
             return {"text": text}
