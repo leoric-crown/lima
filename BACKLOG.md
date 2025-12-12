@@ -94,6 +94,21 @@ Following the three "aha moments" from the talk: **Accessible → Practical → 
 - Graceful degradation: Whisper base → tiny → manual review queue
 - Optional webhook notification on failure
 
+#### Video-to-Audio Extraction
+**Problem:** Meeting recordings often come as MP4/video files, but we only need the audio track for transcription.
+**Why this matters:** Video files are 10-20x larger than audio-only. Storing both wastes disk space and slows uploads.
+
+**Proposed solution:**
+- Detect video files (MP4, MOV, MKV, WebM with video track)
+- Extract audio track via ffmpeg before transcription
+- Optionally archive video or delete after extraction
+- Example: `ffmpeg -i input.mp4 -vn -acodec libmp3lame -q:a 2 output.mp3`
+
+**Benefits:**
+- 328MB MP4 → 13MB MP3 (25x smaller)
+- Faster webhook uploads
+- n8n container already has ffmpeg installed
+
 #### Improved Media Type Detection
 **Problem:** Browsers lie — webm isn't always video. This causes routing issues.
 **Current workaround:** Treat all `video/webm` as audio (works because Whisper extracts audio track anyway)
