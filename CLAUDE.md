@@ -165,3 +165,4 @@ This ensures the model loads automatically when n8n sends a request and unloads 
 - Name: `LM Studio Local`
 - API Key: `lm-studio` (any non-empty string)
 - Base URL: `http://host.docker.internal:1234/v1` (macOS/Windows) or your machine's IP (Linux)
+- n8n's Alpine container doesn't have `find -printf`, use `stat -c %Y` instead
