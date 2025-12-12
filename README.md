@@ -46,10 +46,12 @@ MCP_AUTH_TOKEN=<openssl rand -hex 32>
 
 ### 2. Start Services
 
-**Production** (postgres + n8n):
+**Production** (postgres + n8n + whisper):
 ```bash
 make up
 ```
+
+> The custom n8n image (with ffmpeg) builds automatically on first run.
 
 **Development** (adds n8n-mcp for AI-assisted workflow development):
 ```bash

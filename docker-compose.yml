@@ -7,10 +7,8 @@
 #   - whisper: Local speech-to-text (OpenAI-compatible API)
 #
 # Usage:
-#   docker compose up -d
-#
-# Build custom n8n image (first time or after Dockerfile changes):
-#   docker compose build n8n
+#   docker compose up -d          # Auto-builds n8n image on first run
+#   docker compose build n8n      # Rebuild after n8n.Dockerfile changes
 #
 # For development with n8n-mcp:
 #   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
@@ -45,7 +43,6 @@ services:
     build:
       context: .
       dockerfile: n8n.Dockerfile
-    image: lima-n8n:latest
     container_name: lima-n8n
     restart: unless-stopped
     depends_on:
