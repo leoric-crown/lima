@@ -1,5 +1,5 @@
 {
-  "name": "Voice Memo Processor v0.3.0 (CUDA)",
+  "name": "Voice Memo Processor v0.3.0 (CUDA/MLX)",
   "nodes": [
     {
       "parameters": {
@@ -288,7 +288,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://10.3.10.100:9103/v1/models/Systran%2Ffaster-whisper-base",
+        "url": "http://host.docker.internal:9001/v1/models/Systran%2Ffaster-whisper-base",
         "options": {
           "response": {
             "response": {
@@ -311,7 +311,7 @@
     {
       "parameters": {
         "method": "POST",
-        "url": "http://10.3.10.100:9103/v1/audio/transcriptions",
+        "url": "http://host.docker.internal:9001/v1/audio/transcriptions",
         "sendBody": true,
         "contentType": "multipart-form-data",
         "bodyParameters": {
