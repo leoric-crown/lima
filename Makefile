@@ -1,5 +1,9 @@
 # LIMA - Local Intelligent Memo Assistant
 
+# Load .env file if it exists
+-include .env
+export
+
 .PHONY: up down dev-up dev-down update status hooks pre-commit seed
 
 up:
@@ -51,12 +55,7 @@ seed:
 	@docker compose exec n8n n8n import:credentials --input=/home/node/.n8n/workflows/seed/credentials/lm-studio.json 2>&1 | grep -v "^$$" || true
 	@echo "Importing workflows (API)..."
 	@for f in workflows/seed/*.json; do \
-		name=$$(cat "$$f" | jq -r '.name'); \
-		cat "$$f" | jq '{name, nodes, connections, settings}' | \
-		curl -sf -X POST http://localhost:5678/api/v1/workflows \
-		-H "Content-Type: application/json" \
-		-H "X-N8N-API-KEY: $$N8N_API_KEY" \
-		-d @- > /dev/null && echo "✓ Imported: $$name" || echo "⚠ Failed: $$name"; \
+		uv run python scripts/n8n-import-workflow.py "$$f" 2>&1 | tail -1 || true; \
 	done
 	@echo ""
 	@echo "✓ Seeding complete!"
