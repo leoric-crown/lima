@@ -24,8 +24,8 @@ make db-shell           # PostgreSQL shell (psql)
 make db-backup          # Backup to timestamped file
 make db-restore FILE=backup.sql
 
-# First-time setup (after make up)
-make seed               # Import workflow, prints credential setup instructions
+# First-time setup (after make up, requires N8N_API_KEY)
+make seed               # Import workflows & credentials (fresh installs only!)
 
 # Rebuild custom n8n image after Dockerfile changes
 docker compose build n8n

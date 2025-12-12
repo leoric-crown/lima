@@ -1,0 +1,669 @@
+{
+  "name": "Voice Memo Processor v0.3.0 (CUDA)",
+  "nodes": [
+    {
+      "parameters": {
+        "httpMethod": "POST",
+        "path": "memo",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "ea1514fc-3758-4509-8f5c-e8bb9f2af707",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        -912,
+        -224
+      ],
+      "webhookId": "b0745928-ffc5-4b27-a789-3efe90b4447d"
+    },
+    {
+      "parameters": {
+        "jsCode": "// Detect Input Type - Extensible for future multimodal support\nconst items = $(\"Read Voice Memo\").all()\nconst results = [];\n\n// File extension to type mapping\nconst audioExtensions = ['mp3', 'wav', 'flac', 'm4a', 'ogg', 'opus', 'webm', 'aac', 'wma'];\nconst imageExtensions = ['jpg', 'jpeg', 'png', 'gif', 'webp', 'bmp', 'svg', 'heic'];\nconst videoExtensions = ['mp4', 'mov', 'avi', 'mkv', 'wmv'];\n\nfor (const item of items) {\n    const binaryKeys = Object.keys(item.binary || {});\n\n    if (binaryKeys.length === 0) {\n        results.push({\n            json: {\n                inputType: 'none',\n                error: 'No binary data received',\n                originalData: item.json\n            }\n        });\n        continue;\n    }\n\n    const binaryKey = binaryKeys[0];\n    const binaryData = item.binary[binaryKey];\n    const mimeType = (binaryData.mimeType || '').toLowerCase();\n    const fileName = binaryData.fileName || 'unknown';\n    const ext = fileName.split('.').pop()?.toLowerCase() || '';\n\n    let inputType = 'unsupported';\n\n    // Check by MIME type first\n    // Treat webm as audio (browser MediaRecorder sends audio as video/webm)\n    if (mimeType.startsWith('audio/') || mimeType === 'video/webm') {\n        inputType = 'audio';\n    } else if (mimeType.startsWith('image/')) {\n        inputType = 'image';\n    } else if (mimeType.startsWith('video/')) {\n        inputType = 'video';\n    } else if (mimeType === 'application/pdf') {\n        inputType = 'pdf';\n    }\n    // Fallback to file extension if MIME type didn't match\n    else if (audioExtensions.includes(ext)) {\n        inputType = 'audio';\n    } else if (imageExtensions.includes(ext)) {\n        inputType = 'image';\n    } else if (videoExtensions.includes(ext)) {\n        inputType = 'video';\n    } else if (ext === 'pdf') {\n        inputType = 'pdf';\n    }\n\n    results.push({\n        json: {\n            inputType,\n            mimeType,\n            fileName,\n            extension: ext,\n            binaryKey,\n            fileSize: binaryData.fileSize || 0,\n        },\n        binary: item.binary\n    });\n}\n\nreturn results;"
+      },
+      "id": "925c82c6-cdf1-42a4-b02b-ce3052922bda",
+      "name": "Detect Input Type",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        432,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "rules": {
+          "values": [
+            {
+              "conditions": {
+                "options": {
+                  "version": 2,
+                  "leftValue": "",
+                  "caseSensitive": true,
+                  "typeValidation": "strict"
+                },
+                "combinator": "and",
+                "conditions": [
+                  {
+                    "operator": {
+                      "type": "string",
+                      "operation": "equals"
+                    },
+                    "leftValue": "={{ $json.inputType }}",
+                    "rightValue": "audio"
+                  }
+                ]
+              },
+              "renameOutput": true,
+              "outputKey": "audio"
+            }
+          ]
+        },
+        "options": {
+          "fallbackOutput": "extra"
+        }
+      },
+      "id": "1b7b303b-1956-41f9-a632-d3f948a511fa",
+      "name": "Route by Input Type",
+      "type": "n8n-nodes-base.switch",
+      "typeVersion": 3.2,
+      "position": [
+        656,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const items = $input.all();\nconst results = [];\n\nfor (const item of items) {\n    const llmData = item.json.output || {};\n\n    const transcript = $('Whisper Transcription').first().json.text || 'No transcript available';\n    const rawTitle = llmData.title || 'voice-memo';\n    const slug = rawTitle.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '').substring(0, 50);\n\n    const now = new Date();\n    const date = now.toISOString().split('T')[0];\n    const isoTimestamp = now.toISOString();\n    const duration = $(\"ffprobe\").first().json.stdout\n    const readableDate = now.toLocaleDateString('en-US', { year: 'numeric', month: 'long', day: 'numeric', hour: '2-digit', minute: '2-digit' });\n\n    // Get original filename from the source\n    const originalFilename = $('Detect Input Type').first().json.fileName || 'unknown';\n    const extension = $('Detect Input Type').first().json.extension || 'mp3';\n    \n    const fileHash = $('Crypto').first().json.fileHash?.substring(0, 8) || Date.now().toString(16);\n    const filename = `${date}-${slug}-${fileHash}.md`;\n    const filepath = `/data/notes/${filename}`;\n    const archivePath = `/data/audio-archive/${date}-${slug}-${fileHash}.${extension}`;\n\n    const allTags = ['memo', ...(llmData.key_topics || [])];\n    const tagsYaml = allTags.map(t => `  - ${String(t).toLowerCase().replace(/\\s+/g, '-')}`).join('\\n');\n\n    const keyPoints = (llmData.key_points || []).map(p => `- ${p}`).join('\\n') || '- No key points identified';\n    const actionItems = (llmData.action_items || []).map(ai => `- [ ] ${ai}`).join('\\n') || '- No action items identified';\n    const questions = (llmData.questions || []).map(q => `- ${q}`).join('\\n') || '- No questions identified';\n\n    const markdown = [\n        '---',\n        `title: \"${(llmData.title || 'Voice Memo').replace(/\"/g, '\\\\\"')}\"`,\n        `date: ${isoTimestamp}`,\n        'type: voice-memo',\n        `duration: ${duration}`,\n        `original_filename: \"${originalFilename}\"`,\n        `audio_archive: \"[[audio-archive/${date}-${slug}-${fileHash}.${extension}]]\"`,\n        'tags:',\n        tagsYaml,\n        'status: processed',\n        '---',\n        '',\n        `# ${llmData.title || 'Voice Memo'}`,\n        '',\n        `**Date:** ${readableDate}`,\n        '**Type:** Voice Memo',\n        '',\n        '---',\n        '',\n        '## Summary',\n        '',\n        llmData.summary || 'No summary available.',\n        '',\n        '## Key Points',\n        '',\n        keyPoints,\n        '',\n        '## Action Items',\n        '',\n        actionItems,\n        '',\n        '## Questions & Follow-ups',\n        '',\n        questions,\n        '',\n        '---',\n        '',\n        '## Raw Transcript',\n        '',\n        '<details>',\n        '<summary>Click to expand full transcript</summary>',\n        '',\n        transcript,\n        '',\n        '</details>',\n        ''\n    ].join('\\n');\n\n    const binaryData = await this.helpers.prepareBinaryData(\n        Buffer.from(markdown, 'utf8'),\n        filename,\n        'text/markdown'\n    );\n\n    results.push({\n        json: { filename, filepath, archivePath, sourcePath: $('Set Data').first().json.path, title: llmData.title, status: 'processed' },\n        binary: { data: binaryData }\n    });\n}\n\nreturn results;"
+      },
+      "id": "18462d33-c098-406a-b3de-314fa8855695",
+      "name": "Format Full Markdown",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        1456,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'ok', note: $('Write Note').item.json.fileName , title: $json.title, processingStatus: $json.status }) }}",
+        "options": {
+          "responseCode": 200
+        }
+      },
+      "id": "c1c4aceb-41b9-409c-8873-e179945b4a90",
+      "name": "Respond Success",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        2352,
+        -128
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ JSON.stringify({ status: 'error', message: 'Unsupported input type: ' + $json.inputType, supportedTypes: ['audio'] }) }}",
+        "options": {
+          "responseCode": 400
+        }
+      },
+      "id": "c8f7ae1a-e8d2-4721-9543-fb12f5b3e9ac",
+      "name": "Respond Error",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.2,
+      "position": [
+        880,
+        64
+      ]
+    },
+    {
+      "parameters": {
+        "promptType": "define",
+        "text": "=Transform this voice memo transcript into a structured note.\n\nTRANSCRIPT:\n{{ $json.text }}",
+        "hasOutputParser": true,
+        "options": {
+          "systemMessage": "You are a personal knowledge assistant that transforms voice memo transcripts into structured notes. Voice memos are often stream-of-consciousness with filler words, repetition, and incomplete thoughts. Extract the signal from the noise.\n\n## OUTPUT FORMAT\n\nReturn ONLY a valid JSON object with these exact fields:\n\n{\n  \"title\": \"string (5-8 words)\",\n  \"summary\": \"string (2-3 sentences)\",\n  \"key_points\": [\"string\", ...],\n  \"action_items\": [\"string\", ...],\n  \"questions\": [\"string\", ...],\n  \"tags\": [\"string\", ...]\n}\n\n## FIELD RULES\n\n### title\n- 5-8 words, specific and descriptive\n- Capture the main topic, decision, or purpose\n- Use concrete nouns, not vague descriptors\n- GOOD: \"Weekly Team Sync Action Items Review\"\n- GOOD: \"Decision to Switch Cloud Providers\"\n- BAD: \"Some Thoughts\" | \"Meeting Notes\" | \"Ideas\"\n\n### summary\n- 2-3 sentences maximum\n- Answer: What is this about? Why does it matter?\n- Write for someone scanning in 10 seconds\n\n### key_points\n- 3-5 items, each a complete sentence\n- Main ideas, insights, conclusions, or decisions\n- DO NOT include action items here\n- GOOD: \"The current API rate limits are causing customer complaints.\"\n- BAD: \"API issues\" | \"Need to fix API\"\n\n### action_items\n- ONLY include explicit commitments or assignments\n- Must have: verb + specific task + context\n- If no clear actions, return empty array []\n- GOOD: \"Schedule meeting with DevOps team this week\"\n- GOOD: \"Send updated proposal to Sarah by Friday\"\n- BAD: \"Think about the problem\" | \"Maybe look into X\" | \"DevOps\"\n\n### questions\n- Unresolved questions needing follow-up\n- Include both explicit questions and implicit uncertainties\n- If none, return empty array []\n\n### tags\n- 2-5 lowercase tags for categorization\n- Prefer these categories when relevant: meeting, idea, decision, task, research, personal, project, followup\n- Can include names, project names, or topics\n- GOOD: [\"meeting\", \"devops\", \"q4-planning\"]\n- BAD: [\"Meeting Notes\", \"IMPORTANT\", \"stuff\"]\n\n## RULES\n\n1. Return ONLY raw JSON - no markdown code blocks, no explanation, no preamble\n2. All arrays can be empty [] if nothing fits the criteria\n3. Never invent information not in the transcript\n4. Ignore filler words, false starts, and repetition\n5. **Short ≠ unclear**. Brief memos with clear intent are valid:\n   - Shopping lists: \"Need to get bread and milk\" → action_items: [\"Buy bread and milk\"]\n   - Quick reminders: \"Call mom tomorrow\" → action_items: [\"Call mom tomorrow\"]\n   - Single tasks: \"Research GPU pricing for the server upgrade\" → valid memo\n6. ONLY use the fallback for truly unintelligible transcripts:\n   - Garbled speech: \"uh... maybe... I don't know... something about...\"\n   - Background noise transcribed as words: \"[inaudible] [music] [crosstalk]\"\n   - Incomplete fragments with no clear subject: \"and then the... yeah...\"\n\n   Fallback format:\n   {\"title\": \"Unclear memo\", \"summary\": \"Transcript too brief or unclear to extract meaningful content.\", \"key_points\": [], \"action_items\": [], \"questions\": [], \"tags\": [\"needs-review\"]}"
+        }
+      },
+      "id": "3f576803-3ea5-46e5-aa8a-5f4f8d9f62c4",
+      "name": "Extract Insights",
+      "type": "@n8n/n8n-nodes-langchain.agent",
+      "typeVersion": 2.2,
+      "position": [
+        1104,
+        -128
+      ],
+      "retryOnFail": true,
+      "waitBetweenTries": 250
+    },
+    {
+      "parameters": {
+        "model": {
+          "__rl": true,
+          "value": "openai/gpt-oss-20b",
+          "mode": "list",
+          "cachedResultName": "openai/gpt-oss-20b"
+        },
+        "options": {}
+      },
+      "id": "aead319e-24e1-4e9b-9e5c-a44f4e3218f0",
+      "name": "LM Studio Model",
+      "type": "@n8n/n8n-nodes-langchain.lmChatOpenAi",
+      "typeVersion": 1.2,
+      "position": [
+        1120,
+        96
+      ],
+      "credentials": {
+        "openAiApi": {
+          "id": "8HesTK7v3KEVq7kD",
+          "name": "LM Studio Local"
+        }
+      }
+    },
+    {
+      "parameters": {
+        "jsonSchemaExample": "{\n  \"title\": \"Weekend Woodworking Project Planning Ideas\",\n  \"summary\": \"Brainstormed ideas for building a standing desk. Leaning toward a butcher block top with adjustable legs from Amazon. Need to measure the office nook before ordering anything.\",\n  \"key_points\": [\n    \"A 60-inch butcher block from Home Depot would fit the office nook perfectly.\",\n    \"Adjustable standing desk legs are surprisingly affordable on Amazon.\",\n    \"Dad mentioned he has extra wood stain in his garage I could use.\",\n    \"The IKEA desk isn't cutting it anymore - too wobbly for the monitor arm.\"\n  ],\n  \"action_items\": [\n    \"Measure the office nook dimensions this weekend\",\n    \"Text Dad about borrowing his wood stain and sander\",\n    \"Check Amazon reviews for adjustable desk leg frames under $200\"\n  ],\n  \"questions\": [\n    \"Would a 30-inch depth be too deep for the space?\",\n    \"Should I seal the butcher block or leave it natural?\"\n  ],\n  \"tags\": [\"idea\", \"project\", \"woodworking\", \"home-office\"]\n}"
+      },
+      "type": "@n8n/n8n-nodes-langchain.outputParserStructured",
+      "typeVersion": 1.3,
+      "position": [
+        1248,
+        96
+      ],
+      "id": "a8728c1b-ccc6-446a-8ceb-0755f04907f6",
+      "name": "Structured Output Parser"
+    },
+    {
+      "parameters": {
+        "binaryData": true,
+        "binaryPropertyName": "file",
+        "dataPropertyName": "fileHash"
+      },
+      "type": "n8n-nodes-base.crypto",
+      "typeVersion": 1,
+      "position": [
+        208,
+        -128
+      ],
+      "id": "d11088e8-9a46-4a82-af70-fb4b2abc36f0",
+      "name": "Crypto"
+    },
+    {
+      "parameters": {
+        "triggerOn": "folder",
+        "path": "/data/voice-memos/",
+        "events": [
+          "add"
+        ],
+        "options": {
+          "depth": 0
+        }
+      },
+      "type": "n8n-nodes-base.localFileTrigger",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        -32
+      ],
+      "id": "fe8febfd-6508-4934-8418-c756fc99baa2",
+      "name": "Local File Trigger"
+    },
+    {
+      "parameters": {
+        "fileSelector": "={{ $('Set Data').item.json.path || $('Set Data').item.json.fileName }}",
+        "options": {
+          "dataPropertyName": "file"
+        }
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -16,
+        -128
+      ],
+      "id": "661ed346-6a26-40a4-9ab9-bb0a69beaee3",
+      "name": "Read Voice Memo"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "={{ $('Format Full Markdown').first().json.filepath }}",
+        "dataPropertyName": "={{ $('Format Full Markdown').first().binary.data}}",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        1904,
+        -128
+      ],
+      "id": "b3a707fa-ac94-43aa-b17f-6052f0ea083d",
+      "name": "Write Note"
+    },
+    {
+      "parameters": {
+        "command": "=ffprobe -v error -show_entries format=duration -of csv=p=0 \"{{ $input.item.json.path || $input.item.json.fileName }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        -240,
+        -128
+      ],
+      "id": "99f0c3a9-1a73-4dd2-a563-2599628e7901",
+      "name": "ffprobe"
+    },
+    {
+      "parameters": {
+        "operation": "write",
+        "fileName": "=/data/voice-memos{{$json.body ? \"/webhook\" : \"\"}}/{{ $now + $binary.file.fileName }}",
+        "dataPropertyName": "file",
+        "options": {}
+      },
+      "type": "n8n-nodes-base.readWriteFile",
+      "typeVersion": 1,
+      "position": [
+        -688,
+        -224
+      ],
+      "id": "d6f0be16-4b6f-49f0-a558-5ea1f0e8bbd4",
+      "name": "Read/Write Files from Disk"
+    },
+    {
+      "parameters": {
+        "assignments": {
+          "assignments": [
+            {
+              "id": "9e2f0f12-6636-4c61-a05a-b70c7de28730",
+              "name": "path",
+              "value": "={{ $input.item.json.path || $input.item.json.fileName }}",
+              "type": "string"
+            },
+            {
+              "id": "1693412f-8477-4ce7-b867-2b12f9903288",
+              "name": "webhook",
+              "value": "={{ $input.item.json.headers ? true : false }}",
+              "type": "boolean"
+            }
+          ]
+        },
+        "includeOtherFields": true,
+        "options": {}
+      },
+      "type": "n8n-nodes-base.set",
+      "typeVersion": 3.4,
+      "position": [
+        -464,
+        -128
+      ],
+      "id": "bd6ffeb4-94c3-43f4-81a1-5fff1fb8ba3f",
+      "name": "Set Data"
+    },
+    {
+      "parameters": {
+        "command": "=mkdir -p /data/audio-archive && mv \"{{ $('Format Full Markdown').first().json.sourcePath }}\" \"{{ $('Format Full Markdown').first().json.archivePath }}\""
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        2128,
+        -128
+      ],
+      "id": "940ec87c-668f-426c-ad82-fab58638e894",
+      "name": "Archive Audio"
+    },
+    {
+      "parameters": {
+        "command": "=rm -f /data/notes/*-{{ $('Crypto').first().json.fileHash.substring(0, 8) }}.md && rm -f /data/audio-archive/*-{{ $('Crypto').first().json.fileHash.substring(0, 8) }}.*"
+      },
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        1680,
+        -128
+      ],
+      "id": "f511c5d3-3c8c-45c6-9d71-b9ddaaf626ba",
+      "name": "Delete Old Hash and Audio Archive Files"
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://whisper:8000/v1/models/Systran%2Ffaster-whisper-base",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 300000
+        }
+      },
+      "id": "5637cc81-244f-40bd-8597-4f8e99b1c798",
+      "name": "Install Whisper Model docker",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        -672
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://whisper:8000/v1/audio/transcriptions",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "={{ $('Detect Input Type').item.json.binaryKey }}"
+            },
+            {
+              "name": "model",
+              "value": "Systran/faster-whisper-base"
+            },
+            {
+              "name": "response_format",
+              "value": "json"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "66f37c69-3b15-4c5d-86e8-1ec47cef0fe2",
+      "name": "Whisper Transcription docker",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        -496
+      ]
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.3.10.100:9103/v1/models/Systran%2Ffaster-whisper-base",
+        "options": {
+          "response": {
+            "response": {
+              "neverError": true
+            }
+          },
+          "timeout": 300000
+        }
+      },
+      "id": "4d03a6a5-887b-4600-9a2f-86e0af45f0ff",
+      "name": "Install Whisper Model",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        -320
+      ],
+      "disabled": true
+    },
+    {
+      "parameters": {
+        "method": "POST",
+        "url": "http://10.3.10.100:9103/v1/audio/transcriptions",
+        "sendBody": true,
+        "contentType": "multipart-form-data",
+        "bodyParameters": {
+          "parameters": [
+            {
+              "parameterType": "formBinaryData",
+              "name": "file",
+              "inputDataFieldName": "={{ $('Detect Input Type').item.json.binaryKey }}"
+            },
+            {
+              "name": "model",
+              "value": "Systran/faster-whisper-base"
+            },
+            {
+              "name": "response_format",
+              "value": "json"
+            }
+          ]
+        },
+        "options": {
+          "timeout": 300000
+        }
+      },
+      "id": "28b7d9ee-ea56-4200-9891-efa687aaa003",
+      "name": "Whisper Transcription",
+      "type": "n8n-nodes-base.httpRequest",
+      "typeVersion": 4.2,
+      "position": [
+        880,
+        -128
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "Read/Write Files from Disk",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Detect Input Type": {
+      "main": [
+        [
+          {
+            "node": "Route by Input Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Route by Input Type": {
+      "main": [
+        [
+          {
+            "node": "Install Whisper Model",
+            "type": "main",
+            "index": 0
+          },
+          {
+            "node": "Whisper Transcription",
+            "type": "main",
+            "index": 0
+          }
+        ],
+        [
+          {
+            "node": "Respond Error",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format Full Markdown": {
+      "main": [
+        [
+          {
+            "node": "Delete Old Hash and Audio Archive Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Extract Insights": {
+      "main": [
+        [
+          {
+            "node": "Format Full Markdown",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "LM Studio Model": {
+      "ai_languageModel": [
+        [
+          {
+            "node": "Extract Insights",
+            "type": "ai_languageModel",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Structured Output Parser": {
+      "ai_outputParser": [
+        [
+          {
+            "node": "Extract Insights",
+            "type": "ai_outputParser",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Crypto": {
+      "main": [
+        [
+          {
+            "node": "Detect Input Type",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Local File Trigger": {
+      "main": [
+        [
+          {
+            "node": "Set Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read Voice Memo": {
+      "main": [
+        [
+          {
+            "node": "Crypto",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Write Note": {
+      "main": [
+        [
+          {
+            "node": "Archive Audio",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "ffprobe": {
+      "main": [
+        [
+          {
+            "node": "Read Voice Memo",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Read/Write Files from Disk": {
+      "main": [
+        [
+          {
+            "node": "Set Data",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Set Data": {
+      "main": [
+        [
+          {
+            "node": "ffprobe",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Archive Audio": {
+      "main": [
+        [
+          {
+            "node": "Respond Success",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Delete Old Hash and Audio Archive Files": {
+      "main": [
+        [
+          {
+            "node": "Write Note",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Whisper Transcription docker": {
+      "main": [
+        []
+      ]
+    },
+    "Whisper Transcription": {
+      "main": [
+        [
+          {
+            "node": "Extract Insights",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1"
+  },
+  "versionId": "dddd0e45-002b-4174-8b3e-fe82f6d0b16a",
+  "meta": {
+    "templateCredsSetupCompleted": true,
+    "instanceId": "4d0e42bbf4f8ecc7c9e3cdbacf4260ac8e47e8080f1a720bebf06afb4ab184e3"
+  },
+  "id": "qB65LrZnO0ChVFTk",
+  "tags": []
+}

@@ -115,29 +115,45 @@ The Voice Memo workflow uses a local LLM for extracting insights from transcript
 
 ### 5. Seed Workflows & Credentials
 
-LIMA includes a seed command that imports the Voice Memo Processor workflow and pre-configured LM Studio credential:
+LIMA includes a seed command to import the Voice Memo Processor workflow and pre-configured LM Studio credential.
+
+> **⚠️ WARNING:** `make seed` creates NEW workflows. Running multiple times will create duplicates. Only run on fresh n8n installs.
+
+**Step 1: Create an API key**
+
+1. In n8n UI: **Settings → API → Create API Key**
+2. Add to `.env`:
+   ```bash
+   echo "N8N_API_KEY=your_key_here" >> .env
+   ```
+
+**Step 2: Run seed**
 
 ```bash
+source .env
 make seed
 ```
 
 <details>
-<summary><b>Don't have make?</b> Click for alternatives</summary>
+<summary><b>Manual import (fallback)</b></summary>
 
-**Install make:**
+If `make seed` fails:
+1. Open `workflows/seed/voice-memo-v0.3.0.json` in a text editor
+2. Copy the entire JSON contents
+3. In n8n, create a new workflow and press `Ctrl+V` / `Cmd+V`
+4. Create credential manually: **Settings → Credentials → Add → OpenAI API**
+   - Name: `LMStudio localhost`
+   - API Key: `lm-studio`
+   - Base URL: `http://host.docker.internal:1234/v1`
+</details>
+
+<details>
+<summary><b>Don't have make?</b> Click for install instructions</summary>
+
 - **macOS**: `xcode-select --install`
 - **Linux (Debian/Ubuntu)**: `sudo apt install make`
 - **Linux (Fedora)**: `sudo dnf install make`
 - **Windows**: Install via [Chocolatey](https://chocolatey.org/): `choco install make`
-
-**Or run the commands directly:**
-```bash
-# Import credentials
-docker compose exec n8n n8n import:credentials --input=/home/node/.n8n/workflows/seed/credentials/lm-studio.json
-
-# Import workflows
-docker compose exec n8n n8n import:workflow --separate --input=/home/node/.n8n/workflows/seed
-```
 </details>
 
 This imports:
@@ -530,7 +546,7 @@ The free tier (100 devices, 3 users) is plenty for personal use.
 ```bash
 make help          # Show all commands
 make up            # Start production stack
-make seed          # Import workflows & credentials (first-time setup)
+make seed          # Import workflows (fresh installs only, requires N8N_API_KEY)
 make dev-up        # Start with dev tools (n8n-mcp)
 make down          # Stop all services
 make logs          # Follow logs

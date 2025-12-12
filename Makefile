@@ -30,23 +30,39 @@ hooks:
 pre-commit:
 	pre-commit run --all-files || uvx pre-commit run --all-files
 
+# seed: Import workflows & credentials (requires N8N_API_KEY for workflows)
+# WARNING: Creates new workflows - will duplicate if run multiple times!
 seed:
-	@echo "⚠️  This will import/overwrite workflows and credentials using the contents of ./workflows/seed"
-	@echo "    If you've made changes in the n8n UI to these workflows/credentials, they will be lost."
+	@echo "⚠️  WARNING: This creates NEW workflows from ./workflows/seed/"
+	@echo "   Running multiple times will create DUPLICATES."
+	@echo "   Only run on fresh n8n installs or to create a copy from repo version."
 	@echo ""
+	@if [ -z "$$N8N_API_KEY" ]; then \
+		echo "❌ N8N_API_KEY not set."; \
+		echo "   1. Create one in n8n UI: Settings → API → Create API Key"; \
+		echo "   2. Add to .env: N8N_API_KEY=your_key"; \
+		echo "   3. Run: source .env && make seed"; \
+		exit 1; \
+	fi
 	@read -p "Continue? [y/N] " confirm && [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ] || (echo "Aborted." && exit 1)
 	@echo ""
 	@echo "Seeding n8n..."
-	@docker compose exec n8n n8n import:credentials --input=/home/node/.n8n/workflows/seed/credentials/lm-studio.json
-	@docker compose exec n8n n8n import:workflow --separate --input=/home/node/.n8n/workflows/seed 2>&1 | grep -v "Active version not found\|Error: Active version not found\|at .*n8n\|at process\|at Import\|at Command\|Could not remove webhooks\|Deactivating workflow\|Remember to activate" || true
+	@echo "Importing credentials (CLI)..."
+	@docker compose exec n8n n8n import:credentials --input=/home/node/.n8n/workflows/seed/credentials/lm-studio.json 2>&1 | grep -v "^$$" || true
+	@echo "Importing workflows (API)..."
+	@for f in workflows/seed/*.json; do \
+		name=$$(cat "$$f" | jq -r '.name'); \
+		cat "$$f" | jq '{name, nodes, connections, settings}' | \
+		curl -sf -X POST http://localhost:5678/api/v1/workflows \
+		-H "Content-Type: application/json" \
+		-H "X-N8N-API-KEY: $$N8N_API_KEY" \
+		-d @- > /dev/null && echo "✓ Imported: $$name" || echo "⚠ Failed: $$name"; \
+	done
 	@echo ""
-	@echo "✓ Workflows and credentials imported!"
+	@echo "✓ Seeding complete!"
 	@echo ""
-	@echo "⚠️ Imported workflows are INACTIVE by default. To activate:"
-	@echo "   1. Go to http://localhost:5678/home/workflows"
-	@echo "   2. Toggle 'Inactive' -> 'Active' for each workflow as needed."
-	@echo "   3. Open Workflows and verify Credentials are set up correctly and connection tests pass"
+	@echo "⚠️  Workflows are INACTIVE. Activate at http://localhost:5678/home/workflows"
 	@echo ""
 	@echo "NOTE: LM Studio credential uses http://host.docker.internal:1234/v1"
-	@echo "      On Linux, you may need to edit the credential to use your machine's local IP instead."
+	@echo "      On Linux, edit credential to use your machine's local IP instead."
 	@echo ""
