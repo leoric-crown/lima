@@ -15,7 +15,7 @@
 > **👋 Coming from the talk?** Here's the minimal path to get LIMA running:
 > 1. Install [Docker Desktop](https://docker.com)
 > 2. Install [LM Studio](https://lmstudio.ai/) (beginner-friendly GUI) OR [Ollama](https://ollama.ai/) (CLI)
-> 3. Clone this repo, follow steps 1-8 below (~10 minutes)
+> 3. Clone this repo, follow steps 1-7 below (~10 minutes)
 > 4. See `docs/demo-voice-memo.md` for a quick walkthrough
 
 ### Prerequisites
@@ -113,86 +113,57 @@ The Voice Memo workflow uses a local LLM for extracting insights from transcript
 
 ---
 
-### 5. Create LLM Credential in n8n
+### 5. Seed Workflows & Credentials
 
-This step connects n8n to your local LLM server. The credential uses the "OpenAI API" type because LM Studio and Ollama both provide OpenAI-compatible APIs.
-
-1. In n8n, go to **Settings → Credentials → Add Credential**
-2. Search for and select **OpenAI API**
-3. Fill in the fields:
-
-   | Field | LM Studio | Ollama |
-   |-------|-----------|--------|
-   | **Credential Name** | `LM Studio Local` | `Ollama Local` |
-   | **API Key** | `lm-studio` (any non-empty string) | `ollama` (any non-empty string) |
-   | **Base URL** | `http://host.docker.internal:1234/v1` | `http://host.docker.internal:11434/v1` |
-
-4. Click **Save**
-
-> **Platform notes:**
-> - **macOS/Windows**: Use `host.docker.internal` to reach services running on your host machine
-> - **Linux**: Use your machine's IP address instead (e.g., `http://192.168.1.100:1234/v1`) - `host.docker.internal` doesn't work on Linux by default. Find your IP with `hostname -I | awk '{print $1}'`
-
-### 6. Create Data Directories
-
-The workflow requires these directories to exist and be writable:
+LIMA includes a seed command that imports the Voice Memo Processor workflow and pre-configured LM Studio credential:
 
 ```bash
-# Create directory structure
-mkdir -p data/voice-memos/webhook data/notes data/audio-archive
-
-# Make writable (choose one):
-chmod 777 data/voice-memos data/voice-memos/webhook data/notes data/audio-archive
-# Or change ownership to match your user
+make seed
 ```
 
-- `data/voice-memos/` - Drop audio files here for automatic processing
-- `data/voice-memos/webhook/` - Webhook uploads are saved here (to avoid re-triggering)
-- `data/notes/` - Generated markdown notes output
-- `data/audio-archive/` - Original audio files are moved here after processing (linked from notes)
+<details>
+<summary><b>Don't have make?</b> Click for alternatives</summary>
 
-### 7. Import Workflows
+**Install make:**
+- **macOS**: `xcode-select --install`
+- **Linux (Debian/Ubuntu)**: `sudo apt install make`
+- **Linux (Fedora)**: `sudo dnf install make`
+- **Windows**: Install via [Chocolatey](https://chocolatey.org/): `choco install make`
 
-LIMA requires two workflows to be imported into n8n:
+**Or run the commands directly:**
+```bash
+# Import credentials
+docker compose exec n8n n8n import:credentials --input=/home/node/.n8n/workflows/seed/credentials/lm-studio.json
 
-| Workflow | File | Purpose |
-|----------|------|---------|
-| **Voice Memo Processor** | `workflows/voice-memo-v0.2.0.json` | Transcribes audio, extracts insights, saves notes |
-| **Voice Recorder UI** | `workflows/voice-recorder-ui.json` | Serves the browser-based recording interface |
+# Import workflows
+docker compose exec n8n n8n import:workflow --separate --input=/home/node/.n8n/workflows/seed
+```
+</details>
 
-**Method A: Import from File**
+This imports:
+- **Voice Memo Processor** workflow (`workflows/seed/voice-memo-v0.3.0.json`)
+- **LM Studio Local** credential (pre-configured for `http://host.docker.internal:1234/v1`)
 
-1. In n8n, click the **+** button or go to **Workflows**
-2. Click **Import from File**
-3. Select `workflows/voice-memo-v0.2.0.json` from this repository
-4. Repeat for `workflows/voice-recorder-ui.json`
+> **Platform notes:**
+> - **macOS/Windows**: The credential works out of the box with `host.docker.internal`
+> - **Linux**: Edit the credential in n8n UI to use your machine's IP instead (e.g., `http://192.168.1.100:1234/v1`). Find your IP with `hostname -I | awk '{print $1}'`
+> - **Ollama users**: Edit the credential to use port `11434` instead of `1234`
 
-**Method B: Copy-Paste JSON**
+### 6. Activate the Workflow
 
-1. Open the workflow JSON file in a text editor
-2. Copy the entire JSON contents
-3. In n8n, create a new workflow
-4. Press `Ctrl+V` / `Cmd+V` to paste - n8n will import the nodes
-5. Repeat for the second workflow
+Imported workflows are **inactive** by default. To activate:
 
----
+1. Go to http://localhost:5678/home/workflows
+2. Open the **Voice Memo Processor** workflow
+3. Toggle **Inactive → Active** in the top right
 
-**After importing Voice Memo Processor, configure the LLM credential:**
-
-1. Find the **LM Studio Model** node (or similar OpenAI Chat node) in the workflow
-2. Click on it to open the settings
-3. In the **Credential to connect with** dropdown, select the credential you created in Step 5 (e.g., `LM Studio Local` or `Ollama Local`)
-4. Click outside the node to save
-
-**Activate both workflows:**
-
-1. Toggle the **Active** switch in the top-right corner of each workflow
-2. Voice Memo Processor: Now listening for files in `data/voice-memos/` and webhook requests at `/webhook/memo`
-3. Voice Recorder UI: Now serving the recorder interface at `/webhook/recorder`
+The workflow is now listening for:
+- Files dropped in `data/voice-memos/`
+- Webhook requests at `http://localhost:5678/webhook/memo`
 
 See [docs/PRD-voice-memo-workflow.md](docs/PRD-voice-memo-workflow.md) for full architecture details, or [docs/demo-voice-memo.md](docs/demo-voice-memo.md) for a quick demo guide.
 
-### 8. Test the Workflow
+### 7. Test the Workflow
 
 **Option A: File Drop**
 
@@ -559,6 +530,7 @@ The free tier (100 devices, 3 users) is plenty for personal use.
 ```bash
 make help          # Show all commands
 make up            # Start production stack
+make seed          # Import workflows & credentials (first-time setup)
 make dev-up        # Start with dev tools (n8n-mcp)
 make down          # Stop all services
 make logs          # Follow logs
