@@ -24,8 +24,9 @@ make db-shell           # PostgreSQL shell (psql)
 make db-backup          # Backup to timestamped file
 make db-restore FILE=backup.sql
 
-# First-time setup (after make up, requires N8N_API_KEY)
-make seed               # Import workflows & credentials (fresh installs only!)
+# First-time setup
+make setup              # Interactive wizard (build, configure, seed)
+make seed               # Import workflows & credentials only (detects duplicates)
 
 # Rebuild custom n8n image after Dockerfile changes
 docker compose build n8n
@@ -110,8 +111,11 @@ Required in `.env` (generate with `openssl rand -base64 32` or `openssl rand -he
 - `MCP_AUTH_TOKEN`
 
 Optional:
-- `N8N_API_KEY`: Generate in n8n UI (Settings > API) for n8n-mcp workflow management
+- `N8N_API_KEY`: Generate in n8n UI (Settings > API) for workflow seeding and n8n-mcp
+- `N8N_PORT`: External port for n8n (default: 5678)
+- `LOCAL_LLM_PORT`: Port for local LLM (default: 1234 for LM Studio, set to 11434 for Ollama)
 - `WHISPER_MODEL`: Default `Systran/faster-whisper-base`, options include tiny/small/medium/large-v3
+- `NATIVE_WHISPER_PORT`: Port for native CUDA/MLX whisper server (replaces default 9001 in workflows)
 
 ## Audio Processing
 
@@ -131,13 +135,16 @@ Long files (>60 min) should be chunked for parallel transcription. See `docs/aud
 
 ## Service URLs
 
+Ports are configurable in `.env`. Defaults shown:
+
 | Service | URL | Notes |
 |---------|-----|-------|
-| n8n | http://localhost:5678 | Workflow automation |
-| whisper | http://localhost:9000 | OpenAI-compatible `/v1/audio/transcriptions` |
-| n8n-mcp | http://localhost:8042 | Dev only, requires auth header |
-| postgres-mcp | http://localhost:8700/sse | Dev only, SSE transport |
-| pgAdmin | http://localhost:5050 | Dev only |
+| n8n | http://localhost:${N8N_PORT} | Workflow automation |
+| Voice Recorder | http://localhost:${CADDY_PORT}/webhook/recorder | Browser voice recording UI |
+| whisper | http://localhost:${WHISPER_PORT} | OpenAI-compatible `/v1/audio/transcriptions` |
+| n8n-mcp | http://localhost:${MCP_PORT} | Dev only, requires auth header |
+| postgres-mcp | http://localhost:${POSTGRES_MCP_PORT}/sse | Dev only, SSE transport |
+| pgAdmin | http://localhost:${PGADMIN_PORT} | Dev only |
 
 ## Data Directories
 
@@ -167,5 +174,6 @@ This ensures the model loads automatically when n8n sends a request and unloads 
 **n8n Credential Setup:**
 - Name: `LM Studio Local`
 - API Key: `lm-studio` (any non-empty string)
-- Base URL: `http://host.docker.internal:1234/v1` (macOS/Windows) or your machine's IP (Linux)
-- n8n's Alpine container doesn't have `find -printf`, use `stat -c %Y` instead
+- Base URL: `http://host.docker.internal:1234/v1` (macOS/Windows) - on Linux, `make seed` auto-replaces with host IP
+
+**Note:** n8n's Alpine container doesn't have `find -printf`, use `stat -c %Y` instead

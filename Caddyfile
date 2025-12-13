@@ -1,5 +1,5 @@
 # LIMA Caddy Configuration
-# Reverse proxy to n8n with CSP header removal for voice recorder
+# Reverse proxy to n8n with static HTML serving for voice recorder
 # Access at: http://localhost:8888/webhook/recorder
 
 {

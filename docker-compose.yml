@@ -91,7 +91,7 @@ services:
       retries: 3
       start_period: 40s
 
-  # Caddy - Reverse proxy that strips n8n's sandbox CSP for voice recorder
+  # Caddy - Reverse proxy to serve static html file for voice recorder
   # Access recorder at: http://localhost:${CADDY_PORT}/webhook/recorder
   caddy:
     image: caddy:2-alpine

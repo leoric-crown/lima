@@ -386,7 +386,9 @@
         -512
       ],
       "id": "3f9704f6-3e27-4b8d-8fd8-da0bbdecff06",
-      "name": "Extract Insights"
+      "name": "Extract Insights",
+      "retryOnFail": true,
+      "waitBetweenTries": 250
     }
   ],
   "pinData": {

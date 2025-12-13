@@ -15,8 +15,9 @@
 > **👋 Coming from the talk?** Here's the minimal path to get LIMA running:
 > 1. Install [Docker Desktop](https://docker.com)
 > 2. Install [LM Studio](https://lmstudio.ai/) (beginner-friendly GUI) OR [Ollama](https://ollama.ai/) (CLI)
-> 3. Clone this repo, follow steps 1-7 below (~10 minutes)
-> 4. See `docs/demo-voice-memo.md` for a quick walkthrough
+> 3. Clone this repo, run `cp .env.example .env` and set secure passwords
+> 4. Run `make setup` - interactive wizard handles the rest (~5 minutes)
+> 5. See `docs/demo-voice-memo.md` for a quick walkthrough
 
 ### Prerequisites
 
@@ -117,7 +118,7 @@ The Voice Memo workflow uses a local LLM for extracting insights from transcript
 
 LIMA includes a seed command to import the Voice Memo Processor workflow and pre-configured LM Studio credential.
 
-> **⚠️ WARNING:** `make seed` creates NEW workflows. Running multiple times will create duplicates. Only run on fresh n8n installs.
+> **Note:** `make seed` detects existing workflows by name and prompts before creating duplicates. Safe to run multiple times.
 
 **Step 1: Create an API key**
 
@@ -161,9 +162,10 @@ This imports:
 - **LM Studio Local** credential (pre-configured for `http://host.docker.internal:1234/v1`)
 
 > **Platform notes:**
-> - **macOS/Windows**: The credential works out of the box with `host.docker.internal`
-> - **Linux**: Edit the credential in n8n UI to use your machine's IP instead (e.g., `http://192.168.1.100:1234/v1`). Find your IP with `hostname -I | awk '{print $1}'`
-> - **Ollama users**: Edit the credential to use port `11434` instead of `1234`
+> - **macOS/Windows**: Works out of the box with `host.docker.internal`
+> - **Linux**: `make seed` automatically replaces `host.docker.internal` with your machine's IP
+> - **Ollama users**: Set `LOCAL_LLM_PORT=11434` in `.env` before seeding
+> - **Native Whisper**: Set `NATIVE_WHISPER_PORT` in `.env` before seeding to configure the CUDA/MLX workflow
 
 ### 6. Activate the Workflow
 
@@ -212,7 +214,7 @@ LIMA includes a browser-based voice recorder that lets you record and process me
 4. Watch the processing status
 5. See your generated note!
 
-> **Why port 8888?** The Voice Recorder uses the browser's microphone API, which requires a "secure context". We use Caddy as a reverse proxy on port 8888 to strip n8n's restrictive security headers that would otherwise block microphone access.
+> **Why port 8888?** We use Caddy as a reverse proxy on port 8888 to serve the static HTML UI for the voice recorder.
 
 ---
 
@@ -535,7 +537,7 @@ The free tier (100 devices, 3 users) is plenty for personal use.
 |---------|-----|---------|
 | **Voice Recorder** | http://localhost:8888/webhook/recorder | Browser-based voice recording UI |
 | n8n | http://localhost:5678 | Workflow automation |
-| Caddy | http://localhost:8888 | Reverse proxy (strips CSP for mic access) |
+| Caddy | http://localhost:8888 | Reverse proxy (serves recorder HTML UI) |
 | Whisper | http://localhost:9000 | Speech-to-text API |
 | n8n-mcp | http://localhost:8042 | AI workflow assistant (dev) |
 | postgres-mcp | http://localhost:8700 | Database MCP server (dev) |
@@ -544,9 +546,9 @@ The free tier (100 devices, 3 users) is plenty for personal use.
 ## Common Commands
 
 ```bash
-make help          # Show all commands
+make setup         # Interactive first-time setup (recommended)
 make up            # Start production stack
-make seed          # Import workflows (fresh installs only, requires N8N_API_KEY)
+make seed          # Import workflows (detects duplicates, requires N8N_API_KEY)
 make dev-up        # Start with dev tools (n8n-mcp)
 make down          # Stop all services
 make logs          # Follow logs

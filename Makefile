@@ -4,7 +4,7 @@
 -include .env
 export
 
-.PHONY: up down dev-up dev-down update status hooks pre-commit seed
+.PHONY: up down dev-up dev-down update status hooks pre-commit seed setup
 
 up:
 	mkdir -p data/voice-memos/webhook data/audio-archive data/notes
@@ -26,7 +26,8 @@ update:
 	docker compose up -d
 
 status:
-	docker compose ps
+	@docker compose ps --format "table {{.Name}}\t{{.Status}}\t{{.Ports}}" | \
+		sed -E 's/\[::][^,]*,?//g; s/0\.0\.0\.0:([0-9]+)->[0-9]+\/tcp/:\1/g; s/[0-9]+\/(tcp|udp),? *//g; s/, *$$//; s/  +:/  :/g'
 
 hooks:
 	pre-commit install || uvx pre-commit install
@@ -34,12 +35,10 @@ hooks:
 pre-commit:
 	pre-commit run --all-files || uvx pre-commit run --all-files
 
-# seed: Import workflows & credentials (requires N8N_API_KEY for workflows)
-# WARNING: Creates new workflows - will duplicate if run multiple times!
+# seed: Import workflows & credentials (requires N8N_API_KEY)
 seed:
-	@echo "⚠️  WARNING: This creates NEW workflows from ./workflows/seed/"
-	@echo "   Running multiple times will create DUPLICATES."
-	@echo "   Only run on fresh n8n installs or to create a copy from repo version."
+	@echo "Importing workflows and credentials from ./workflows/seed/"
+	@echo "(Existing workflows detected by name - you'll be prompted before creating duplicates)"
 	@echo ""
 	@if [ -z "$$N8N_API_KEY" ]; then \
 		echo "❌ N8N_API_KEY not set."; \
@@ -48,20 +47,22 @@ seed:
 		echo "   3. Run: source .env && make seed"; \
 		exit 1; \
 	fi
-	@read -p "Continue? [y/N] " confirm && [ "$$confirm" = "y" ] || [ "$$confirm" = "Y" ] || (echo "Aborted." && exit 1)
-	@echo ""
 	@echo "Seeding n8n..."
 	@echo "Importing credentials (CLI)..."
-	@docker compose exec n8n n8n import:credentials --input=/home/node/.n8n/workflows/seed/credentials/lm-studio.json 2>&1 | grep -v "^$$" || true
+	@for f in workflows/seed/credentials/*.json; do \
+		uv run python scripts/prepare-credential.py "$$f" | \
+		docker compose exec -T n8n n8n import:credentials --input=/dev/stdin 2>&1 | grep -v "^$$" || true; \
+	done
 	@echo "Importing workflows (API)..."
 	@for f in workflows/seed/*.json; do \
-		uv run python scripts/n8n-import-workflow.py "$$f" 2>&1 | tail -1 || true; \
+		uv run python scripts/n8n-import-workflow.py "$$f" || true; \
 	done
 	@echo ""
 	@echo "✓ Seeding complete!"
 	@echo ""
-	@echo "⚠️  Workflows are INACTIVE. Activate at http://localhost:5678/home/workflows"
+	@echo "⚠️  Workflows are INACTIVE. Activate at http://localhost:$(N8N_PORT)/home/workflows"
 	@echo ""
-	@echo "NOTE: LM Studio credential uses http://host.docker.internal:1234/v1"
-	@echo "      On Linux, edit credential to use your machine's local IP instead."
-	@echo ""
+
+# setup: Interactive first-time setup (build, start, configure, seed)
+setup:
+	@uv run python scripts/setup.py
