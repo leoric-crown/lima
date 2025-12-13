@@ -36,9 +36,10 @@ pre-commit:
 	pre-commit run --all-files || uvx pre-commit run --all-files
 
 # seed: Import workflows & credentials (requires N8N_API_KEY)
+# Note: Import scripts handle duplicates gracefully (exit 0), so errors here are real failures
 seed:
 	@echo "Importing workflows and credentials from ./workflows/seed/"
-	@echo "(Existing workflows detected by name - you'll be prompted before creating duplicates)"
+	@echo "(Existing workflows/credentials are skipped automatically)"
 	@echo ""
 	@if [ -z "$$N8N_API_KEY" ]; then \
 		echo "❌ N8N_API_KEY not set."; \
@@ -51,12 +52,16 @@ seed:
 	@echo "Importing credentials (CLI)..."
 	@for f in workflows/seed/credentials/*.json; do \
 		uv run python scripts/prepare-credential.py "$$f" | \
-		docker compose exec -T n8n n8n import:credentials --input=/dev/stdin 2>&1 | grep -v "^$$" || true; \
-	done
+		docker compose exec -T n8n n8n import:credentials --input=/dev/stdin 2>&1 | grep -v "^$$"; \
+	done || true
 	@echo "Importing workflows (API)..."
-	@for f in workflows/seed/*.json; do \
-		uv run python scripts/n8n-import-workflow.py "$$f" || true; \
-	done
+	@failed=0; \
+	for f in workflows/seed/*.json; do \
+		uv run python scripts/n8n-import-workflow.py "$$f" || failed=$$((failed + 1)); \
+	done; \
+	if [ $$failed -gt 0 ]; then \
+		echo "⚠️  $$failed workflow(s) failed to import"; \
+	fi
 	@echo ""
 	@echo "✓ Seeding complete!"
 	@echo ""

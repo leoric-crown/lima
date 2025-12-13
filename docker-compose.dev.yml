@@ -6,6 +6,11 @@
 #
 # Or use Makefile:
 #   make dev-up
+#
+# Security notes:
+#   - Dev services bind to BIND_HOST (default: 127.0.0.1, localhost only)
+#   - postgres-mcp runs with --access-mode=unrestricted (full DB access)
+#   - See VERSIONS.md for tested versions and pinning instructions
 
 services:
   # n8n-mcp: AI assistant for n8n workflow development
@@ -28,7 +33,7 @@ services:
       N8N_API_KEY: ${N8N_API_KEY:-}
       LOG_LEVEL: ${MCP_LOG_LEVEL:-info}
     ports:
-      - "${MCP_PORT:-8042}:3000"
+      - "${BIND_HOST:-127.0.0.1}:${MCP_PORT:-8042}:3000"
     healthcheck:
       test: ["CMD-SHELL", "curl -sf http://localhost:3000/health || exit 1"]
       interval: 30s
@@ -50,7 +55,7 @@ services:
       DATABASE_URI: postgresql://${N8N_DB_USER:-n8n_user}:${N8N_DB_PASSWORD}@postgres:5432/${POSTGRES_DB:-lima}
     command: ["--access-mode=unrestricted", "--transport=sse"]
     ports:
-      - "${POSTGRES_MCP_PORT:-8700}:8000"
+      - "${BIND_HOST:-127.0.0.1}:${POSTGRES_MCP_PORT:-8700}:8000"
     healthcheck:
       test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/sse', timeout=2)\""]
       interval: 30s
@@ -73,7 +78,7 @@ services:
     volumes:
       - pgadmin_data:/var/lib/pgadmin
     ports:
-      - "${PGADMIN_PORT:-5050}:80"
+      - "${BIND_HOST:-127.0.0.1}:${PGADMIN_PORT:-5050}:80"
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:80/misc/ping || exit 1"]
       interval: 30s

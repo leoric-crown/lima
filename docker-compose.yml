@@ -12,6 +12,12 @@
 #
 # For development with n8n-mcp:
 #   docker compose -f docker-compose.yml -f docker-compose.dev.yml up -d
+#
+# Note: Some images use floating tags (:latest) for ease of updates.
+# See VERSIONS.md for tested versions and pinning instructions.
+#
+# Security: Services bind to BIND_HOST (default: 127.0.0.1, localhost only).
+# Set BIND_HOST=0.0.0.0 in .env to expose on LAN. Works with Tailscale serve.
 
 services:
   # PostgreSQL 17 with pgvector extension
@@ -30,7 +36,7 @@ services:
       - postgres_data:/var/lib/postgresql/data
       - ./init-data.sh:/docker-entrypoint-initdb.d/init-data.sh:ro
     ports:
-      - "${POSTGRES_PORT:-5432}:5432"
+      - "${BIND_HOST:-127.0.0.1}:${POSTGRES_PORT:-5432}:5432"
     healthcheck:
       test: ["CMD-SHELL", "pg_isready -U ${POSTGRES_USER:-postgres} -d ${POSTGRES_DB:-lima}"]
       interval: 10s
@@ -83,7 +89,7 @@ services:
       - ./data/notes:/data/notes
       - ./static:/static:ro
     ports:
-      - "${N8N_PORT:-5678}:5678"
+      - "${BIND_HOST:-127.0.0.1}:${N8N_PORT:-5678}:5678"
     healthcheck:
       test: ["CMD-SHELL", "wget -qO- http://localhost:5678/healthz || exit 1"]
       interval: 30s
@@ -100,7 +106,7 @@ services:
     depends_on:
       - n8n
     ports:
-      - "${CADDY_PORT:-8888}:8888"
+      - "${BIND_HOST:-127.0.0.1}:${CADDY_PORT:-8888}:8888"
     volumes:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./static:/lima:ro
@@ -124,7 +130,7 @@ services:
     volumes:
       - whisper_cache:/home/ubuntu/.cache/huggingface/hub
     ports:
-      - "${WHISPER_PORT:-9000}:8000"
+      - "${BIND_HOST:-127.0.0.1}:${WHISPER_PORT:-9000}:8000"
     healthcheck:
       test: ["CMD-SHELL", "python3 -c \"import urllib.request; urllib.request.urlopen('http://localhost:8000/health', timeout=5)\""]
       interval: 30s
