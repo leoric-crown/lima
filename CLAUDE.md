@@ -18,6 +18,10 @@ make status             # Check service health
 make dev-up             # Start with dev tools
 make dev-down           # Stop dev stack
 
+# Native GPU whisper (optional, faster than Docker)
+make whisper-native     # Start native whisper in background
+make whisper-native-stop # Stop native whisper
+
 # First-time setup
 make setup              # Interactive wizard (build, configure, seed)
 make seed               # Import workflows & credentials only (detects duplicates)
@@ -62,19 +66,15 @@ Uses IVFFlat index for cosine similarity search on embeddings.
 - **macOS**: Lightning Whisper MLX (Apple Silicon Metal)
 - **Linux/Windows**: faster-whisper with CUDA (NVIDIA GPU)
 
-**Quick start** (auto-detects platform):
+**Quick start** (runs in background, auto-detects platform):
 ```bash
-cd services/whisper-server
-uv sync
-./run_server.sh --port 9002  # macOS/Linux
-# or
-.\run_server.ps1 -Port 9002  # Windows PowerShell
+make whisper-native         # Start in background
+make whisper-native-status  # Check if running
+make whisper-native-logs    # Tail logs
+make whisper-native-stop    # Stop
 ```
 
-**Linux CUDA setup** (NVIDIA GPU required):
-```bash
-uv pip install nvidia-cudnn-cu12  # Required for GPU acceleration
-```
+**Linux CUDA note**: Requires NVIDIA GPU with drivers installed (`nvidia-smi` to verify).
 
 **Performance comparison** (`scripts/benchmark_whisper.py` - 42min file):
 - **macOS M4 Pro MLX**: 166x realtime (~15s) - **5.3x faster** than Docker, but slow cold start

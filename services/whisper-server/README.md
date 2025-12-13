@@ -7,16 +7,23 @@ Native GPU-accelerated Whisper transcription server for local development. Uses 
 
 ## Quick Start
 
+**From project root (recommended):**
 ```bash
-# macOS/Linux
-uv sync
-./run_server.sh --port 9002
+make whisper-native         # Start in background (uses NATIVE_WHISPER_PORT, default 9001)
+make whisper-native-status  # Check if running
+make whisper-native-logs    # View logs
+make whisper-native-stop    # Stop server
 ```
 
-```powershell
+**Or run directly (foreground):**
+```bash
+# macOS/Linux
+cd services/whisper-server
+./run_server.sh
+
 # Windows (PowerShell)
-uv sync
-.\run_server.ps1 -Port 9002
+cd services/whisper-server
+.\run_server.ps1
 ```
 
 The server provides an OpenAI-compatible API at `/v1/audio/transcriptions`.
@@ -29,10 +36,9 @@ The server provides an OpenAI-compatible API at `/v1/audio/transcriptions`.
 - Apple Silicon Mac (M1/M2/M3/M4)
 - macOS with Metal support
 
-**Installation:**
+**Run:**
 ```bash
-uv sync  # Installs lightning-whisper-mlx
-./run_server.sh --port 9002
+./run_server.sh  # Dependencies install automatically on first run
 ```
 
 **Performance Notes (M4 Pro 24GB, see benchmark):**
@@ -49,16 +55,13 @@ uv sync  # Installs lightning-whisper-mlx
 - NVIDIA drivers installed (verify with `nvidia-smi`)
 - CUDA 12.x compatible GPU
 
-**Installation:**
+**Run:**
 ```bash
-# 1. Install Python dependencies
-uv sync
-
-# 2. Install NVIDIA cuDNN for CUDA 12
-uv pip install nvidia-cudnn-cu12
-
-# 3. Verify CUDA is available
+# Verify NVIDIA drivers are working
 nvidia-smi
+
+# Start server (dependencies install automatically on first run)
+./run_server.sh
 ```
 
 **Performance (RTX 4090 on Linux, see benchmark):**

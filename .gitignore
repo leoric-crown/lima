@@ -13,6 +13,9 @@ scripts/reference
 # Data directories (audio, transcripts, notes)
 data/
 
+# Logs
+logs/
+
 # Test datasets
 LibriSpeech/
 
@@ -50,6 +53,9 @@ services/whisper-server/.venv/
 
 # Docker
 *.log
+
+# Native whisper server PID
+.whisper-native.pid
 
 # n8n exports (keep workflows/ but ignore temp files)
 workflows/*.tmp

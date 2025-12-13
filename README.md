@@ -239,9 +239,8 @@ For local development, LIMA provides platform-specific GPU-accelerated servers:
 
 **Quick start:**
 ```bash
-cd services/whisper-server
-uv sync
-./run_server.sh --port 9002  # macOS/Linux
+make whisper-native      # Start native GPU whisper in background
+make whisper-native-stop # Stop when done
 ```
 
 **Performance:** Docker Speaches (above) is recommended for production. Native servers are best for:
@@ -552,6 +551,8 @@ make seed          # Import workflows (detects duplicates, requires N8N_API_KEY)
 make dev-up        # Start with dev tools (n8n-mcp)
 make down          # Stop all services
 make status        # Check service health
+make whisper-native      # Optional: start native GPU whisper in background
+make whisper-native-stop # Stop native whisper
 
 # Direct docker compose commands
 docker compose logs -f                                 # Follow logs

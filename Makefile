@@ -4,7 +4,8 @@
 -include .env
 export
 
-.PHONY: up down dev-up dev-down update status hooks pre-commit seed setup
+.PHONY: up down dev-up dev-down update status hooks pre-commit seed setup \
+        whisper-native whisper-native-stop whisper-native-logs whisper-native-status
 
 up:
 	mkdir -p data/voice-memos/webhook data/audio-archive data/notes
@@ -71,3 +72,17 @@ seed:
 # setup: Interactive first-time setup (build, start, configure, seed)
 setup:
 	@uv run python scripts/setup.py
+
+# Native GPU whisper server (optional, faster than Docker whisper)
+# Runs on port 9001 by default (Docker whisper uses 9000)
+whisper-native:
+	@uv run python scripts/whisper-native.py start
+
+whisper-native-stop:
+	@uv run python scripts/whisper-native.py stop
+
+whisper-native-status:
+	@uv run python scripts/whisper-native.py status
+
+whisper-native-logs:
+	@uv run python scripts/whisper-native.py logs
