@@ -1,6 +1,6 @@
 # Insight Extraction Prompt
 
-Use this prompt in the voice memo workflow (SKlkiJPg7ybJVTWU) for the LLM node.
+Use this prompt in the Voice Memo Processor workflow for the LLM node.
 
 ---
 

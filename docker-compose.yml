@@ -92,7 +92,7 @@ services:
       start_period: 40s
 
   # Caddy - Reverse proxy to serve static html file for voice recorder
-  # Access recorder at: http://localhost:${CADDY_PORT}/webhook/recorder
+  # Access recorder at: http://localhost:${CADDY_PORT}/lima/recorder/
   caddy:
     image: caddy:2-alpine
     container_name: lima-caddy

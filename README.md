@@ -17,7 +17,7 @@
 > 2. Install [LM Studio](https://lmstudio.ai/) (beginner-friendly GUI) OR [Ollama](https://ollama.ai/) (CLI)
 > 3. Clone this repo, run `cp .env.example .env` and set secure passwords
 > 4. Run `make setup` - interactive wizard handles the rest (~5 minutes)
-> 5. See `docs/demo-voice-memo.md` for a quick walkthrough
+> 5. Open http://localhost:8888/lima/recorder/ and start recording!
 
 ### Prerequisites
 
@@ -179,7 +179,7 @@ The workflow is now listening for:
 - Files dropped in `data/voice-memos/`
 - Webhook requests at `http://localhost:5678/webhook/memo`
 
-See [docs/PRD-voice-memo-workflow.md](docs/PRD-voice-memo-workflow.md) for full architecture details, or [docs/demo-voice-memo.md](docs/demo-voice-memo.md) for a quick demo guide.
+See [BACKLOG.md](BACKLOG.md) for future enhancement ideas.
 
 ### 7. Test the Workflow
 
@@ -208,7 +208,7 @@ curl -X POST -F "file=@your-recording.mp3" http://localhost:5678/webhook/memo
 
 LIMA includes a browser-based voice recorder that lets you record and process memos without any file management:
 
-1. Open http://localhost:8888/webhook/recorder
+1. Open http://localhost:8888/lima/recorder/
 2. Click the microphone button to start recording
 3. Click again to stop and upload
 4. Watch the processing status
@@ -299,7 +299,7 @@ tailscale serve --bg --https 443 http://localhost:8888
 
 This makes the recorder accessible at:
 ```
-https://<your-machine-name>.your-tailnet.ts.net/webhook/recorder
+https://<your-machine-name>.your-tailnet.ts.net/lima/recorder/
 ```
 
 **Certificate Transparency Warning:**
@@ -447,7 +447,7 @@ This makes authentication permanent - ideal for personal servers you control.
 **5. Access LIMA remotely:**
 ```
 https://<tailscale-hostname>.your-tailnet.ts.net/                  # n8n UI
-https://<tailscale-hostname>.your-tailnet.ts.net/webhook/recorder  # Voice Recorder
+https://<tailscale-hostname>.your-tailnet.ts.net/lima/recorder/  # Voice Recorder
 https://<tailscale-hostname>.your-tailnet.ts.net/webhook/memo      # Voice memo webhook
 ```
 
@@ -503,7 +503,7 @@ tailscale status
 dig +short richifed.tail63f25b.ts.net
 
 # Test HTTPS access to LIMA server
-curl https://<your-lima-server>.tail63f25b.ts.net/webhook/recorder
+curl https://<your-lima-server>.tail63f25b.ts.net/lima/recorder/
 ```
 
 **Troubleshooting:**
@@ -535,7 +535,7 @@ The free tier (100 devices, 3 users) is plenty for personal use.
 
 | Service | URL | Purpose |
 |---------|-----|---------|
-| **Voice Recorder** | http://localhost:8888/webhook/recorder | Browser-based voice recording UI |
+| **Voice Recorder** | http://localhost:8888/lima/recorder/ | Browser-based voice recording UI |
 | n8n | http://localhost:5678 | Workflow automation |
 | Caddy | http://localhost:8888 | Reverse proxy (serves recorder HTML UI) |
 | Whisper | http://localhost:9000 | Speech-to-text API |
@@ -567,8 +567,9 @@ lima/
 ├── .env.example            # Environment template
 ├── init-data.sh            # PostgreSQL initialization
 ├── Makefile                # Convenience commands
-├── static/                 # Static assets served by n8n
-│   └── recorder.html       # Voice Recorder UI
+├── static/                 # Static assets served by Caddy at /lima/*
+│   └── recorder/           # Voice Recorder UI
+│       └── index.html
 ├── data/                   # Obsidian vault (open this folder in Obsidian)
 │   ├── voice-memos/        # Drop audio files here (auto-processed)
 │   │   └── webhook/        # Webhook uploads (not re-watched)

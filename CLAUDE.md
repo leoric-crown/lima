@@ -140,7 +140,7 @@ Ports are configurable in `.env`. Defaults shown:
 | Service | URL | Notes |
 |---------|-----|-------|
 | n8n | http://localhost:${N8N_PORT} | Workflow automation |
-| Voice Recorder | http://localhost:${CADDY_PORT}/webhook/recorder | Browser voice recording UI |
+| Voice Recorder | http://localhost:${CADDY_PORT}/lima/recorder/ | Browser voice recording UI |
 | whisper | http://localhost:${WHISPER_PORT} | OpenAI-compatible `/v1/audio/transcriptions` |
 | n8n-mcp | http://localhost:${MCP_PORT} | Dev only, requires auth header |
 | postgres-mcp | http://localhost:${POSTGRES_MCP_PORT}/sse | Dev only, SSE transport |

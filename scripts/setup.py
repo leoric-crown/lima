@@ -270,7 +270,7 @@ def main():
     print("Next steps:")
     print(f"  1. Start your local LLM server (LM Studio or Ollama)")
     print(f"  2. Activate a workflow at {n8n_url}/home/workflows")
-    print(f"  3. Open the Voice Recorder at http://localhost:{caddy_port}/webhook/recorder")
+    print(f"  3. Open the Voice Recorder at http://localhost:{caddy_port}/lima/recorder/")
     print()
     print("Useful commands:")
     print("  make logs     - View service logs")

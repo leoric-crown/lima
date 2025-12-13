@@ -2,56 +2,33 @@
 
 Beyond voice memo processing, LIMA's architecture enables various automation scenarios.
 
-> See also: [v0.3.0 Proposals](docs/v0.3.0-proposals.md) for detailed implementation plans.
+> See also: [BACKLOG.md](BACKLOG.md) for the development roadmap and enhancement ideas.
 
-## Current: Voice Memo Processing (v0.2.0)
-- Drop audio files or upload via webhook
-- Automatic transcription + AI extraction
-- Structured markdown notes in Obsidian
+## Current Features (v0.3.0)
 
-## Coming in v0.3.0: Voice Recorder UI
+### Voice Memo Processing
+- Drop audio files in `data/voice-memos/` or upload via webhook
+- Automatic transcription via local Whisper
+- AI-powered insight extraction (title, summary, action items, tags)
+- Structured markdown notes saved to Obsidian vault
 
-**The Flagship Feature:** A web interface that turns n8n into a complete voice-to-knowledge app.
+### Voice Recorder UI
+A browser-based interface that turns LIMA into a complete voice-to-knowledge app.
 
-```
-Open: http://lima.tailnet:5678/webhook/recorder
-                    ↓
-┌─────────────────────────────────────────┐
-│           🎙️ LIMA                        │
-│       Your Local AI Memory              │
-│                                         │
-│         [ ⏺ TAP TO RECORD ]             │
-│                                         │
-│  Processing...                          │
-│  ✓ Transcription complete (127 words)   │
-│  ⟳ Extracting insights...              │
-│                                         │
-│  📄 Team Standup Notes                  │
-│  - [ ] Review API spec (@sarah)         │
-│                                         │
-│  [Open in Obsidian]                     │
-└─────────────────────────────────────────┘
-```
+**Access:** http://localhost:8888/lima/recorder/ (or via Tailscale for remote access)
 
-**Why This Matters:**
+**Features:**
 - Zero friction — no file management, just click and talk
 - Mobile-first — works from phone browser via Tailscale
 - Live feedback — watch your voice become structured notes
-- Self-contained — one URL does everything
+- Multimodal detection — recognizes audio, images, video, PDF uploads
 
-### Also in v0.3.0: Conversational Memory Query
+### Multimodal Input Detection
+The workflow detects input type and routes accordingly:
+- **Audio:** Full transcription + insight extraction pipeline
+- **Other formats:** Prepared for future processing (images, video, PDF)
 
-Ask your notes questions via voice:
-
-```
-You record: "What did I discuss with Sarah about the budget?"
-                    ↓
-LIMA searches your entire note history semantically
-                    ↓
-Returns: AI-generated answer with [[wikilinks]] to source notes
-```
-
-**The pitch:** "ChatGPT knows everything except your life. LIMA knows nothing except everything YOU'VE ever said."
+---
 
 ## Potential Use Cases
 
@@ -97,7 +74,7 @@ Link to Obsidian note with plant care history
 - Extract audio from Zoom/Meet recordings
 - Generate structured meeting notes with action items
 - Auto-tag by project/team
-- Multi-speaker diarization (v0.4.0+): "What did Sarah commit to?"
+- Multi-speaker diarization (future): "What did Sarah commit to?"
 
 ### Context-Aware Routing
 **Concept:** Single inbox, intelligent routing to specialized workflows.
@@ -162,13 +139,12 @@ LIMA embodies [local-first software principles](https://www.inkandswitch.com/loc
 
 > "Another computer should never prevent you from working." — Ink & Switch
 
-## The Demo That Would Go Viral
+## The Pitch
 
-**"From Voice Memo to AI Answer in 30 Seconds":**
+**"ChatGPT knows everything except your life. LIMA knows nothing except everything YOU'VE ever said."**
 
-1. Record: "What meetings have I had about the budget this month?"
-2. Watch LIMA process (transcription → search → synthesis)
-3. Get: AI-generated answer with clickable citations to source notes
-4. All locally, no API calls, full audit trail
-
-**The pitch:** "ChatGPT knows everything except your life. LIMA knows nothing except everything YOU'VE ever said."
+**The demo:**
+1. Record a voice memo on your phone
+2. Watch LIMA process it in real-time (transcription → extraction → save)
+3. Open Obsidian and see your structured note appear
+4. All locally, no cloud, full privacy
