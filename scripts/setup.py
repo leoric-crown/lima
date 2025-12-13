@@ -185,7 +185,7 @@ def main():
         time.sleep(2)
     else:
         print(" TIMEOUT")
-        print(f"ERROR: n8n did not start. Check logs with: make logs")
+        print(f"ERROR: n8n did not start. Check logs with: docker compose logs -f")
         sys.exit(1)
 
     print(f"✓ n8n is running at {n8n_url}")
@@ -273,9 +273,9 @@ def main():
     print(f"  3. Open the Voice Recorder at http://localhost:{caddy_port}/lima/recorder/")
     print()
     print("Useful commands:")
-    print("  make logs     - View service logs")
-    print("  make status   - Check service health")
-    print("  make down     - Stop all services")
+    print("  docker compose logs -f  - View service logs")
+    print("  make status             - Check service health")
+    print("  make down               - Stop all services")
     print()
 
 

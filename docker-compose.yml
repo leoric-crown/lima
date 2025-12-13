@@ -105,7 +105,7 @@ services:
       - ./Caddyfile:/etc/caddy/Caddyfile:ro
       - ./static:/lima:ro
     healthcheck:
-      test: ["CMD-SHELL", "wget --spider -q http://localhost:8888/ || exit 0"]
+      test: ["CMD-SHELL", "wget --spider -q http://localhost:8888/lima/recorder/ || exit 1"]
       interval: 30s
       timeout: 5s
       retries: 3

@@ -12,17 +12,11 @@ LIMA (Local Intelligence Meeting Assistant) is a local-first, privacy-focused me
 # Production stack (postgres + n8n + whisper)
 make up                 # Start production services
 make down               # Stop all services
-make logs               # Follow logs
 make status             # Check service health
 
 # Development stack (adds n8n-mcp, postgres-mcp, pgAdmin)
 make dev-up             # Start with dev tools
 make dev-down           # Stop dev stack
-
-# Database operations
-make db-shell           # PostgreSQL shell (psql)
-make db-backup          # Backup to timestamped file
-make db-restore FILE=backup.sql
 
 # First-time setup
 make setup              # Interactive wizard (build, configure, seed)
@@ -30,6 +24,12 @@ make seed               # Import workflows & credentials only (detects duplicate
 
 # Rebuild custom n8n image after Dockerfile changes
 docker compose build n8n
+
+# View logs
+docker compose logs -f
+
+# Database shell
+docker compose exec postgres psql -U postgres -d lima
 ```
 
 ## Architecture

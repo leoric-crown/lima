@@ -551,10 +551,11 @@ make up            # Start production stack
 make seed          # Import workflows (detects duplicates, requires N8N_API_KEY)
 make dev-up        # Start with dev tools (n8n-mcp)
 make down          # Stop all services
-make logs          # Follow logs
 make status        # Check service health
-make db-shell      # Access PostgreSQL shell
-make db-backup     # Backup database
+
+# Direct docker compose commands
+docker compose logs -f                                 # Follow logs
+docker compose exec postgres psql -U postgres -d lima  # Database shell
 ```
 
 ## Project Structure

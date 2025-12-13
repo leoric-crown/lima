@@ -11,7 +11,7 @@ up:
 	docker compose up -d
 
 down:
-	docker compose down
+	docker compose -f docker-compose.yml -f docker-compose.dev.yml down
 
 dev-up:
 	mkdir -p data/voice-memos/webhook data/audio-archive data/notes
