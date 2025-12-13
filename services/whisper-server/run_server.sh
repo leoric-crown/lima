@@ -10,6 +10,27 @@ set -e
 SCRIPT_DIR="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 cd "$SCRIPT_DIR"
 
+# Load .env from project root if it exists
+PROJECT_ROOT="$(cd "$SCRIPT_DIR/../.." && pwd)"
+if [ -f "$PROJECT_ROOT/.env" ]; then
+    # Export only the variables we care about (avoid shellcheck issues with dynamic source)
+    while IFS='=' read -r key value; do
+        # Skip comments and empty lines
+        [[ -z "$key" || "$key" =~ ^# ]] && continue
+        # Remove surrounding quotes from value
+        value="${value%\"}"
+        value="${value#\"}"
+        value="${value%\'}"
+        value="${value#\'}"
+        # Only export specific variables we need
+        case "$key" in
+            BIND_HOST|NATIVE_WHISPER_PORT)
+                export "$key=$value"
+                ;;
+        esac
+    done < "$PROJECT_ROOT/.env"
+fi
+
 # Detect operating system
 OS="$(uname -s)"
 
@@ -17,7 +38,12 @@ case "$OS" in
     Darwin*)
         echo "Detected macOS - using Lightning Whisper MLX"
         echo "============================================================"
-        exec uv run server_mlx.py "$@"
+
+        # Use env vars if set, otherwise use backwards-compatible defaults
+        HOST="${BIND_HOST:-0.0.0.0}"
+        PORT="${NATIVE_WHISPER_PORT:-9001}"
+
+        exec uv run server_mlx.py --host "$HOST" --port "$PORT" "$@"
         ;;
     Linux*)
         echo "Detected Linux - using faster-whisper with CUDA"
@@ -53,7 +79,11 @@ case "$OS" in
             echo "  Falling back to CPU mode..."
         fi
 
-        exec uv run server_cuda.py "$@"
+        # Use env vars if set, otherwise use backwards-compatible defaults
+        HOST="${BIND_HOST:-0.0.0.0}"
+        PORT="${NATIVE_WHISPER_PORT:-9001}"
+
+        exec uv run server_cuda.py --host "$HOST" --port "$PORT" "$@"
         ;;
     *)
         echo "Error: Unsupported operating system: $OS"

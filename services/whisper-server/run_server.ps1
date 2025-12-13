@@ -2,19 +2,49 @@
 # Sets up CUDA library paths and runs the server with NVIDIA GPU acceleration
 
 param(
-    [string]$Port = "9001",
-    [string]$ServerHost = "0.0.0.0",
+    [string]$Port,
+    [string]$ServerHost,
     [string]$Model,
     [string]$Device,
     [string]$ComputeType
 )
 
+# Load .env from project root if it exists
+$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+$ProjectRoot = Split-Path -Parent (Split-Path -Parent $ScriptDir)
+$EnvFile = Join-Path $ProjectRoot ".env"
+
+if (Test-Path $EnvFile) {
+    Get-Content $EnvFile | ForEach-Object {
+        # Skip comments and empty lines
+        if ($_ -match '^\s*#' -or $_ -match '^\s*$') { return }
+        # Parse KEY=VALUE
+        if ($_ -match '^([^=]+)=(.*)$') {
+            $key = $Matches[1].Trim()
+            $value = $Matches[2].Trim()
+            # Remove surrounding quotes
+            $value = $value -replace '^["'']|["'']$', ''
+            # Only set specific variables we need
+            if ($key -in @('BIND_HOST', 'NATIVE_WHISPER_PORT')) {
+                [Environment]::SetEnvironmentVariable($key, $value, 'Process')
+            }
+        }
+    }
+}
+
+# Use env vars if set, otherwise use backwards-compatible defaults
+if (-not $Port) {
+    $Port = if ($env:NATIVE_WHISPER_PORT) { $env:NATIVE_WHISPER_PORT } else { "9001" }
+}
+if (-not $ServerHost) {
+    $ServerHost = if ($env:BIND_HOST) { $env:BIND_HOST } else { "0.0.0.0" }
+}
+
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host "LIMA Faster-Whisper Server (CUDA) - Windows" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
 
-# Get the script directory
-$ScriptDir = Split-Path -Parent $MyInvocation.MyCommand.Path
+# Change to script directory
 Set-Location $ScriptDir
 
 # Find cuDNN and cuBLAS DLLs in venv
