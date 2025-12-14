@@ -108,6 +108,8 @@ make seed            # Import workflows (safe to re-run)
 docker compose logs -f         # View all logs
 docker compose logs n8n -f     # View n8n logs
 docker compose logs whisper -f # View Whisper (Speaches) logs
+
+lms log stream --source server # View LM Studio Server logs
 ```
 
 ---

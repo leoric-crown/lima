@@ -46,6 +46,27 @@ The native server runs on port 9001 by default (configurable via `NATIVE_WHISPER
 | **Linux** | faster-whisper CUDA | NVIDIA GPU + drivers (`nvidia-smi` to verify) |
 | **Windows** | faster-whisper CUDA | NVIDIA GPU + drivers |
 
+<details>
+<summary><b>Linux/Windows: Verify NVIDIA drivers</b></summary>
+
+Run `nvidia-smi` in a terminal (Linux) or PowerShell/cmd (Windows):
+
+```
++-----------------------------------------------------------------------------------------+
+| NVIDIA-SMI 580.105.08             Driver Version: 580.105.08     CUDA Version: 13.0     |
++-----------------------------------------+------------------------+----------------------+
+| GPU  Name                 Persistence-M | Bus-Id          Disp.A | Volatile Uncorr. ECC |
+| Fan  Temp   Perf          Pwr:Usage/Cap |           Memory-Usage | GPU-Util  Compute M. |
+|=========================================+========================+======================|
+|   0  NVIDIA GeForce RTX 4090        Off |   00000000:09:00.0  On |                  Off |
+|  0%   48C    P8             18W /  450W |    1775MiB /  24564MiB |     19%      Default |
++-----------------------------------------+------------------------+----------------------+
+```
+
+If this fails, install or update your NVIDIA drivers.
+
+</details>
+
 > **Windows note:** Run the native whisper server in **PowerShell or cmd**, not WSL. CUDA requires direct access to Windows GPU drivers. WSL2 can access GPUs but requires [additional configuration](https://docs.nvidia.com/cuda/wsl-user-guide/) that's beyond LIMA's default setup.
 
 ---

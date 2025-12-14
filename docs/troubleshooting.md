@@ -13,6 +13,7 @@ docker compose logs --tail=50
 
 # Follow logs in real-time
 docker compose logs -f
+lms log stream --source server # View LM Studio Server logs
 ```
 
 ---

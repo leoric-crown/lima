@@ -254,4 +254,6 @@ If something didn't work, check [Troubleshooting](troubleshooting.md) or run:
 ```bash
 make status          # Check service health
 docker compose logs  # View recent logs
+
+lms log stream --source server # View LM Studio Server logs
 ```

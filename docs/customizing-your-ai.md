@@ -56,6 +56,9 @@ Click the **gear icon** next to your loaded model in **My Models** to access per
 Settings on MacBook Pro M4 (24GB RAM):
 ![LM Studio model settings on MacBook Pro M4 (24GB RAM)](images/lm-studio-model-settings-mac-m4.png)
 
+Settings on Linux (RTX 4090 24GB VRAM):
+![LM Studio model settings on Linux (RTX 4090 24GB VRAM)](images/lm-studio-model-settings-linux-rtx-4090.png)
+
 ### 4. Start the Server
 
 Go to **Developer → Start Server**. LM Studio runs on `http://localhost:1234`.
