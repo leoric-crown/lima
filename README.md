@@ -39,39 +39,23 @@ N8N_ENCRYPTION_KEY=<openssl rand -hex 32>
 MCP_AUTH_TOKEN=<openssl rand -hex 32>
 ```
 
-### 2. Start Services
+### 2. Run Setup
 
 ```bash
-make up
+make setup
 ```
 
-> **Note:** This starts transcription services. You'll also need your LLM running (Step 5) for AI insights.
+The interactive wizard will:
+- Build and start Docker services
+- Wait for n8n to be ready
+- Guide you through creating an n8n API key
+- Configure your LLM (LM Studio or Ollama)
+- Import the Voice Memo workflows
 
-### 3. Set Up n8n
-
-1. Open http://localhost:5678 and create your account
-2. Go to **Settings → Usage and plan** → Unlock free features (enter email)
-3. Go to **Settings → API** → Create API Key
-4. Add the key to `.env` as `N8N_API_KEY`
-
-> **Tip:** `make setup` handles API key capture automatically during the interactive wizard.
-
-### 4. Import the Workflows
-
-```bash
-make seed
-```
-
-This imports two workflows from `workflows/seed/`:
-- **Voice Memo Processor (Speaches)** - Uses Docker Whisper (recommended)
-- **Voice Memo Processor (CUDA/MLX)** - Uses native GPU whisper (optional, see [Native Whisper](docs/native-whisper.md))
-
-> **Note:** `make seed` checks for duplicates by workflow name. If you rename a workflow, running `make seed` again won't overwrite your changes.
-
-### 5. Start Your LLM and Record
+### 3. Activate and Record
 
 1. Start LM Studio (Developer → Start Server) or ensure Ollama is running
-2. In n8n, open **Voice Memo Processor (Speaches)** and toggle **Active**
+2. In n8n (http://localhost:5678), open **Voice Memo Processor (Speaches)** and toggle **Active**
 3. Open http://localhost:8888/lima/recorder/
 4. Click the microphone, speak, click again to process
 
@@ -115,12 +99,15 @@ The workflow:
 ## Common Commands
 
 ```bash
+make setup           # Interactive first-time setup
 make up              # Start services
 make down            # Stop services
 make status          # Check health
 make seed            # Import workflows (safe to re-run)
 
-docker compose logs -f   # View logs
+docker compose logs -f         # View all logs
+docker compose logs n8n -f     # View n8n logs
+docker compose logs whisper -f # View Whisper (Speaches) logs
 ```
 
 ---
