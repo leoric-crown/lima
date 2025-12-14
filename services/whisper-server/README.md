@@ -9,19 +9,25 @@ Native GPU-accelerated Whisper transcription server for local development. Uses 
 
 **From project root (recommended):**
 ```bash
-make whisper-native         # Start in background (uses NATIVE_WHISPER_PORT, default 9001)
+make whisper-native         # Start in background (port from NATIVE_WHISPER_PORT, default 9001)
 make whisper-native-status  # Check if running
 make whisper-native-logs    # View logs
 make whisper-native-stop    # Stop server
 ```
 
-**Or run directly (foreground):**
+These commands use `scripts/whisper-native.py` - a cross-platform manager that handles:
+- Background process management (start/stop/status)
+- Log file management (`logs/whisper-native.log`)
+- PID tracking for clean shutdown
+- Loading `NATIVE_WHISPER_HOST` and `NATIVE_WHISPER_PORT` from `.env`
+
+**Or run directly in foreground (for debugging):**
 ```bash
 # macOS/Linux
 cd services/whisper-server
 ./run_server.sh
 
-# Windows (PowerShell)
+# Windows (PowerShell) - must run in PowerShell, not WSL
 cd services/whisper-server
 .\run_server.ps1
 ```
@@ -266,22 +272,39 @@ uv run python benchmark_whisper.py --native-port 9002
 
 ## Development
 
+**Architecture:**
+```
+Makefile commands
+       ↓
+scripts/whisper-native.py    # Cross-platform manager (background, logs, PID)
+       ↓
+services/whisper-server/
+├── run_server.sh            # macOS/Linux launcher (auto-detects OS)
+├── run_server.ps1           # Windows launcher (PowerShell)
+       ↓
+├── server_mlx.py            # macOS: Lightning Whisper MLX
+└── server_cuda.py           # Linux/Windows: faster-whisper CUDA
+```
+
 **File Structure:**
 ```
+scripts/
+└── whisper-native.py        # Process manager (start/stop/status/logs)
+
 services/whisper-server/
-├── run_server.sh          # Launcher for macOS/Linux (auto-detects OS)
-├── run_server.ps1         # Launcher for Windows (PowerShell)
-├── server_mlx.py          # macOS MLX implementation
-├── server_cuda.py         # Linux/Windows CUDA implementation
-├── pyproject.toml         # macOS dependencies (MLX)
-└── README.md              # This file
+├── run_server.sh            # Launcher for macOS/Linux (auto-detects OS)
+├── run_server.ps1           # Launcher for Windows (PowerShell)
+├── server_mlx.py            # macOS MLX implementation
+├── server_cuda.py           # Linux/Windows CUDA implementation
+├── pyproject.toml           # Python dependencies
+└── README.md                # This file
 ```
 
 **Adding to n8n Workflows:**
 
 Point your n8n HTTP Request nodes to:
 ```
-http://localhost:9002/v1/audio/transcriptions
+http://localhost:${NATIVE_WHISPER_PORT}/v1/audio/transcriptions
 ```
 
-Compatible with OpenAI Whisper API format.
+Default port is `9001`. Compatible with OpenAI Whisper API format.

@@ -12,8 +12,6 @@ This guide walks you through setting up LIMA and processing your first voice mem
 | **Disk** | 10GB free | 20GB+ (models can be large) |
 | **GPU VRAM** | Not required | 6GB+ for faster LLM inference |
 
-> **First run downloads:** Docker images (~2GB), Whisper model (~150MB), and your chosen LLM (2-12GB depending on model).
-
 ### Software
 
 Before starting, install:
@@ -48,7 +46,7 @@ cd lima
 cp .env.example .env
 ```
 
-Edit `.env` and set secure passwords (generate with the commands shown):
+Edit `.env` and set secure passwords (On Linux/MacOS, generate with the commands shown. On Windows, use a password manager or the same commands in WSL2):
 
 ```bash
 # Required - generate secure values:
@@ -193,6 +191,7 @@ Before recording, ensure your LLM is running:
 ```bash
 ollama pull llama3.2
 # Ollama runs automatically on http://localhost:11434
+# You can manually start it with `ollama serve` if it doesn't start automatically
 ```
 
 See [Customizing Your AI](customizing-your-ai.md) for recommended settings.

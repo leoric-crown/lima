@@ -56,8 +56,6 @@ Click the **gear icon** next to your loaded model in **My Models** to access per
 Settings on MacBook Pro M4 (24GB RAM):
 ![LM Studio model settings on MacBook Pro M4 (24GB RAM)](images/lm-studio-model-settings-mac-m4.png)
 
-See [Context Windows Explained](#context-windows-explained) below for details on sizing.
-
 ### 4. Start the Server
 
 Go to **Developer → Start Server**. LM Studio runs on `http://localhost:1234`.
@@ -90,13 +88,10 @@ Tool calling fails for `gpt-oss-20b` with "Unexpected end of content" parsing er
 - Returns empty `tool_calls: []` and `content: ""`
 - n8n throws "Unexpected end of JSON input"
 
-**Workaround (Linux/macOS):** Pin Harmony to 0.3.4 in LM Studio settings.
+**Workaround** If LM Studio has it cached from previous download, uninstall 0.3.5 to use 0.3.4 in LM Studio Runtime settings.
 
-**Workaround (Windows):** LM Studio on Windows doesn't retain older parser versions. Use another model or try Ollama.
+**Recommended alternative:** Ollama with the same model could work better, but requires more configuration of context windows, KV-cache, etc.: `ollama run gpt-oss:20b`
 
-**Recommended alternative:** Ollama with the same model works reliably: `ollama run gpt-oss:20b`
-
-Related issues: [#1077](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1077), [#942](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/942)
 </details>
 
 ---
@@ -147,16 +142,6 @@ If you used `make seed` with `LOCAL_LLM_PORT=11434`, the credential is configure
 ## Context Windows Explained
 
 The context window determines how much text the model can process at once. Larger contexts handle longer transcripts but use more memory.
-
-### Sizing Guidelines
-
-| Context Size | Words | Transcript Length | VRAM (approx.) |
-|--------------|-------|-------------------|----------------|
-| 8K tokens | ~6,000 | ~20 minutes | Base + 2GB |
-| 16K tokens | ~12,000 | ~40 minutes | Base + 4GB |
-| 32K tokens | ~24,000 | ~80 minutes | Base + 8GB |
-
-**Rule of thumb:** VRAM consumption roughly doubles when context doubles.
 
 ### What Happens When Context Is Exceeded?
 
