@@ -2,10 +2,10 @@
 
 ## Available MCP Servers
 
-| Server | URL | Transport |
-|--------|-----|-----------|
-| **n8n-mcp** | `http://localhost:8042/mcp` | HTTP |
-| **postgres-mcp** | `http://localhost:8700/sse` | SSE |
+| Server | URL | Transport | Source |
+|--------|-----|-----------|--------|
+| **n8n-mcp** | `http://localhost:8042/mcp` | HTTP | [czlonkowski/n8n-mcp](https://github.com/czlonkowski/n8n-mcp) |
+| **postgres-mcp** | `http://localhost:8700/sse` | SSE | [crystaldba/postgres-mcp](https://github.com/crystaldba/postgres-mcp) |
 
 ## Claude Code CLI Setup
 
@@ -15,7 +15,8 @@ cd /path/to/lima
 source .env
 
 # Add n8n-mcp (workflow development)
-claude mcp add-json lima-n8n '{"type":"http","url":"http://localhost:8042/mcp","headers":{"Authorization":"Bearer '"$MCP_AUTH_TOKEN"'"}}'
+claude mcp add-json lima-n8n \
+  '{"type":"http","url":"http://localhost:8042/mcp","headers":{"Authorization":"Bearer '"$MCP_AUTH_TOKEN"'"}}'
 
 # Add postgres-mcp (database access)
 claude mcp add --transport sse lima-postgres http://localhost:8700/sse

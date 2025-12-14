@@ -72,8 +72,8 @@ lima/
 - **caddy**: Reverse proxy serving Voice Recorder UI
 
 **Development** (`docker-compose.dev.yml` overlay):
-- **n8n-mcp**: AI assistant for n8n workflow development (HTTP transport, port 8042)
-- **postgres-mcp**: Direct database access via MCP (SSE transport, port 8700)
+- **n8n-mcp**: AI assistant for n8n workflow development (HTTP transport, port 8042) - [source](https://github.com/czlonkowski/n8n-mcp)
+- **postgres-mcp**: Direct database access via MCP (SSE transport, port 8700) - [source](https://github.com/crystaldba/postgres-mcp)
 - **pgadmin**: Database UI
 
 ### Database Schema

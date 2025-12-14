@@ -18,8 +18,8 @@ This file documents the Docker image versions that have been tested and confirme
 
 | Service | Image | Tested Version | Notes |
 |---------|-------|----------------|-------|
-| n8n-mcp | `ghcr.io/czlonkowski/n8n-mcp:latest` | (see digest below) | Floating tag |
-| postgres-mcp | `crystaldba/postgres-mcp:latest` | (see digest below) | Floating tag |
+| [n8n-mcp](https://github.com/czlonkowski/n8n-mcp) | `ghcr.io/czlonkowski/n8n-mcp:latest` | (see digest below) | Floating tag |
+| [postgres-mcp](https://github.com/crystaldba/postgres-mcp) | `crystaldba/postgres-mcp:latest` | (see digest below) | Floating tag |
 | pgAdmin | `dpage/pgadmin4:latest` | (see digest below) | Floating tag |
 
 ## Tested Image Digests
