@@ -6,7 +6,10 @@ param(
     [string]$ServerHost,
     [string]$Model,
     [string]$Device,
-    [string]$ComputeType
+    [string]$ComputeType,
+    [switch]$Background,
+    [string]$LogFile,
+    [string]$PidFile
 )
 
 # Load .env from project root if it exists
@@ -16,15 +19,11 @@ $EnvFile = Join-Path $ProjectRoot ".env"
 
 if (Test-Path $EnvFile) {
     Get-Content $EnvFile | ForEach-Object {
-        # Skip comments and empty lines
         if ($_ -match '^\s*#' -or $_ -match '^\s*$') { return }
-        # Parse KEY=VALUE
         if ($_ -match '^([^=]+)=(.*)$') {
             $key = $Matches[1].Trim()
             $value = $Matches[2].Trim()
-            # Remove surrounding quotes
             $value = $value -replace '^["'']|["'']$', ''
-            # Only set specific variables we need
             if ($key -in @('NATIVE_WHISPER_HOST', 'NATIVE_WHISPER_PORT')) {
                 [Environment]::SetEnvironmentVariable($key, $value, 'Process')
             }
@@ -40,6 +39,34 @@ if (-not $ServerHost) {
     $ServerHost = if ($env:NATIVE_WHISPER_HOST) { $env:NATIVE_WHISPER_HOST } else { "0.0.0.0" }
 }
 
+# Handle background mode: re-launch self hidden with output to log file
+if ($Background) {
+    $scriptPath = $MyInvocation.MyCommand.Path
+    $argList = @(
+        "-ExecutionPolicy", "Bypass",
+        "-File", $scriptPath,
+        "-Port", $Port,
+        "-ServerHost", $ServerHost
+    )
+    if ($Model) { $argList += "-Model"; $argList += $Model }
+    if ($Device) { $argList += "-Device"; $argList += $Device }
+    if ($ComputeType) { $argList += "-ComputeType"; $argList += $ComputeType }
+
+    # Start hidden process with output redirected to log file
+    # Use cmd wrapper to merge stderr into stdout (PowerShell can't redirect both to same file)
+    $cmdArgs = "/c powershell $($argList -join ' ') > `"$LogFile`" 2>&1"
+    $proc = Start-Process -FilePath "cmd" -ArgumentList $cmdArgs -WindowStyle Hidden -PassThru
+
+    # Write PID to file for tracking
+    if ($PidFile) {
+        $proc.Id | Out-File -FilePath $PidFile -Encoding ascii -NoNewline
+    }
+
+    Write-Host "Started in background (PID: $($proc.Id))"
+    Write-Host "  Logs: $LogFile"
+    exit 0
+}
+
 Write-Host "============================================================" -ForegroundColor Cyan
 Write-Host "LIMA Faster-Whisper Server (CUDA) - Windows" -ForegroundColor Cyan
 Write-Host "============================================================" -ForegroundColor Cyan
@@ -47,12 +74,21 @@ Write-Host "============================================================" -Foreg
 # Change to script directory
 Set-Location $ScriptDir
 
-# Find cuDNN and cuBLAS DLLs in venv
 $VenvPath = Join-Path $ScriptDir ".venv"
 $CudnnLib = Join-Path $VenvPath "Lib\site-packages\nvidia\cudnn\bin"
 $CublasLib = Join-Path $VenvPath "Lib\site-packages\nvidia\cublas\bin"
 
-# Add DLLs to PATH (Windows equivalent of LD_LIBRARY_PATH)
+# Step 1: Sync dependencies
+Write-Host "Syncing dependencies..." -ForegroundColor Cyan
+& uv sync
+
+# Step 2: Install CUDA libraries if not present
+if (-not (Test-Path $CudnnLib)) {
+    Write-Host "Installing CUDA libraries (nvidia-cudnn-cu12)..." -ForegroundColor Cyan
+    & uv pip install nvidia-cudnn-cu12
+}
+
+# Step 3: Add CUDA DLLs to PATH
 $PathsToAdd = @()
 if (Test-Path $CudnnLib) { $PathsToAdd += $CudnnLib }
 if (Test-Path $CublasLib) { $PathsToAdd += $CublasLib }
@@ -60,29 +96,31 @@ if (Test-Path $CublasLib) { $PathsToAdd += $CublasLib }
 if ($PathsToAdd.Count -gt 0) {
     $NewPath = ($PathsToAdd -join ";")
     $env:PATH = "$NewPath;$env:PATH"
-    Write-Host "✓ Added CUDA library paths for GPU acceleration:" -ForegroundColor Green
+    Write-Host "Added CUDA library paths for GPU acceleration:" -ForegroundColor Green
     foreach ($p in $PathsToAdd) {
         Write-Host "  - $p" -ForegroundColor Gray
     }
 } else {
-    Write-Host "⚠ Warning: CUDA libraries not found." -ForegroundColor Yellow
-    Write-Host "  Run: uv pip install nvidia-cudnn-cu12" -ForegroundColor Yellow
+    Write-Host "Warning: CUDA libraries not found after install." -ForegroundColor Yellow
     Write-Host "  Falling back to CPU mode..." -ForegroundColor Yellow
 }
 
 # Build command arguments
-$Args = @("--port", $Port, "--host", $ServerHost)
+$ServerArgs = @("--port", $Port, "--host", $ServerHost)
 
 if ($Model) {
-    $Args += @("--model", $Model)
+    $ServerArgs += "--model"
+    $ServerArgs += $Model
 }
 if ($Device) {
-    $Args += @("--device", $Device)
+    $ServerArgs += "--device"
+    $ServerArgs += $Device
 }
 if ($ComputeType) {
-    $Args += @("--compute-type", $ComputeType)
+    $ServerArgs += "--compute-type"
+    $ServerArgs += $ComputeType
 }
 
 # Run the server
 Write-Host ""
-& uv run server_cuda.py @Args
+& uv run server_cuda.py @ServerArgs

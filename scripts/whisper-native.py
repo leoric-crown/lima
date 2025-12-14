@@ -83,49 +83,57 @@ def start():
     # Ensure logs directory exists
     LOG_DIR.mkdir(parents=True, exist_ok=True)
 
-    # Determine script to run
     system = platform.system()
+    port = os.environ.get("NATIVE_WHISPER_PORT", "9001")
+
+    # Windows: let PowerShell handle its own backgrounding
     if system == "Windows":
         script = WHISPER_DIR / "run_server.ps1"
-        cmd = ["powershell", "-ExecutionPolicy", "Bypass", "-File", str(script)]
-    else:
-        script = WHISPER_DIR / "run_server.sh"
-        cmd = [str(script)]
+        if not script.exists():
+            print(f"Error: {script} not found")
+            return 1
 
+        print("Starting native whisper server...")
+
+        # Call PowerShell with -Background flag - it handles everything
+        cmd = [
+            "powershell", "-ExecutionPolicy", "Bypass",
+            "-File", str(script),
+            "-Background",
+            "-LogFile", str(LOG_FILE),
+            "-PidFile", str(PID_FILE),
+        ]
+        result = subprocess.run(cmd, cwd=WHISPER_DIR)
+
+        if result.returncode == 0:
+            print(f"  Stop: make whisper-native-stop")
+            return 0
+        else:
+            print(f"Failed to start. Check logs: {LOG_FILE}")
+            return 1
+
+    # Unix: use start_new_session to detach
+    script = WHISPER_DIR / "run_server.sh"
     if not script.exists():
         print(f"Error: {script} not found")
         return 1
 
     print("Starting native whisper server...")
 
-    # Open log file for output (append mode to preserve history)
+    # Open log file for output
     log_handle = open(LOG_FILE, "a")
     log_handle.write(f"\n{'='*60}\n")
     log_handle.write(f"Starting whisper server at {time.strftime('%Y-%m-%d %H:%M:%S')}\n")
     log_handle.write(f"{'='*60}\n")
     log_handle.flush()
 
-    # Start process in background
-    if system == "Windows":
-        # Windows: use CREATE_NEW_PROCESS_GROUP and DETACHED_PROCESS
-        CREATE_NEW_PROCESS_GROUP = 0x00000200
-        DETACHED_PROCESS = 0x00000008
-        process = subprocess.Popen(
-            cmd,
-            stdout=log_handle,
-            stderr=subprocess.STDOUT,
-            cwd=WHISPER_DIR,
-            creationflags=CREATE_NEW_PROCESS_GROUP | DETACHED_PROCESS,
-        )
-    else:
-        # Unix: use start_new_session to detach
-        process = subprocess.Popen(
-            cmd,
-            stdout=log_handle,
-            stderr=subprocess.STDOUT,
-            cwd=WHISPER_DIR,
-            start_new_session=True,
-        )
+    process = subprocess.Popen(
+        [str(script)],
+        stdout=log_handle,
+        stderr=subprocess.STDOUT,
+        cwd=WHISPER_DIR,
+        start_new_session=True,
+    )
 
     # Save PID
     PID_FILE.write_text(str(process.pid))
@@ -134,14 +142,12 @@ def start():
     time.sleep(2)
 
     if get_pid():
-        port = os.environ.get("NATIVE_WHISPER_PORT", "9001")
         print(f"Started (PID: {process.pid}, port: {port})")
         print(f"  Logs: make whisper-native-logs")
         print(f"  Stop: make whisper-native-stop")
         return 0
     else:
         print(f"Failed to start. Check logs: {LOG_FILE}")
-        # Show last few lines of log
         if LOG_FILE.exists():
             print("\n--- Log output ---")
             print(LOG_FILE.read_text()[-2000:])

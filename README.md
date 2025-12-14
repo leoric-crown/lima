@@ -105,14 +105,15 @@ The Voice Memo workflow uses a local LLM for extracting insights from transcript
 4. Start the local server: **Developer → Start Server** (runs on `http://localhost:1234`)
 
 <details>
-<summary><b>⚠️ Known Issue: Harmony 0.3.5 + gpt-oss-20b on Linux</b></summary>
+<summary><b>⚠️ Known Issue: Harmony 0.3.5 + gpt-oss-20b</b></summary>
 
 **Issue**: Tool calling fails for `gpt-oss-20b` with "Unexpected end of content" parsing errors.
 
 | Platform | Harmony 0.3.4 | Harmony 0.3.5 |
 |----------|---------------|---------------|
+| macOS    | ✅ Works       | ✅ Works       |
 | Linux    | ✅ Works       | ❌ Fails       |
-| macOS    | ✅ Works       | ⚠️ Flaky (retries help) |
+| Windows  | ✅ Works       | ❌ Fails       |
 
 **Symptoms**:
 - Model generates valid JSON in `<|message|>` section
@@ -120,13 +121,15 @@ The Voice Memo workflow uses a local LLM for extracting insights from transcript
 - Returns empty `tool_calls: []` and `content: ""`
 - n8n throws "Unexpected end of JSON input"
 
-**Workaround**: Pin Harmony to 0.3.4 in LM Studio settings (keep CUDA runtime current)
+**Workaround (Linux/macOS)**: Pin Harmony to 0.3.4 in LM Studio settings (keep CUDA runtime current)
+
+**Workaround (Windows)**: LM Studio on Windows doesn't retain older parser versions, so pinning isn't available. Use Ollama instead.
 
 **Related issues**:
 - [#1077](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1077) - v0.3.30 broke tool calling
 - [#942](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/942) - Harmony parsing errors
 
-**Alternative**: Same model works fine via Ollama (`ollama run gpt-oss:20b`)
+**Recommended alternative**: Use Ollama instead - same model works fine (`ollama run gpt-oss:20b`)
 
 </details>
 

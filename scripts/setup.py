@@ -174,10 +174,13 @@ def main():
 
     # Step 2: Start services
     print_step(2, "Starting services")
+    # Create data directories
+    for d in ["data/voice-memos/webhook", "data/audio-archive", "data/notes"]:
+        Path(d).mkdir(parents=True, exist_ok=True)
     run("docker compose up -d")
 
-    print("Waiting for n8n to start", end="", flush=True)
-    for _ in range(60):
+    print("Waiting for n8n to start (max 30s)", end="", flush=True)
+    for _ in range(15):
         if check_n8n_ready(n8n_url):
             print(" ✓")
             break
@@ -185,7 +188,13 @@ def main():
         time.sleep(2)
     else:
         print(" TIMEOUT")
-        print(f"ERROR: n8n did not start. Check logs with: docker compose logs -f")
+        print()
+        print("ERROR: n8n did not start within 30 seconds.")
+        print("Last 30 lines of n8n logs:")
+        print("-" * 40)
+        logs = run("docker compose logs n8n --tail 30", check=False, capture=True)
+        print(logs.stdout or logs.stderr or "(no logs available)")
+        print("-" * 40)
         sys.exit(1)
 
     print(f"✓ n8n is running at {n8n_url}")
@@ -258,7 +267,7 @@ def main():
     # Re-load env to pick up changes
     load_dotenv()
 
-    result = run("make seed", check=False)
+    result = run("uv run python scripts/seed.py", check=False)
     if result.returncode != 0:
         print("WARNING: Seed may have had issues. Check output above.")
 
