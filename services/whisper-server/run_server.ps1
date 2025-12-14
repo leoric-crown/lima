@@ -25,19 +25,19 @@ if (Test-Path $EnvFile) {
             # Remove surrounding quotes
             $value = $value -replace '^["'']|["'']$', ''
             # Only set specific variables we need
-            if ($key -in @('BIND_HOST', 'NATIVE_WHISPER_PORT')) {
+            if ($key -in @('NATIVE_WHISPER_HOST', 'NATIVE_WHISPER_PORT')) {
                 [Environment]::SetEnvironmentVariable($key, $value, 'Process')
             }
         }
     }
 }
 
-# Use env vars if set, otherwise use backwards-compatible defaults
+# Use env vars if set, otherwise use defaults
 if (-not $Port) {
     $Port = if ($env:NATIVE_WHISPER_PORT) { $env:NATIVE_WHISPER_PORT } else { "9001" }
 }
 if (-not $ServerHost) {
-    $ServerHost = if ($env:BIND_HOST) { $env:BIND_HOST } else { "0.0.0.0" }
+    $ServerHost = if ($env:NATIVE_WHISPER_HOST) { $env:NATIVE_WHISPER_HOST } else { "0.0.0.0" }
 }
 
 Write-Host "============================================================" -ForegroundColor Cyan

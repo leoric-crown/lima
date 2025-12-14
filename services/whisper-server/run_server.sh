@@ -24,7 +24,7 @@ if [ -f "$PROJECT_ROOT/.env" ]; then
         value="${value#\'}"
         # Only export specific variables we need
         case "$key" in
-            BIND_HOST|NATIVE_WHISPER_PORT)
+            NATIVE_WHISPER_HOST|NATIVE_WHISPER_PORT)
                 export "$key=$value"
                 ;;
         esac
@@ -39,8 +39,8 @@ case "$OS" in
         echo "Detected macOS - using Lightning Whisper MLX"
         echo "============================================================"
 
-        # Use env vars if set, otherwise use backwards-compatible defaults
-        HOST="${BIND_HOST:-0.0.0.0}"
+        # Use env vars if set, otherwise use defaults
+        HOST="${NATIVE_WHISPER_HOST:-0.0.0.0}"
         PORT="${NATIVE_WHISPER_PORT:-9001}"
 
         exec uv run server_mlx.py --host "$HOST" --port "$PORT" "$@"
@@ -79,8 +79,8 @@ case "$OS" in
             echo "  Falling back to CPU mode..."
         fi
 
-        # Use env vars if set, otherwise use backwards-compatible defaults
-        HOST="${BIND_HOST:-0.0.0.0}"
+        # Use env vars if set, otherwise use defaults
+        HOST="${NATIVE_WHISPER_HOST:-0.0.0.0}"
         PORT="${NATIVE_WHISPER_PORT:-9001}"
 
         exec uv run server_cuda.py --host "$HOST" --port "$PORT" "$@"

@@ -14,7 +14,7 @@
 
 > **👋 Coming from the talk?** Here's the minimal path to get LIMA running:
 > 1. Install [Docker Desktop](https://docker.com)
-> 2. Install [LM Studio](https://lmstudio.ai/) (beginner-friendly GUI) OR [Ollama](https://ollama.ai/) (CLI)
+> 2. Install [LM Studio](https://lmstudio.ai/) (beginner-friendly GUI) OR [Ollama](https://ollama.ai/) (CLI). Download a model (e.g., `gpt-oss-20b`, `Qwen2.5-7B-Instruct`, etc.)
 > 3. Clone this repo, run `cp .env.example .env` and set secure passwords
 > 4. Run `make setup` - interactive wizard handles the rest (~5 minutes)
 > 5. Open http://localhost:8888/lima/recorder/ and start recording!
@@ -103,6 +103,32 @@ The Voice Memo workflow uses a local LLM for extracting insights from transcript
    | Only Keep Last JIT Loaded Model | ON | Prevents memory issues |
 
 4. Start the local server: **Developer → Start Server** (runs on `http://localhost:1234`)
+
+<details>
+<summary><b>⚠️ Known Issue: Harmony 0.3.5 + gpt-oss-20b on Linux</b></summary>
+
+**Issue**: Tool calling fails for `gpt-oss-20b` with "Unexpected end of content" parsing errors.
+
+| Platform | Harmony 0.3.4 | Harmony 0.3.5 |
+|----------|---------------|---------------|
+| Linux    | ✅ Works       | ❌ Fails       |
+| macOS    | ✅ Works       | ⚠️ Flaky (retries help) |
+
+**Symptoms**:
+- Model generates valid JSON in `<|message|>` section
+- LM Studio's Harmony formatter fails to parse the tool call
+- Returns empty `tool_calls: []` and `content: ""`
+- n8n throws "Unexpected end of JSON input"
+
+**Workaround**: Pin Harmony to 0.3.4 in LM Studio settings (keep CUDA runtime current)
+
+**Related issues**:
+- [#1077](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1077) - v0.3.30 broke tool calling
+- [#942](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/942) - Harmony parsing errors
+
+**Alternative**: Same model works fine via Ollama (`ollama run gpt-oss:20b`)
+
+</details>
 
 ---
 

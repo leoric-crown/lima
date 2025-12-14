@@ -115,7 +115,8 @@ Optional:
 - `N8N_PORT`: External port for n8n (default: 5678)
 - `LOCAL_LLM_PORT`: Port for local LLM (default: 1234 for LM Studio, set to 11434 for Ollama)
 - `WHISPER_MODEL`: Default `Systran/faster-whisper-base`, options include tiny/small/medium/large-v3
-- `NATIVE_WHISPER_PORT`: Port for native CUDA/MLX whisper server (replaces default 9001 in workflows)
+- `NATIVE_WHISPER_HOST`: Bind address for native whisper (default: 0.0.0.0)
+- `NATIVE_WHISPER_PORT`: Port for native CUDA/MLX whisper server (default: 9001)
 
 ## Audio Processing
 

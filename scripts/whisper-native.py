@@ -39,7 +39,7 @@ def load_env():
                     key, _, value = line.partition("=")
                     key = key.strip()
                     value = value.strip().strip("\"'")
-                    if key in ("BIND_HOST", "NATIVE_WHISPER_PORT"):
+                    if key in ("NATIVE_WHISPER_HOST", "NATIVE_WHISPER_PORT"):
                         os.environ.setdefault(key, value)
 
 

@@ -248,7 +248,7 @@ def main():
     # Check for native whisper
     print()
     if confirm("Are you using the native GPU whisper server?", default=False):
-        port = prompt("Enter native whisper port", "9002")
+        port = prompt("Enter native whisper port", "9001")
         update_env_file("NATIVE_WHISPER_PORT", port)
         print(f"✓ Set NATIVE_WHISPER_PORT={port}")
 

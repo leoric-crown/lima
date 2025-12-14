@@ -141,7 +141,8 @@
     <!-- Error State -->
     <div id="error" class="hidden">
       <div class="bg-red-900/50 border border-red-500 rounded-lg p-4 mb-4">
-        <p class="text-red-300" id="error-message">Something went wrong</p>
+        <p class="text-red-300 font-medium" id="error-message">Something went wrong</p>
+        <p class="text-red-400/80 text-sm mt-2 hidden" id="error-hint"></p>
       </div>
       <button id="retry-btn" class="bg-gray-700 hover:bg-gray-600 px-4 py-2 rounded-lg transition-colors">
         Try Again
@@ -173,6 +174,7 @@
     const newRecordingBtn = document.getElementById('new-recording');
     const errorDiv = document.getElementById('error');
     const errorMessage = document.getElementById('error-message');
+    const errorHint = document.getElementById('error-hint');
     const retryBtn = document.getElementById('retry-btn');
     const uploadBtn = document.getElementById('upload-btn');
     const fileInput = document.getElementById('file-input');
@@ -321,17 +323,22 @@
         if (!response.ok) {
           // Try to parse as JSON, but handle HTML error pages gracefully
           const text = await response.text();
-          let message = `Upload failed (${response.status})`;
+          let errorResponse = null;
           try {
-            const error = JSON.parse(text);
-            message = error.message || message;
+            errorResponse = JSON.parse(text);
           } catch {
-            // Response was HTML (error page), not JSON
+            // Not JSON - check for HTML error page
             if (text.includes('<!DOCTYPE') || text.includes('<html')) {
-              message = `Server error (${response.status}). Is the webhook endpoint running?`;
+              throw new Error(`Server error (${response.status}). Is the webhook endpoint running?`);
             }
+            throw new Error(`Upload failed (${response.status})`);
           }
-          throw new Error(message);
+          // Handle structured error response with hint
+          if (errorResponse?.status === 'error') {
+            showError(errorResponse);
+            return;
+          }
+          throw new Error(errorResponse?.message || `Upload failed (${response.status})`);
         }
 
         const result = await response.json();
@@ -353,11 +360,26 @@
       resultPreview.innerHTML = `<p>Note saved: <code>${fileName}</code></p>`;
     }
 
-    function showError(message) {
+    function showError(messageOrError, hint = null) {
       statusDiv.classList.add('hidden');
       recorderDiv.classList.add('hidden');
       errorDiv.classList.remove('hidden');
-      errorMessage.textContent = message;
+
+      // Handle structured error objects or plain strings
+      if (typeof messageOrError === 'object' && messageOrError !== null) {
+        errorMessage.textContent = messageOrError.message || 'Something went wrong';
+        hint = messageOrError.hint || hint;
+      } else {
+        errorMessage.textContent = messageOrError;
+      }
+
+      // Show hint if provided
+      if (hint) {
+        errorHint.textContent = hint;
+        errorHint.classList.remove('hidden');
+      } else {
+        errorHint.classList.add('hidden');
+      }
     }
 
     function resetUI() {
@@ -371,6 +393,7 @@
       statusDiv.classList.add('hidden');
       resultDiv.classList.add('hidden');
       errorDiv.classList.add('hidden');
+      errorHint.classList.add('hidden');
       instructions.textContent = 'Tap to start recording';
       fileInput.value = ''; // Clear file input
     }

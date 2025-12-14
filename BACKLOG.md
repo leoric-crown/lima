@@ -7,7 +7,7 @@
 
 ---
 
-## Current State: v0.3.0
+## Current State: v0.3.1
 
 ### Voice Recorder UI ✓
 **Status:** Basic version complete - browser-based recording with webhook upload works.
@@ -17,12 +17,25 @@
 - [x] Webhook upload to LIMA processor
 - [x] Multimodal input detection (audio/image/video/PDF)
 - [x] Caddy reverse proxy for microphone access
+- [x] Structured error handling with hints (v0.3.1)
 
 **What's next:**
+- [ ] Health check endpoint - verify LM Studio and Whisper (native/Docker) availability before recording
 - [ ] Live processing status polling (currently fire-and-forget)
 - [ ] Inline markdown preview of results
 - [ ] Recent notes panel
 - [ ] File tree view showing processed memos
+
+### Workflow Unification
+**Status:** Planned
+
+**Problem:** Currently maintaining separate workflow variants for Speaches (Docker) vs native GPU whisper (CUDA/MLX). This doubles maintenance burden.
+
+**Proposed solution:**
+- Single unified workflow with intelligent fallback
+- Try native whisper first (faster), fall back to Docker Speaches if unavailable
+- Implement as subworkflow for clean separation
+- Health check determines which endpoint to use at runtime
 
 ---
 
@@ -34,7 +47,7 @@ Following the three "aha moments" from the talk: **Accessible → Practical → 
 
 *Polish the UX, make it delightful*
 
-#### File Tree Enhancement (DEMO READY)
+#### File Tree Enhancement
 **Vision:** Add a file browser to the Voice Recorder UI showing processed notes and archived audio.
 **Why:** Makes the UI self-contained - record, process, and browse all in one place.
 **Status:** Planned for demo via n8n-mcp live coding session.

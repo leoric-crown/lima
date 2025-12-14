@@ -2,7 +2,7 @@
 
 This file documents the Docker image versions that have been tested and confirmed working with LIMA.
 
-**Last updated:** December 2025
+**Last updated:** December 13, 2025
 
 ## Production Stack
 

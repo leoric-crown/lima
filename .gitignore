@@ -3,6 +3,7 @@ demo*
 
 # Environment and secrets
 .env
+.env.bak
 *.env.local
 
 # Script Test Data
