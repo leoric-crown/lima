@@ -27,7 +27,20 @@ app = FastAPI(
 # Model configuration
 # Available: tiny, base, small, medium, large-v1, large-v2, large-v3
 # Distilled: distil-small.en, distil-medium.en, distil-large-v2, distil-large-v3
-DEFAULT_MODEL = os.environ.get("WHISPER_MODEL", "base")
+
+def normalize_model_name(model: str) -> str:
+    """Normalize model name by stripping HuggingFace prefixes.
+
+    Converts 'Systran/faster-whisper-base' -> 'base' for consistency.
+    faster-whisper accepts both formats, but we normalize for cleaner logs.
+    """
+    prefixes = ["Systran/faster-whisper-", "openai/whisper-"]
+    for prefix in prefixes:
+        if model.startswith(prefix):
+            return model[len(prefix):]
+    return model
+
+DEFAULT_MODEL = normalize_model_name(os.environ.get("WHISPER_MODEL", "base"))
 COMPUTE_TYPE = os.environ.get("COMPUTE_TYPE", "float16")  # float16, int8, int8_float16
 DEVICE = os.environ.get("DEVICE", "cuda")  # cuda or cpu
 

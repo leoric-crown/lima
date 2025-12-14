@@ -27,7 +27,20 @@ app = FastAPI(
 # Model configuration
 # Available: tiny, base, small, medium, large, large-v2, large-v3
 # Distilled: distil-small.en, distil-medium.en, distil-large-v2, distil-large-v3
-DEFAULT_MODEL = os.environ.get("WHISPER_MODEL", "base")
+
+def normalize_model_name(model: str) -> str:
+    """Normalize model name by stripping HuggingFace prefixes.
+
+    Converts 'Systran/faster-whisper-base' -> 'base' for compatibility
+    with lightning-whisper-mlx which expects short model names.
+    """
+    prefixes = ["Systran/faster-whisper-", "openai/whisper-"]
+    for prefix in prefixes:
+        if model.startswith(prefix):
+            return model[len(prefix):]
+    return model
+
+DEFAULT_MODEL = normalize_model_name(os.environ.get("WHISPER_MODEL", "base"))
 BATCH_SIZE = int(os.environ.get("WHISPER_BATCH_SIZE", "12"))
 
 # Lazy-load model on first request
