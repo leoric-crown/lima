@@ -4,7 +4,7 @@ This file provides guidance to Claude Code (claude.ai/code) when working with co
 
 ## Project Overview
 
-LIMA (Local Intelligence Meeting Assistant) is a local-first, privacy-focused meeting intelligence tool. It provides speech-to-text transcription, workflow automation, and semantic search capabilities using a Docker-based stack.
+LIMA (Local Intelligent Memo Assistant) is a local-first, privacy-focused voice memo tool. It provides speech-to-text transcription, workflow automation, and semantic search capabilities using a Docker-based stack.
 
 ## Common Commands
 
@@ -36,6 +36,31 @@ docker compose logs -f
 docker compose exec postgres psql -U postgres -d lima
 ```
 
+## Project Structure
+
+```
+lima/
+├── docker-compose.yml      # Production stack
+├── docker-compose.dev.yml  # Dev overlay (n8n-mcp, pgAdmin)
+├── n8n.Dockerfile          # Custom n8n image with ffmpeg
+├── Caddyfile               # Caddy reverse proxy config
+├── .env.example            # Environment template
+├── init-data.sh            # PostgreSQL initialization
+├── Makefile                # Convenience commands
+├── static/                 # Static assets served by Caddy at /lima/*
+│   └── recorder/           # Voice Recorder UI
+│       └── index.html
+├── data/                   # Obsidian vault (open in Obsidian)
+│   ├── voice-memos/        # Drop audio files here (auto-processed)
+│   │   └── webhook/        # Webhook uploads (not re-watched)
+│   ├── audio-archive/      # Processed originals (linked from notes)
+│   └── notes/              # Markdown output
+├── services/
+│   └── whisper-server/     # Native GPU whisper servers (optional)
+├── workflows/              # n8n workflow exports
+└── docs/                   # User documentation
+```
+
 ## Architecture
 
 ### Docker Services
@@ -44,6 +69,7 @@ docker compose exec postgres psql -U postgres -d lima
 - **postgres**: PostgreSQL 17 with pgvector extension for embeddings
 - **n8n**: Custom image (`n8n.Dockerfile`) with ffmpeg for audio processing
 - **whisper**: Speaches (faster-whisper) for speech-to-text
+- **caddy**: Reverse proxy serving Voice Recorder UI
 
 **Development** (`docker-compose.dev.yml` overlay):
 - **n8n-mcp**: AI assistant for n8n workflow development (HTTP transport, port 8042)
@@ -62,36 +88,17 @@ Uses IVFFlat index for cosine similarity search on embeddings.
 
 ### Native Whisper Alternative
 
-`services/whisper-server/` provides platform-specific native GPU servers for local development:
+`services/whisper-server/` provides platform-specific native GPU servers:
 - **macOS**: Lightning Whisper MLX (Apple Silicon Metal)
 - **Linux/Windows**: faster-whisper with CUDA (NVIDIA GPU)
 
-**Quick start** (runs in background, auto-detects platform):
-```bash
-make whisper-native         # Start in background
-make whisper-native-status  # Check if running
-make whisper-native-logs    # Tail logs
-make whisper-native-stop    # Stop
-```
-
-**Linux CUDA note**: Requires NVIDIA GPU with drivers installed (`nvidia-smi` to verify).
-
-**Performance comparison** (`scripts/benchmark_whisper.py` - 42min file):
-- **macOS M4 Pro MLX**: 166x realtime (~15s) - **5.3x faster** than Docker, but slow cold start
-- **Linux RTX 4090 CUDA**: 71x realtime (~36s) - **4.3x faster** than Docker
-- **Windows RTX 4090 CUDA**: 39x realtime (~66s) - **2.8x faster** than Docker
-- **Docker Speaches**: 14-33x realtime depending on platform - consistent, no warmup
-
-**Recommendation**:
-- **Production**: Docker Speaches for consistency and predictable cold starts
-- **Development**: Native GPU for 3-5x speedup (macOS MLX fastest, but needs warmup handling)
-
-See `services/whisper-server/README.md` for detailed benchmarks and setup.
+See `docs/native-whisper.md` for details and benchmarks.
 
 ## MCP Server Integration
 
-Connect MCP servers for AI-assisted development:
+Connect MCP servers for AI-assisted development. See `docs/MCP_SETUP.md` for full details.
 
+Quick setup:
 ```bash
 source .env
 
@@ -119,22 +126,6 @@ Optional:
 - `NATIVE_WHISPER_HOST`: Bind address for native whisper (default: 0.0.0.0)
 - `NATIVE_WHISPER_PORT`: Port for native CUDA/MLX whisper server (default: 9001)
 
-## Audio Processing
-
-n8n has no native audio processing nodes. The custom n8n image includes ffmpeg, which you invoke via the **Execute Command** node:
-
-```bash
-# Split into 15-minute chunks
-ffmpeg -i /data/audio/input.mp3 -f segment -segment_time 900 -c copy /data/audio/chunks/chunk_%03d.mp3
-
-# Optimize for transcription
-ffmpeg -i /data/audio/input.mp3 -ac 1 -ar 16000 -b:a 64k /data/audio/optimized.mp3
-```
-
-Optional: Community nodes like `n8n-nodes-ffmpeg` or `n8n-nodes-mediafx` provide UI wrappers but require separate installation.
-
-Long files (>60 min) should be chunked for parallel transcription. See `docs/audio-processing-guide.md` for detailed patterns.
-
 ## Service URLs
 
 Ports are configurable in `.env`. Defaults shown:
@@ -160,22 +151,35 @@ The `data/` folder is an Obsidian vault for viewing processed notes:
 
 Benchmark test files are in `scripts/test_audio/` (not mounted to containers).
 
-## LM Studio Configuration
+## Audio Processing
 
-If using LM Studio as the LLM backend, enable these settings in the **Developer** tab for reliable n8n integration:
+n8n has no native audio processing nodes. The custom n8n image includes ffmpeg, which you invoke via the **Execute Command** node:
 
-| Setting | Value | Why |
-|---------|-------|-----|
-| Just-in-Time Model Loading | ON | Loads model on first request (no manual loading) |
-| Auto unload unused JIT loaded models | ON | Frees memory when idle |
-| Max idle TTL | 5 minutes | Balance between responsiveness and memory |
-| Only Keep Last JIT Loaded Model | ON | Prevents memory issues with multiple models |
+```bash
+# Split into 15-minute chunks
+ffmpeg -i /data/audio/input.mp3 -f segment -segment_time 900 -c copy /data/audio/chunks/chunk_%03d.mp3
 
-This ensures the model loads automatically when n8n sends a request and unloads when idle, preventing memory exhaustion.
+# Optimize for transcription
+ffmpeg -i /data/audio/input.mp3 -ac 1 -ar 16000 -b:a 64k /data/audio/optimized.mp3
+```
 
-**n8n Credential Setup:**
-- Name: `LM Studio Local`
-- API Key: `lm-studio` (any non-empty string)
-- Base URL: `http://host.docker.internal:1234/v1` (macOS/Windows) - on Linux, `make seed` auto-replaces with host IP
+Long files (>60 min) should be chunked for parallel transcription. See `docs/audio-processing-guide.md` for detailed patterns.
 
-**Note:** n8n's Alpine container doesn't have `find -printf`, use `stat -c %Y` instead
+## LLM Configuration
+
+For LM Studio, Ollama, and context window configuration, see `docs/customizing-your-ai.md`.
+
+**Note:** n8n's Alpine container doesn't have `find -printf`, use `stat -c %Y` instead.
+
+## Documentation
+
+- `docs/index.md` - Documentation hub
+- `docs/getting-started.md` - Setup walkthrough
+- `docs/customizing-your-ai.md` - LLM configuration
+- `docs/using-lima-on-your-phone.md` - Tailscale remote access
+- `docs/native-whisper.md` - GPU acceleration
+- `docs/where-is-my-data.md` - File locations and backups
+- `docs/recipes.md` - Use case examples
+- `docs/troubleshooting.md` - Common issues
+- `docs/audio-processing-guide.md` - Long recordings and ffmpeg
+- `docs/MCP_SETUP.md` - MCP server setup for AI assistants

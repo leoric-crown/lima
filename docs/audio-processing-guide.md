@@ -4,6 +4,50 @@ This document covers how LIMA handles audio files, including long recordings (1-
 
 ---
 
+## Why ffmpeg?
+
+n8n has no native audio processing nodes. To handle audio files, LIMA uses a **custom n8n Docker image** that includes ffmpeg.
+
+**What ffmpeg enables:**
+- Splitting long recordings into chunks for parallel transcription
+- Converting between audio formats (FLAC, WAV, MP3, etc.)
+- Extracting audio from video files
+- Optimizing audio for transcription (mono, 16kHz)
+
+### Custom n8n Image
+
+The image is defined in `n8n.Dockerfile`:
+
+```dockerfile
+FROM docker.n8n.io/n8nio/n8n:latest
+USER root
+RUN apk add --no-cache ffmpeg
+USER node
+```
+
+### Building the Image
+
+The image builds automatically on first `docker compose up`. To rebuild after Dockerfile changes:
+
+```bash
+docker compose build n8n
+docker compose up -d n8n
+```
+
+### Using ffmpeg in Workflows
+
+Use the **Execute Command** node in n8n to run ffmpeg:
+
+```bash
+# Optimize for transcription (mono, 16kHz, low bitrate)
+ffmpeg -i /data/audio/input.mp3 -ac 1 -ar 16000 -b:a 64k /data/audio/optimized.mp3
+
+# Extract audio from video
+ffmpeg -i /data/audio/meeting.mp4 -vn -acodec libmp3lame -q:a 2 /data/audio/meeting.mp3
+```
+
+---
+
 ## Table of Contents
 
 1. [Speaches/Faster-Whisper Capabilities](#speachesfaster-whisper-capabilities)

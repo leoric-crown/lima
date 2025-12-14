@@ -1,44 +1,38 @@
-# LIMA - Local Intelligence Meeting Assistant
+# LIMA - Local Intelligent Memo Assistant
 
 > Local-first, privacy-focused voice memo to knowledge workflow
 
-**What is LIMA?** A complete voice-to-knowledge pipeline that runs entirely on your machine. Record voice memos, get AI-powered transcription and insight extraction, all without sending data to the cloud.
+**What is LIMA?** A voice-to-knowledge pipeline that runs entirely on your machine. Record voice memos, get AI-powered transcription and insight extraction, all without sending data to the cloud.
 
 **Why local-first?**
-- **Privacy**: Your voice recordings and notes never leave your machine
+- **Privacy**: Your voice recordings never leave your machine
 - **No subscriptions**: No API costs, no monthly fees
 - **Works offline**: Once set up, no internet required
 - **You own your data**: Plain markdown files, open formats
 
-## Quick Start
+---
 
-> **👋 Coming from the talk?** Here's the minimal path to get LIMA running:
-> 1. Install [Docker Desktop](https://docker.com)
-> 2. Install [LM Studio](https://lmstudio.ai/) (beginner-friendly GUI) OR [Ollama](https://ollama.ai/) (CLI). Download a model (e.g., `gpt-oss-20b`, `Qwen2.5-7B-Instruct`, etc.)
-> 3. Clone this repo, run `cp .env.example .env` and set secure passwords
-> 4. Run `make setup` - interactive wizard handles the rest (~5 minutes)
-> 5. Open http://localhost:8888/lima/recorder/ and start recording!
+## Quick Start
 
 ### Prerequisites
 
-- Docker & Docker Compose
-- Local LLM server (one of):
-  - [LM Studio](https://lmstudio.ai/) (recommended) - GUI app with OpenAI-compatible API
-  - [Ollama](https://ollama.ai/) - CLI-based, simpler setup
+- **Docker** ([Desktop](https://docker.com) for personal use, [Engine](https://docs.docker.com/engine/install/) for Linux/corporate)
+- **Local LLM**: [LM Studio](https://lmstudio.ai/) (recommended) or [Ollama](https://ollama.ai/)
+- **uv**: [astral.sh/uv](https://astral.sh/uv/) - Python package manager for LIMA's scripts
+- **make**: Usually pre-installed (see [Getting Started](docs/getting-started.md) if missing)
 
-> **Note**: You *could* use OpenAI, Anthropic, or other cloud providers instead of a local LLM, but LIMA focuses on the **local-first** approach where everything runs on your hardware. Whisper is included via Docker - no separate installation needed.
+> **Corporate laptops:** Docker Desktop requires a [paid license](https://www.docker.com/pricing/) for larger organizations. See [Getting Started](docs/getting-started.md) for alternatives.
 
-### 1. Setup Environment
+### 1. Clone and Configure
 
 ```bash
+git clone https://github.com/leoric-crown/lima.git
 cd lima
 cp .env.example .env
 ```
 
 Edit `.env` and set secure passwords:
-
 ```bash
-# Required - generate secure values:
 POSTGRES_PASSWORD=<openssl rand -base64 32>
 N8N_DB_PASSWORD=<openssl rand -base64 32>
 N8N_ENCRYPTION_KEY=<openssl rand -hex 32>
@@ -47,632 +41,128 @@ MCP_AUTH_TOKEN=<openssl rand -hex 32>
 
 ### 2. Start Services
 
-**Production** (postgres + n8n + whisper):
 ```bash
 make up
 ```
 
-> The custom n8n image (with ffmpeg) builds automatically on first run.
+> **Note:** This starts transcription services. You'll also need your LLM running (Step 5) for AI insights.
 
-**Development** (adds n8n-mcp for AI-assisted workflow development):
-```bash
-make dev-up
-```
+### 3. Set Up n8n
 
-### 3. Configure n8n
+1. Open http://localhost:5678 and create your account
+2. Go to **Settings → Usage and plan** → Unlock free features (enter email)
+3. Go to **Settings → API** → Create API Key
+4. Add the key to `.env` as `N8N_API_KEY`
 
-1. Open http://localhost:5678
-2. Create your admin account
-3. **Unlock free paid features**:
-   - Go to **Settings → Usage and plan**
-   - Click "Unlock selected paid features for free"
-   - Enter your email to receive a free lifetime license key
-   - Check your inbox for the license email from n8n
-   - Click the activation button in the email (or copy the license key and paste it in the UI)
-   - Once successful, you should see "You're on the Community Edition"
-   - Features unlocked: workflow history, advanced debugging, execution search, folders
-4. Generate API key: **Settings → API → Create API Key**
-5. Add key to `.env`:
-   ```
-   N8N_API_KEY=your_generated_key
-   ```
-6. Restart n8n-mcp to enable workflow management:
-   ```bash
-   docker compose -f docker-compose.yml -f docker-compose.dev.yml restart n8n-mcp
-   ```
+> **Tip:** `make setup` handles API key capture automatically during the interactive wizard.
 
-### 4. Configure Local LLM
-
-The Voice Memo workflow uses a local LLM for extracting insights from transcripts. This is where LIMA's **local-first** philosophy shines - your transcripts are processed by an AI running on your own hardware.
-
-> **Cloud alternative**: If you prefer, you can use OpenAI, Anthropic, or other providers by creating their respective credentials in n8n. But for true privacy, we recommend local inference.
-
----
-
-**Option A: LM Studio (recommended)**
-
-1. Download and install [LM Studio](https://lmstudio.ai/)
-2. Download a model (e.g., `Qwen2.5-7B-Instruct` or similar)
-3. Configure recommended settings in **Developer** tab:
-
-   | Setting | Value | Why |
-   |---------|-------|-----|
-   | Just-in-Time Model Loading | ON | Loads model on first request |
-   | Auto unload unused JIT loaded models | ON | Frees memory when idle |
-   | Max idle TTL | 5 minutes | Balance responsiveness vs memory |
-   | Only Keep Last JIT Loaded Model | ON | Prevents memory issues |
-
-4. Start the local server: **Developer → Start Server** (runs on `http://localhost:1234`)
-
-<details>
-<summary><b>⚠️ Known Issue: Harmony 0.3.5 + gpt-oss-20b</b></summary>
-
-**Issue**: Tool calling fails for `gpt-oss-20b` with "Unexpected end of content" parsing errors.
-
-| Platform | Harmony 0.3.4 | Harmony 0.3.5 |
-|----------|---------------|---------------|
-| macOS    | ✅ Works       | ✅ Works       |
-| Linux    | ✅ Works       | ❌ Fails       |
-| Windows  | ✅ Works       | ❌ Fails       |
-
-**Symptoms**:
-- Model generates valid JSON in `<|message|>` section
-- LM Studio's Harmony formatter fails to parse the tool call
-- Returns empty `tool_calls: []` and `content: ""`
-- n8n throws "Unexpected end of JSON input"
-
-**Workaround (Linux/macOS)**: Pin Harmony to 0.3.4 in LM Studio settings (keep CUDA runtime current)
-
-**Workaround (Windows)**: LM Studio on Windows doesn't retain older parser versions, so pinning isn't available. Use Ollama instead.
-
-**Related issues**:
-- [#1077](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/1077) - v0.3.30 broke tool calling
-- [#942](https://github.com/lmstudio-ai/lmstudio-bug-tracker/issues/942) - Harmony parsing errors
-
-**Recommended alternative**: Use Ollama instead - same model works fine (`ollama run gpt-oss:20b`)
-
-</details>
-
----
-
-**Option B: Ollama**
-
-1. Install Ollama: `curl -fsSL https://ollama.com/install.sh | sh`
-2. Pull a model: `ollama pull llama3.2`
-3. Ollama runs automatically on `http://localhost:11434`
-
----
-
-### 5. Seed Workflows & Credentials
-
-LIMA includes a seed command to import the Voice Memo Processor workflow and pre-configured LM Studio credential.
-
-> **Note:** `make seed` detects existing workflows by name and prompts before creating duplicates. Safe to run multiple times.
-
-**Step 1: Create an API key**
-
-1. In n8n UI: **Settings → API → Create API Key**
-2. Add to `.env`:
-   ```bash
-   echo "N8N_API_KEY=your_key_here" >> .env
-   ```
-
-**Step 2: Run seed**
+### 4. Import the Workflows
 
 ```bash
-source .env
 make seed
 ```
 
-<details>
-<summary><b>Manual import (fallback)</b></summary>
+This imports two workflows from `workflows/seed/`:
+- **Voice Memo Processor (Speaches)** - Uses Docker Whisper (recommended)
+- **Voice Memo Processor (CUDA/MLX)** - Uses native GPU whisper (optional, see [Native Whisper](docs/native-whisper.md))
 
-If `make seed` fails:
-1. Open `workflows/seed/voice-memo-v0.3.0.json` in a text editor
-2. Copy the entire JSON contents
-3. In n8n, create a new workflow and press `Ctrl+V` / `Cmd+V`
-4. Create credential manually: **Settings → Credentials → Add → OpenAI API**
-   - Name: `LMStudio localhost`
-   - API Key: `lm-studio`
-   - Base URL: `http://host.docker.internal:1234/v1`
-</details>
+> **Note:** `make seed` checks for duplicates by workflow name. If you rename a workflow, running `make seed` again won't overwrite your changes.
 
-<details>
-<summary><b>Don't have make?</b> Click for install instructions</summary>
+### 5. Start Your LLM and Record
 
-- **macOS**: `xcode-select --install`
-- **Linux (Debian/Ubuntu)**: `sudo apt install make`
-- **Linux (Fedora)**: `sudo dnf install make`
-- **Windows**: Install via [Chocolatey](https://chocolatey.org/): `choco install make`
-</details>
+1. Start LM Studio (Developer → Start Server) or ensure Ollama is running
+2. In n8n, open **Voice Memo Processor (Speaches)** and toggle **Active**
+3. Open http://localhost:8888/lima/recorder/
+4. Click the microphone, speak, click again to process
 
-This imports:
-- **Voice Memo Processor** workflow (`workflows/seed/voice-memo-v0.3.0.json`)
-- **LM Studio Local** credential (pre-configured for `http://host.docker.internal:1234/v1`)
-
-> **Platform notes:**
-> - **macOS/Windows**: Works out of the box with `host.docker.internal`
-> - **Linux**: `make seed` automatically replaces `host.docker.internal` with your machine's IP
-> - **Ollama users**: Set `LOCAL_LLM_PORT=11434` in `.env` before seeding
-> - **Native Whisper**: Set `NATIVE_WHISPER_PORT` in `.env` before seeding to configure the CUDA/MLX workflow
-
-### 6. Activate the Workflow
-
-Imported workflows are **inactive** by default. To activate:
-
-1. Go to http://localhost:5678/home/workflows
-2. Open the **Voice Memo Processor** workflow
-3. Toggle **Inactive → Active** in the top right
-
-The workflow is now listening for:
-- Files dropped in `data/voice-memos/`
-- Webhook requests at `http://localhost:5678/webhook/memo`
-
-See [BACKLOG.md](BACKLOG.md) for future enhancement ideas.
-
-### 7. Test the Workflow
-
-**Option A: File Drop**
-
-Simply copy or move audio files to the watch folder:
-
+**Check your output:**
 ```bash
-cp your-recording.mp3 data/voice-memos/
-# Workflow triggers automatically, check output:
-ls -la data/notes/
+cat data/notes/*.md
 ```
-
-**Option B: Webhook (curl)**
-
-Send an audio file via HTTP:
-
-```bash
-curl -X POST -F "file=@your-recording.mp3" http://localhost:5678/webhook/memo
-
-# Expected response:
-# {"status":"ok","note":"2025-12-10-your-memo-title-abc123de.md","title":"Your Memo Title"}
-```
-
-**Option C: Voice Recorder UI (recommended)**
-
-LIMA includes a browser-based voice recorder that lets you record and process memos without any file management:
-
-1. Open http://localhost:8888/lima/recorder/
-2. Click the microphone button to start recording
-3. Click again to stop and upload
-4. Watch the processing status
-5. See your generated note!
-
-> **Why port 8888?** We use Caddy as a reverse proxy on port 8888 to serve the static HTML UI for the voice recorder.
 
 ---
 
-Check the output:
-```bash
-ls -la data/notes/
-cat data/notes/2025-12-10-*.md
+## How It Works
+
+```
+🎤 Voice Recording
+      ↓
+🗣️ Transcription (Whisper)
+      ↓
+🤖 AI Analysis (Local LLM)
+      ↓
+📝 Markdown Note
 ```
 
-**What the workflow does:**
+The workflow:
 1. Transcribes audio via local Whisper (speech-to-text)
 2. Extracts title, summary, key points, action items via local LLM
 3. Generates Obsidian-compatible markdown with YAML frontmatter
-4. Saves to `data/notes/` with hash-based filename (idempotent - same audio = same file)
-5. Archives original audio to `data/audio-archive/` (linked from the note)
+4. Saves to `data/notes/` and archives audio to `data/audio-archive/`
 
-### Alternative: Native GPU Whisper Servers
-
-For local development, LIMA provides platform-specific GPU-accelerated servers:
-- **macOS**: Lightning Whisper MLX (Apple Silicon Metal)
-- **Linux/Windows**: faster-whisper with CUDA (NVIDIA GPU)
-
-**Quick start:**
-```bash
-make whisper-native      # Start native GPU whisper in background
-make whisper-native-stop # Stop when done
-```
-
-**Performance:** Docker Speaches (above) is recommended for production. Native servers are best for:
-- Linux with NVIDIA GPU: ~71x real-time transcription
-- macOS development/testing (similar to Docker speed)
-
-See [services/whisper-server/README.md](services/whisper-server/README.md) for detailed setup and Windows support.
-
-## Remote Access with Tailscale
-
-Tailscale lets you access LIMA from your phone or laptop anywhere, without exposing ports to the internet.
-
-### Why Tailscale?
-
-- **No port forwarding** - Works through NAT and firewalls automatically
-- **No dynamic DNS** - Stable hostname for your machine
-- **Encrypted** - WireGuard encryption built-in
-- **Private** - Only your devices can access your tailnet
-
-### Setup
-
-**1. Install Tailscale on your LIMA server:**
-
-```bash
-# Linux (Fedora/Ubuntu/Debian)
-curl -fsSL https://tailscale.com/install.sh | sh
-
-# macOS
-brew install tailscale
-
-# Start and authenticate (sets up operator permissions)
-sudo tailscale up --operator=$USER
-```
-
-Follow the browser link to authenticate.
-
-**2. Install on your phone:**
-- iOS: App Store → "Tailscale"
-- Android: Play Store → "Tailscale"
-- Sign in with the same account
-
-**3. Verify connection:**
-```bash
-tailscale status
-# Shows all devices on your tailnet with their IPs and hostnames
-```
-
-**4. Serve the Voice Recorder with HTTPS:**
-
-The Voice Recorder requires HTTPS for microphone access. Use Tailscale to serve it securely:
-
-```bash
-tailscale serve --bg --https 443 http://localhost:8888
-```
-
-This makes the recorder accessible at:
-```
-https://<your-machine-name>.your-tailnet.ts.net/lima/recorder/
-```
-
-**Certificate Transparency Warning:**
-
-On first access, your phone browser may show a "Certificate Transparency" warning. This is expected with `tailscale serve` (tailnet-only certificates). You can safely bypass it:
-
-- **Android Chrome/Samsung Internet:** Tap "Advanced" → "Proceed to... (unsafe)"
-- **iOS Safari:** Tap "Show Details" → "visit this website"
-
-**Why this is safe:**
-- Tailscale encrypts all traffic with WireGuard end-to-end
-- The certificate is valid, just not CT-logged (Tailscale limitation)
-- Only devices on your tailnet can access this URL
-
-**Make it persistent (auto-start on boot):**
-
-On boot, tailscaled may start before the network is fully ready, leaving it disconnected. We use two mechanisms to handle this:
-
-1. **NetworkManager dispatcher** - Runs `tailscale up` when real connectivity is established
-2. **Systemd service with retry** - Configures serve, retrying until tailscale is connected
-
-**Step 1: Create the NetworkManager dispatcher:**
-
-```bash
-sudo tee /etc/NetworkManager/dispatcher.d/99-tailscale <<'EOF'
-#!/bin/bash
-# Connect tailscale when network connectivity is established
-
-if [ "$2" = "connectivity-change" ] && [ "$CONNECTIVITY_STATE" = "FULL" ]; then
-    # Only if tailscale is disconnected
-    if ! tailscale status >/dev/null 2>&1; then
-        logger -t tailscale-dispatcher "Network up, connecting tailscale..."
-        tailscale up
-    fi
-fi
-EOF
-
-sudo chmod +x /etc/NetworkManager/dispatcher.d/99-tailscale
-```
-
-**Step 2: Create the systemd service:**
-
-```bash
-sudo tee /etc/systemd/system/tailscale-serve-lima.service > /dev/null <<EOF
-[Unit]
-Description=Tailscale Serve for LIMA Voice Recorder
-After=network-online.target tailscaled.service
-Wants=network-online.target
-Requires=tailscaled.service
-
-[Service]
-Type=oneshot
-RemainAfterExit=yes
-ExecStart=/usr/bin/tailscale serve --bg --https 443 http://localhost:8888
-ExecStop=/usr/bin/tailscale serve --https=443 off
-User=root
-# Retry if tailscale not ready yet
-Restart=on-failure
-RestartSec=5
-StartLimitBurst=10
-
-[Install]
-WantedBy=multi-user.target
-EOF
-```
-
-**Step 3: Enable and start:**
-
-```bash
-sudo systemctl daemon-reload
-sudo systemctl enable tailscale-serve-lima.service
-sudo systemctl start tailscale-serve-lima.service
-```
-
-**How it works on boot:**
-1. `tailscaled` starts (may be in NoState if network isn't ready)
-2. NetworkManager detects full connectivity → dispatcher runs `tailscale up`
-3. `tailscale-serve-lima.service` retries every 5s until tailscale connects, then configures serve
-
-**Manual mode:** Alternatively, just use `--bg` and re-run the command after reboots:
-```bash
-# Start serve
-tailscale serve --bg --https 443 http://localhost:8888
-
-# Stop serve
-tailscale serve reset                    # Remove all serve configs
-# or
-tailscale serve --https=443 off          # Stop specific port
-```
-
-**Troubleshooting & Status Commands:**
-
-```bash
-# Check Tailscale network and connected devices
-tailscale status
-
-# Check current serve configuration
-tailscale serve status
-
-# Check tailscaled daemon status
-systemctl status tailscaled.service
-
-# Check serve service status
-systemctl status tailscale-serve-lima.service
-
-# Check if dispatcher ran on boot
-journalctl -b 0 | grep tailscale-dispatcher
-
-# Test connectivity from phone
-tailscale ping <your-phone-hostname>
-
-# View serve logs (if issues)
-journalctl -u tailscaled.service -f
-```
-
-**Expected `serve status` output:**
-```
-https://<your-machine>.tail63f25b.ts.net (tailnet only)
-|-- / proxy http://localhost:8888
-```
-
-### Key Expiry
-
-**Important:** Tailscale machine keys expire after **180 days** (6 months) by default.
-
-**Check your key expiry:**
-```bash
-tailscale status --json | grep KeyExpiry | head -1
-```
-
-**What happens when it expires:**
-- ❌ Tailscale can't connect to your tailnet
-- ❌ The serve service fails (can't configure proxy)
-- ✅ Boot continues normally (no delays or hangs)
-- **Fix:** Re-authenticate with `tailscale up`
-
-**Disable expiry for personal devices (recommended):**
-1. Visit https://login.tailscale.com/admin/machines
-2. Find your machine in the list
-3. Click **⋯** menu → **Disable key expiry**
-4. Confirm
-
-This makes authentication permanent - ideal for personal servers you control.
-
-**5. Access LIMA remotely:**
-```
-https://<tailscale-hostname>.your-tailnet.ts.net/                  # n8n UI
-https://<tailscale-hostname>.your-tailnet.ts.net/lima/recorder/  # Voice Recorder
-https://<tailscale-hostname>.your-tailnet.ts.net/webhook/memo      # Voice memo webhook
-```
-
-All traffic goes through Tailscale (HTTPS) → Caddy → n8n, so no port numbers needed.
-
-### iOS Shortcut Example
-
-Create a Shortcut to send voice memos to LIMA:
-1. **Record Audio** action
-2. **Get Contents of URL** action:
-   - URL: `http://<tailscale-hostname>:5678/webhook/memo`
-   - Method: POST
-   - Request Body: File (the audio)
-3. **Show Notification** with result
-
-### Connecting from a Managed macOS Laptop (CLI-only)
-
-Corporate-managed Macs often block the Tailscale GUI app from creating VPN configurations. Use the CLI approach instead:
-
-**1. Install via Homebrew:**
-
-```bash
-brew install tailscale
-```
-
-**2. Start the daemon as a service:**
-
-```bash
-# Start tailscaled via brew services (persists across reboots)
-sudo brew services start tailscale
-
-# Authenticate (first time only)
-sudo tailscale up
-```
-
-> **Note:** The warning about "must be run as non-root" can be ignored - tailscaled requires root to create network interfaces and manage DNS.
-
-**3. Fix MagicDNS for `.ts.net` domains:**
-
-The Homebrew version doesn't automatically configure macOS to resolve `.ts.net` domains. Create the resolver manually:
-
-```bash
-sudo bash -c 'echo "nameserver 100.100.100.100" > /etc/resolver/ts.net'
-```
-
-**4. Verify connection:**
-
-```bash
-# Check tailnet devices
-tailscale status
-
-# Test DNS resolution
-dig +short richifed.tail63f25b.ts.net
-
-# Test HTTPS access to LIMA server
-curl https://<your-lima-server>.tail63f25b.ts.net/lima/recorder/
-```
-
-**Troubleshooting:**
-
-```bash
-# Check service status
-sudo brew services list | grep tailscale
-
-# Check logs
-tail -f /opt/homebrew/var/log/tailscaled.log
-
-# Test DNS directly via Tailscale resolver
-dig +short <hostname>.tail63f25b.ts.net @100.100.100.100
-
-# Restart if needed
-sudo brew services restart tailscale
-```
-
-**Why this works when the GUI app doesn't:**
-- The GUI app requires macOS VPN entitlements that MDM may block
-- The CLI daemon (`tailscaled`) creates a userspace tunnel directly
-- Brew services manages the launchd plist for auto-start
-
-### Cost
-
-The free tier (100 devices, 3 users) is plenty for personal use.
+---
 
 ## Service URLs
 
 | Service | URL | Purpose |
 |---------|-----|---------|
-| **Voice Recorder** | http://localhost:8888/lima/recorder/ | Browser-based voice recording UI |
-| n8n | http://localhost:5678 | Workflow automation |
-| Caddy | http://localhost:8888 | Reverse proxy (serves recorder HTML UI) |
-| Whisper | http://localhost:9000 | Speech-to-text API |
-| n8n-mcp | http://localhost:8042 | AI workflow assistant (dev) |
-| postgres-mcp | http://localhost:8700 | Database MCP server (dev) |
-| pgAdmin | http://localhost:5050 | Database UI (dev) |
+| **Voice Recorder** | http://localhost:8888/lima/recorder/ | Browser-based recording |
+| n8n | http://localhost:5678 | Workflow editor |
+| Whisper | http://localhost:9000 | Transcription API |
+
+---
 
 ## Common Commands
 
 ```bash
-make setup         # Interactive first-time setup (recommended)
-make up            # Start production stack
-make seed          # Import workflows (detects duplicates, requires N8N_API_KEY)
-make dev-up        # Start with dev tools (n8n-mcp)
-make down          # Stop all services
-make status        # Check service health
-make whisper-native      # Optional: start native GPU whisper in background
-make whisper-native-stop # Stop native whisper
+make up              # Start services
+make down            # Stop services
+make status          # Check health
+make seed            # Import workflows (safe to re-run)
 
-# Direct docker compose commands
-docker compose logs -f                                 # Follow logs
-docker compose exec postgres psql -U postgres -d lima  # Database shell
+docker compose logs -f   # View logs
 ```
 
-## Project Structure
+---
 
-```
-lima/
-├── docker-compose.yml      # Production stack
-├── docker-compose.dev.yml  # Dev overlay (n8n-mcp, pgAdmin)
-├── Caddyfile               # Caddy reverse proxy config
-├── .env.example            # Environment template
-├── init-data.sh            # PostgreSQL initialization
-├── Makefile                # Convenience commands
-├── static/                 # Static assets served by Caddy at /lima/*
-│   └── recorder/           # Voice Recorder UI
-│       └── index.html
-├── data/                   # Obsidian vault (open this folder in Obsidian)
-│   ├── voice-memos/        # Drop audio files here (auto-processed)
-│   │   └── webhook/        # Webhook uploads (not re-watched)
-│   ├── audio-archive/      # Processed originals (linked from notes)
-│   └── notes/              # Markdown notes (output)
-├── services/
-│   └── whisper-server/     # Native GPU whisper servers (optional)
-└── workflows/              # n8n workflow exports
-```
+## Documentation
+
+| Guide | Description |
+|-------|-------------|
+| **[Getting Started](docs/getting-started.md)** | Detailed setup walkthrough |
+| [Customizing Your AI](docs/customizing-your-ai.md) | LLM configuration, context windows, prompts |
+| [Using on Your Phone](docs/using-lima-on-your-phone.md) | Remote access via Tailscale |
+| [Where Is My Data?](docs/where-is-my-data.md) | File locations, Obsidian, backups |
+| [Recipes](docs/recipes.md) | Use case examples |
+| [Troubleshooting](docs/troubleshooting.md) | Common issues |
+| [Audio Processing](docs/audio-processing-guide.md) | Long recordings, ffmpeg |
+| [Native Whisper](docs/native-whisper.md) | GPU acceleration |
+
+### For Developers
+
+| Resource | Description |
+|----------|-------------|
+| [MCP Setup](docs/MCP_SETUP.md) | AI-assisted workflow development |
+| [BACKLOG](BACKLOG.md) | Ideas and future directions |
+
+---
+
+## What's Next?
+
+> **Safe to tinker:** If you break a workflow, rename it (to keep your work) or delete it, then run `make seed` to reimport the defaults. Experiment freely!
+
+The [BACKLOG](BACKLOG.md) is full of ideas waiting to be explored:
+- Conversational memory query (ask your notes questions)
+- Context-aware routing (auto-categorize memos)
+- Multi-speaker diarization
+- And more...
+
+---
 
 ## Stack
 
-- **PostgreSQL 17** with pgvector extension
+- **PostgreSQL 17** with pgvector
 - **n8n** workflow automation (custom image with ffmpeg)
-- **Caddy** reverse proxy (enables microphone access in Voice Recorder)
-- **Whisper** (speaches) local speech-to-text via Docker
-  - Alternative: Native GPU servers ([see docs](services/whisper-server/README.md)) for macOS Metal / NVIDIA CUDA
-- **n8n-mcp** AI assistant for workflow development (dev)
-- **LM Studio** or **Ollama** - local LLM inference (runs on host, configure in n8n)
-
-## Audio Processing
-
-LIMA uses a custom n8n Docker image that includes **ffmpeg** for audio file manipulation.
-
-### Why ffmpeg?
-
-n8n has no native audio processing nodes. ffmpeg enables:
-- Splitting long recordings into chunks for parallel transcription
-- Converting between audio formats (FLAC, WAV, MP3, etc.)
-- Extracting audio from video files
-- Optimizing audio for transcription (mono, 16kHz)
-
-### Custom n8n Image
-
-The custom image is defined in `n8n.Dockerfile`:
-
-```dockerfile
-FROM docker.n8n.io/n8nio/n8n:latest
-USER root
-RUN apk add --no-cache ffmpeg
-USER node
-```
-
-### Building the Image
-
-The image builds automatically on first `docker compose up`. To rebuild after changes:
-
-```bash
-docker compose build n8n
-docker compose up -d n8n
-```
-
-### Using ffmpeg in Workflows
-
-Use the **Execute Command** node in n8n:
-
-```bash
-# Split audio into 15-minute chunks
-ffmpeg -i /data/audio/meeting.mp3 -f segment -segment_time 900 -c copy /data/audio/chunks/chunk_%03d.mp3
-
-# Convert FLAC to WAV
-ffmpeg -i /data/audio/recording.flac /data/audio/recording.wav
-
-# Optimize for transcription (mono, 16kHz, low bitrate)
-ffmpeg -i /data/audio/input.mp3 -ac 1 -ar 16000 -b:a 64k /data/audio/optimized.mp3
-```
-
-### Long File Handling
-
-For recordings over 1 hour, LIMA recommends chunking into 10-15 minute segments:
-- Enables parallel transcription
-- Prevents timeouts
-- Keeps LLM context windows manageable
-
-See `docs/audio-processing-guide.md` for detailed architecture and configuration.
+- **Whisper** (Speaches) for transcription
+- **Caddy** reverse proxy
+- **LM Studio** or **Ollama** for local LLM inference
