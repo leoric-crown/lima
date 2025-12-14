@@ -102,22 +102,33 @@ def find_duplicate(name: str, n8n_url: str, api_key: str) -> dict | None:
     return None
 
 
+DEFAULT_LLM_MODEL = "openai/gpt-oss-20b"  # Model name in seed workflow files
+
+
 def apply_replacements(
     workflow_data: dict,
     native_whisper_port: str | None = None,
     host_ip: str | None = None,
+    llm_model: str | None = None,
 ) -> tuple[dict, list[str]]:
-    """Apply URL replacements to workflow JSON.
+    """Apply replacements to workflow JSON.
 
-    1. If native_whisper_port is set, replace :9001 with the configured port (all platforms)
-    2. If host_ip is set, replace host.docker.internal with actual IP (Linux only)
+    1. If llm_model is set, replace default model with configured model
+    2. If native_whisper_port is set, replace :9001 with the configured port (all platforms)
+    3. If host_ip is set, replace host.docker.internal with actual IP (Linux only)
 
     Returns (modified_data, list_of_replacements).
     """
     json_str = json.dumps(workflow_data)
     replacements = []
 
-    # Step 1: Replace native whisper port (all platforms)
+    # Step 1: Replace LLM model name
+    if llm_model and llm_model != DEFAULT_LLM_MODEL and DEFAULT_LLM_MODEL in json_str:
+        count = json_str.count(DEFAULT_LLM_MODEL)
+        json_str = json_str.replace(DEFAULT_LLM_MODEL, llm_model)
+        replacements.append(f"{count}x model {DEFAULT_LLM_MODEL} → {llm_model}")
+
+    # Step 2: Replace native whisper port (all platforms)
     # Be specific to avoid false positives on other :9001 occurrences
     if native_whisper_port and "host.docker.internal:9001" in json_str:
         old = "host.docker.internal:9001"
@@ -126,7 +137,7 @@ def apply_replacements(
         json_str = json_str.replace(old, new)
         replacements.append(f"{count}x port 9001 → {native_whisper_port}")
 
-    # Step 2: Replace host.docker.internal with actual IP (Linux only)
+    # Step 3: Replace host.docker.internal with actual IP (Linux only)
     if host_ip and "host.docker.internal" in json_str:
         count = json_str.count("host.docker.internal")
         json_str = json_str.replace("host.docker.internal", host_ip)
@@ -143,6 +154,7 @@ def import_workflow(
     api_key: str,
     host_ip: str | None = None,
     native_whisper_port: str | None = None,
+    llm_model: str | None = None,
 ) -> tuple[dict, list[str]]:
     """Import a workflow JSON file to n8n.
 
@@ -160,10 +172,10 @@ def import_workflow(
         "settings": workflow.get("settings", {}),
     }
 
-    # Apply URL replacements (port on all platforms, host on Linux)
+    # Apply replacements (model, port, host)
     replacements = []
-    if native_whisper_port or host_ip:
-        payload, replacements = apply_replacements(payload, native_whisper_port, host_ip)
+    if native_whisper_port or host_ip or llm_model:
+        payload, replacements = apply_replacements(payload, native_whisper_port, host_ip, llm_model)
 
     # Prepare request
     url = f"{n8n_url.rstrip('/')}/api/v1/workflows"
@@ -208,6 +220,7 @@ Environment variables (loaded from .env automatically):
   N8N_API_KEY         - Required. Create in n8n UI: Settings → API
   N8N_PORT            - Optional. Default: 5678
   N8N_URL             - Optional. Overrides N8N_PORT if set
+  LLM_MODEL           - Optional. LLM model name (replaces default in workflows)
   NATIVE_WHISPER_PORT - Optional. Port for native CUDA/MLX whisper server
                         (replaces default port 9001 in workflows)
         """,
@@ -263,6 +276,7 @@ Environment variables (loaded from .env automatically):
 
     # Get replacement settings
     native_whisper_port = os.environ.get("NATIVE_WHISPER_PORT")
+    llm_model = os.environ.get("LLM_MODEL")
     host_ip = None
     if platform.system() == "Linux":
         host_ip = get_host_ip()
@@ -274,6 +288,8 @@ Environment variables (loaded from .env automatically):
     print(f"Importing: {workflow_name}")
     print(f"From: {args.workflow_file}")
     print(f"To: {args.url}")
+    if llm_model:
+        print(f"LLM Model: {llm_model}")
     if native_whisper_port:
         print(f"Native Whisper: port {native_whisper_port}")
     if host_ip:
@@ -283,7 +299,7 @@ Environment variables (loaded from .env automatically):
     # Import workflow
     try:
         result, replacements = import_workflow(
-            args.workflow_file, args.url, api_key, host_ip, native_whisper_port
+            args.workflow_file, args.url, api_key, host_ip, native_whisper_port, llm_model
         )
         workflow_id = result.get("id", "unknown")
         print("✓ Imported successfully!")

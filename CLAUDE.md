@@ -114,6 +114,7 @@ Optional:
 - `N8N_API_KEY`: Generate in n8n UI (Settings > API) for workflow seeding and n8n-mcp
 - `N8N_PORT`: External port for n8n (default: 5678)
 - `LOCAL_LLM_PORT`: Port for local LLM (default: 1234 for LM Studio, set to 11434 for Ollama)
+- `LLM_MODEL`: LLM model name for workflows (default: `openai/gpt-oss-20b`, must support tool calling)
 - `WHISPER_MODEL`: Default `Systran/faster-whisper-base`, options include tiny/small/medium/large-v3
 - `NATIVE_WHISPER_HOST`: Bind address for native whisper (default: 0.0.0.0)
 - `NATIVE_WHISPER_PORT`: Port for native CUDA/MLX whisper server (default: 9001)

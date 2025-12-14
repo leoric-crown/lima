@@ -254,6 +254,20 @@ def main():
     else:
         print("✓ Using default port 1234 (LM Studio)")
 
+    # Configure LLM model
+    print()
+    print("Which LLM model will you use? (must support tool calling)")
+    print("  Default: openai/gpt-oss-20b")
+    print("  Make sure the model is downloaded in your LLM server.")
+    print()
+
+    model = prompt("Enter model name", "openai/gpt-oss-20b")
+    if model and model != "openai/gpt-oss-20b":  # Only save if different from workflow default
+        update_env_file("LLM_MODEL", model)
+        print(f"✓ Set LLM_MODEL={model}")
+    else:
+        print("✓ Using default model")
+
     # Check for native whisper
     print()
     if confirm("Are you using the native GPU whisper server?", default=False):
