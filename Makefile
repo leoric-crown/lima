@@ -22,12 +22,13 @@ dev-down:
 	docker compose -f docker-compose.yml -f docker-compose.dev.yml down
 
 update:
+	@uv run python -c "from pathlib import Path; [Path(p).mkdir(parents=True, exist_ok=True) for p in ['data/voice-memos/webhook', 'data/audio-archive', 'data/notes']]"
 	docker compose build --pull n8n
 	docker compose pull whisper
 	docker compose up -d
 
 status:
-	@uv run python -c "import subprocess,re; out=subprocess.run(['docker','compose','ps','--format','table {{.Name}}\t{{.Status}}\t{{.Ports}}'],capture_output=True,text=True).stdout; print(re.sub(r'\[::\][^,]*,?|0\.0\.0\.0:(\d+)->\d+/tcp|[\d]+/(tcp|udp),? *|, *$$|  +:',lambda m:':'+m.group(1) if m.group(1) else '',out))"
+	@uv run python -c "import subprocess,re; out=subprocess.run(['docker','compose','ps','--format','table {{.Name}}\t{{.Status}}\t{{.Ports}}'],capture_output=True,text=True).stdout; print(re.sub(r'\[::\][^,]*,?|0\.0\.0\.0:(\d+)->\d+/tcp|[\d]+/(tcp|udp),? *|, *$$|  +:',lambda m:':'+m.group(1) if m.group(1) else '',out)); r=subprocess.run(['uv','run','python','scripts/whisper-native.py','status'],capture_output=True,text=True); print(f'Native Whisper: {r.stdout.strip()}')"
 
 hooks:
 	pre-commit install || uvx pre-commit install
