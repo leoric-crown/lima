@@ -96,6 +96,11 @@ docker compose logs -f         # View all logs
 docker compose logs n8n -f     # View n8n logs
 docker compose logs whisper -f # View Whisper (Speaches) logs
 
+make whisper-native        # Start Whisper (CUDA/MLX Native) server in background
+make whisper-native-stop   # Stop Whisper (CUDA/MLX Native) server
+make whisper-native-logs   # Stream Whisper (CUDA/MLX Native) server logs
+make whisper-native-status # Check Whisper (CUDA/MLX Native) server status
+
 lms log stream --source server # View LM Studio Server logs
 ```
 

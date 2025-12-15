@@ -183,3 +183,4 @@ For LM Studio, Ollama, and context window configuration, see `docs/customizing-y
 - `docs/troubleshooting.md` - Common issues
 - `docs/audio-processing-guide.md` - Long recordings and ffmpeg
 - `docs/MCP_SETUP.md` - MCP server setup for AI assistants
+- When asked to create or update n8n workflows, never do it in the filesystem, always do it through n8n-mcp directly
