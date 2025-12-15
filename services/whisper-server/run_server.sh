@@ -49,11 +49,15 @@ case "$OS" in
         echo "Detected Linux - using faster-whisper with CUDA"
         echo "============================================================"
 
+        # Sync dependencies (creates venv if needed, updates if outdated)
+        echo "Syncing dependencies..."
+        uv sync
+
         # Find the venv python site-packages for CUDA libraries
         VENV_PATH="$SCRIPT_DIR/.venv"
 
         # Auto-detect Python version in venv
-        PYTHON_VER=$(find "$VENV_PATH/lib" -maxdepth 1 -name 'python3.*' -type d | head -n1 | xargs basename)
+        PYTHON_VER=$(find "$VENV_PATH/lib" -maxdepth 1 -name 'python3.*' -type d 2>/dev/null | head -n1 | xargs -r basename)
         SITE_PACKAGES="$VENV_PATH/lib/$PYTHON_VER/site-packages"
 
         CUDNN_LIB="$SITE_PACKAGES/nvidia/cudnn/lib"

@@ -149,18 +149,19 @@ def main():
         print("Aborted.")
         sys.exit(0)
 
-    # Load existing .env
-    load_dotenv()
-
-    # Check .env exists
+    # Check .env exists, generate if needed
     env_path = Path(__file__).parent.parent / ".env"
     if not env_path.exists():
         print()
-        print("ERROR: .env file not found!")
-        print("Please copy .env.example to .env and configure it first:")
-        print("  cp .env.example .env")
-        print("  # Edit .env with secure passwords")
-        sys.exit(1)
+        print("No .env file found. Generating with secure defaults...")
+        result = run("uv run python scripts/setup-env.py --auto", check=False)
+        if result.returncode != 0:
+            print("ERROR: Failed to generate .env file")
+            sys.exit(1)
+        print()
+
+    # Load .env
+    load_dotenv()
 
     n8n_port = os.environ.get("N8N_PORT", "5678")
     n8n_url = f"http://localhost:{n8n_port}"

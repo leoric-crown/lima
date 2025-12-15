@@ -23,36 +23,23 @@
 
 > **Corporate laptops:** Docker Desktop requires a [paid license](https://www.docker.com/pricing/) for larger organizations. See [Getting Started](docs/getting-started.md) for alternatives.
 
-### 1. Clone and Configure
+### 1. Clone and Setup
 
 ```bash
 git clone https://github.com/leoric-crown/lima.git
 cd lima
-cp .env.example .env
-```
-
-Edit `.env` and set secure passwords:
-```bash
-POSTGRES_PASSWORD=<openssl rand -base64 32>
-N8N_DB_PASSWORD=<openssl rand -base64 32>
-N8N_ENCRYPTION_KEY=<openssl rand -hex 32>
-MCP_AUTH_TOKEN=<openssl rand -hex 32>
-```
-
-### 2. Run Setup
-
-```bash
 make setup
 ```
 
 The interactive wizard will:
+- Generate `.env` with secure credentials
 - Build and start Docker services
 - Wait for n8n to be ready
 - Guide you through creating an n8n API key
 - Configure your LLM (LM Studio or Ollama)
 - Import the Voice Memo workflows
 
-### 3. Activate and Record
+### 2. Activate and Record
 
 1. Start LM Studio (Developer → Start Server) or ensure Ollama is running
 2. In n8n (http://localhost:5678), open **Voice Memo Processor (Speaches)** and toggle **Active**
