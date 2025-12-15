@@ -1,0 +1,123 @@
+{
+  "name": "File Browser API",
+  "nodes": [
+    {
+      "parameters": {
+        "path": "files",
+        "responseMode": "responseNode",
+        "options": {}
+      },
+      "id": "webhook",
+      "name": "Webhook",
+      "type": "n8n-nodes-base.webhook",
+      "typeVersion": 2,
+      "position": [
+        240,
+        304
+      ],
+      "webhookId": "files"
+    },
+    {
+      "parameters": {
+        "command": "echo '{\"voice-memos\":'; (cd /data/voice-memos 2>/dev/null && find . -maxdepth 1 -type f \\( -name '*.mp3' -o -name '*.wav' -o -name '*.m4a' -o -name '*.webm' -o -name '*.ogg' -o -name '*.opus' -o -name '*.flac' -o -name '*.aac' \\) -exec stat -c '{\"name\":\"%n\",\"mtime\":%Y,\"size\":%s}' {} \\; 2>/dev/null | tr '\\n' ',' | sed 's/,$//' | sed 's/^/[/' | sed 's/$/]/' || echo '[]') | grep -v '^$' || echo '[]'; echo ',\"audio-archive\":'; (cd /data/audio-archive 2>/dev/null && find . -maxdepth 1 -type f \\( -name '*.mp3' -o -name '*.wav' -o -name '*.m4a' -o -name '*.webm' -o -name '*.ogg' -o -name '*.opus' -o -name '*.flac' -o -name '*.aac' \\) -exec stat -c '{\"name\":\"%n\",\"mtime\":%Y,\"size\":%s}' {} \\; 2>/dev/null | tr '\\n' ',' | sed 's/,$//' | sed 's/^/[/' | sed 's/$/]/' || echo '[]') | grep -v '^$' || echo '[]'; echo ',\"notes\":'; (cd /data/notes 2>/dev/null && find . -maxdepth 1 -type f -name '*.md' -exec stat -c '{\"name\":\"%n\",\"mtime\":%Y,\"size\":%s}' {} \\; 2>/dev/null | tr '\\n' ',' | sed 's/,$//' | sed 's/^/[/' | sed 's/$/]/' || echo '[]') | grep -v '^$' || echo '[]'; echo '}' | tr -d '\\n'"
+      },
+      "id": "list-files",
+      "name": "List All Files",
+      "type": "n8n-nodes-base.executeCommand",
+      "typeVersion": 1,
+      "position": [
+        464,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "jsCode": "const stdout = $input.first().json.stdout || '{}';\n\ntry {\n  // Parse and clean up the data\n  const data = JSON.parse(stdout);\n  \n  const cleanFiles = (files) => {\n    if (!Array.isArray(files)) return [];\n    return files\n      .map(f => ({\n        name: f.name.replace('./', ''),\n        mtime: f.mtime,\n        size: f.size\n      }))\n      .sort((a, b) => b.mtime - a.mtime);\n  };\n  \n  return [{\n    json: {\n      'voice-memos': cleanFiles(data['voice-memos']),\n      'audio-archive': cleanFiles(data['audio-archive']),\n      'notes': cleanFiles(data['notes'])\n    }\n  }];\n} catch (e) {\n  return [{\n    json: {\n      'voice-memos': [],\n      'audio-archive': [],\n      'notes': [],\n      error: e.message\n    }\n  }];\n}"
+      },
+      "id": "code",
+      "name": "Format JSON",
+      "type": "n8n-nodes-base.code",
+      "typeVersion": 2,
+      "position": [
+        688,
+        304
+      ]
+    },
+    {
+      "parameters": {
+        "respondWith": "json",
+        "responseBody": "={{ $json }}",
+        "options": {
+          "responseHeaders": {
+            "entries": [
+              {
+                "name": "Access-Control-Allow-Origin",
+                "value": "*"
+              }
+            ]
+          }
+        }
+      },
+      "id": "respond",
+      "name": "Respond",
+      "type": "n8n-nodes-base.respondToWebhook",
+      "typeVersion": 1.1,
+      "position": [
+        912,
+        304
+      ]
+    }
+  ],
+  "pinData": {},
+  "connections": {
+    "Webhook": {
+      "main": [
+        [
+          {
+            "node": "List All Files",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "List All Files": {
+      "main": [
+        [
+          {
+            "node": "Format JSON",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    },
+    "Format JSON": {
+      "main": [
+        [
+          {
+            "node": "Respond",
+            "type": "main",
+            "index": 0
+          }
+        ]
+      ]
+    }
+  },
+  "active": true,
+  "settings": {
+    "executionOrder": "v1",
+    "saveDataErrorExecution": "all",
+    "saveDataSuccessExecution": "all",
+    "saveManualExecutions": true,
+    "saveExecutionProgress": true,
+    "callerPolicy": "workflowsFromSameOwner",
+    "availableInMCP": false
+  },
+  "versionId": "dbe7b5ab-d058-48ed-b1bc-a7d19c294dba",
+  "meta": {
+    "instanceId": "4d0e42bbf4f8ecc7c9e3cdbacf4260ac8e47e8080f1a720bebf06afb4ab184e3"
+  },
+  "id": "OK4DvpP8l0tgoYcQ",
+  "tags": []
+}

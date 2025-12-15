@@ -57,6 +57,143 @@
     .wave-bar:nth-child(5) {
       animation-delay: 0.15s;
     }
+
+    /* Tree View Styles */
+    .tree-view {
+      text-align: left;
+      font-size: 0.875rem;
+    }
+
+    .tree-folder {
+      margin-bottom: 0.5rem;
+    }
+
+    .tree-folder-header {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.5rem 0.75rem;
+      cursor: pointer;
+      border-radius: 0.5rem;
+      transition: background-color 0.2s;
+      user-select: none;
+    }
+
+    .tree-folder-header:hover {
+      background-color: rgba(101, 163, 13, 0.1);
+    }
+
+    .tree-folder-icon {
+      transition: transform 0.2s;
+      font-size: 0.75rem;
+    }
+
+    .tree-folder.collapsed .tree-folder-icon {
+      transform: rotate(-90deg);
+    }
+
+    .tree-folder.collapsed .tree-folder-content {
+      display: none;
+    }
+
+    .tree-folder-name {
+      font-weight: 600;
+      color: #a3e635;
+    }
+
+    .tree-folder-count {
+      color: #6b7280;
+      font-size: 0.75rem;
+    }
+
+    .tree-folder-content {
+      margin-left: 1.5rem;
+      border-left: 1px solid #374151;
+      padding-left: 0.75rem;
+    }
+
+    .tree-file {
+      display: flex;
+      align-items: center;
+      gap: 0.5rem;
+      padding: 0.375rem 0.5rem;
+      border-radius: 0.375rem;
+      color: #9ca3af;
+      font-size: 0.8rem;
+      transition: background-color 0.2s;
+    }
+
+    .tree-file:hover {
+      background-color: rgba(255, 255, 255, 0.05);
+    }
+
+    .tree-file-icon {
+      opacity: 0.7;
+    }
+
+    .tree-file-name {
+      flex: 1;
+      overflow: hidden;
+      text-overflow: ellipsis;
+      white-space: nowrap;
+    }
+
+    .tree-file-time {
+      color: #6b7280;
+      font-size: 0.7rem;
+      white-space: nowrap;
+    }
+
+    .tree-empty {
+      color: #6b7280;
+      font-style: italic;
+      padding: 0.375rem 0.5rem;
+      font-size: 0.8rem;
+    }
+
+    /* Pop-in animation for new files */
+    @keyframes pop-in {
+      0% {
+        opacity: 0;
+        transform: scale(0.8) translateX(-10px);
+      }
+      50% {
+        transform: scale(1.05) translateX(0);
+      }
+      100% {
+        opacity: 1;
+        transform: scale(1) translateX(0);
+      }
+    }
+
+    .tree-file.new-file {
+      animation: pop-in 0.4s cubic-bezier(0.34, 1.56, 0.64, 1) forwards;
+      background-color: rgba(101, 163, 13, 0.2);
+    }
+
+    .tree-file.new-file .tree-file-name {
+      color: #a3e635;
+      font-weight: 500;
+    }
+
+    /* Loading spinner for tree */
+    .tree-loading {
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      gap: 0.5rem;
+      padding: 1rem;
+      color: #6b7280;
+    }
+
+    .tree-loading svg {
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin {
+      from { transform: rotate(0deg); }
+      to { transform: rotate(360deg); }
+    }
   </style>
 </head>
 
@@ -149,6 +286,28 @@
       </button>
     </div>
 
+    <!-- File Browser Tree View -->
+    <div id="file-browser" class="mt-8 w-full bg-gray-800/50 rounded-xl p-4 border border-gray-700/50">
+      <div class="flex items-center justify-between mb-3">
+        <h2 class="text-sm font-semibold text-gray-300 flex items-center gap-2">
+          <span>Files</span>
+        </h2>
+        <button id="refresh-tree" class="text-gray-500 hover:text-lime-400 transition-colors p-1" title="Refresh">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+        </button>
+      </div>
+      <div id="tree-container" class="tree-view">
+        <div class="tree-loading">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15"></path>
+          </svg>
+          <span>Loading files...</span>
+        </div>
+      </div>
+    </div>
+
   </div>
 
   <script>
@@ -158,6 +317,7 @@
     let isRecording = false;
     let timerInterval = null;
     let startTime = null;
+    let treeData = null; // Cached tree data for comparison
 
     // Elements
     const recordBtn = document.getElementById('record-btn');
@@ -178,6 +338,8 @@
     const retryBtn = document.getElementById('retry-btn');
     const uploadBtn = document.getElementById('upload-btn');
     const fileInput = document.getElementById('file-input');
+    const treeContainer = document.getElementById('tree-container');
+    const refreshTreeBtn = document.getElementById('refresh-tree');
 
     // Initialize
     async function init() {
@@ -187,6 +349,10 @@
       retryBtn.addEventListener('click', retryMicPermission);
       uploadBtn.addEventListener('click', () => fileInput.click());
       fileInput.addEventListener('change', handleFileUpload);
+      refreshTreeBtn.addEventListener('click', () => loadTree());
+
+      // Load file tree
+      loadTree();
 
       // Check mic permission without prompting if possible
       try {
@@ -358,6 +524,21 @@
       // Extract filename from path for display
       const fileName = result.note.split('/').pop();
       resultPreview.innerHTML = `<p>Note saved: <code>${fileName}</code></p>`;
+
+      // Update tree view with new files highlighted
+      // The workflow creates files in audio-archive and notes
+      const newFiles = [];
+      if (result.audio) {
+        const audioFile = result.audio.split('/').pop();
+        if (audioFile) newFiles.push(audioFile);
+      }
+      if (result.note) {
+        const noteFile = result.note.split('/').pop();
+        if (noteFile) newFiles.push(noteFile);
+      }
+
+      // Reload tree with new files highlighted
+      setTimeout(() => loadTree(newFiles), 500);
     }
 
     function showError(messageOrError, hint = null) {
@@ -436,6 +617,128 @@
 
       // Upload file
       await uploadAudio(file, file.type);
+    }
+
+    // ==================== Tree View Functions ====================
+
+    // Format timestamp to relative time
+    function formatRelativeTime(timestamp) {
+      const now = Date.now();
+      const diff = now - (timestamp * 1000);
+      const minutes = Math.floor(diff / 60000);
+      const hours = Math.floor(diff / 3600000);
+      const days = Math.floor(diff / 86400000);
+
+      if (minutes < 1) return 'just now';
+      if (minutes < 60) return `${minutes}m ago`;
+      if (hours < 24) return `${hours}h ago`;
+      if (days < 7) return `${days}d ago`;
+      return new Date(timestamp * 1000).toLocaleDateString();
+    }
+
+    // Get icon for file type
+    function getFileIcon(filename) {
+      const ext = filename.split('.').pop()?.toLowerCase();
+      if (ext === 'md') return '📝';
+      if (['mp3', 'wav', 'm4a', 'webm', 'ogg', 'opus', 'flac', 'aac'].includes(ext)) return '🎵';
+      return '📄';
+    }
+
+    // Folder display config
+    const folderConfig = {
+      'voice-memos': { icon: '🎤', label: 'Voice Memos' },
+      'audio-archive': { icon: '📦', label: 'Audio Archive' },
+      'notes': { icon: '📒', label: 'Notes' }
+    };
+
+    // Render tree view
+    function renderTree(data, newFiles = []) {
+      const folders = ['voice-memos', 'audio-archive', 'notes'];
+
+      let html = '';
+      for (const folder of folders) {
+        const files = data[folder] || [];
+        const config = folderConfig[folder];
+        const isCollapsed = files.length === 0;
+
+        html += `
+          <div class="tree-folder ${isCollapsed ? 'collapsed' : ''}" data-folder="${folder}">
+            <div class="tree-folder-header" onclick="toggleFolder(this.parentElement)">
+              <span class="tree-folder-icon">▼</span>
+              <span>${config.icon}</span>
+              <span class="tree-folder-name">${config.label}</span>
+              <span class="tree-folder-count">(${files.length})</span>
+            </div>
+            <div class="tree-folder-content">
+        `;
+
+        if (files.length === 0) {
+          html += `<div class="tree-empty">No files</div>`;
+        } else {
+          for (const file of files) {
+            const isNew = newFiles.includes(file.name);
+            html += `
+              <div class="tree-file ${isNew ? 'new-file' : ''}" data-filename="${file.name}">
+                <span class="tree-file-icon">${getFileIcon(file.name)}</span>
+                <span class="tree-file-name" title="${file.name}">${file.name}</span>
+                <span class="tree-file-time">${formatRelativeTime(file.mtime)}</span>
+              </div>
+            `;
+          }
+        }
+
+        html += `
+            </div>
+          </div>
+        `;
+      }
+
+      treeContainer.innerHTML = html;
+    }
+
+    // Toggle folder collapse/expand
+    function toggleFolder(folderEl) {
+      folderEl.classList.toggle('collapsed');
+    }
+
+    // Load tree data from API
+    async function loadTree(highlightNewFiles = []) {
+      try {
+        const response = await fetch('/webhook/files');
+        if (!response.ok) throw new Error('Failed to load files');
+
+        const data = await response.json();
+        treeData = data;
+        renderTree(data, highlightNewFiles);
+      } catch (err) {
+        console.error('Failed to load tree:', err);
+        treeContainer.innerHTML = `
+          <div class="tree-empty" style="text-align: center;">
+            Unable to load files
+            <button onclick="loadTree()" class="ml-2 text-lime-400 hover:underline">Retry</button>
+          </div>
+        `;
+      }
+    }
+
+    // Add new file to tree with animation
+    function addNewFileToTree(folder, filename) {
+      // Reload tree with the new file highlighted
+      loadTree([filename]);
+
+      // Expand the folder if collapsed
+      setTimeout(() => {
+        const folderEl = document.querySelector(`.tree-folder[data-folder="${folder}"]`);
+        if (folderEl && folderEl.classList.contains('collapsed')) {
+          folderEl.classList.remove('collapsed');
+        }
+
+        // Scroll to the new file
+        const fileEl = document.querySelector(`.tree-file[data-filename="${filename}"]`);
+        if (fileEl) {
+          fileEl.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+        }
+      }, 100);
     }
 
     // Start
