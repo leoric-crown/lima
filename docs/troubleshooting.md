@@ -91,17 +91,19 @@ chmod -R 755 data/
 2. **Ollama:** Check it's running: `ollama list`
 3. **Verify URL:** Should be `http://host.docker.internal:1234/v1` (LM Studio) or `:11434/v1` (Ollama)
 
-### "Unexpected end of JSON input"
+### "Unexpected end of JSON input" / JSON Parse Errors
 
-**Symptom:** LLM responds but n8n can't parse it.
+**Symptom:** LLM responds but n8n can't parse it, or you see JSON-related errors.
 
 **Possible causes:**
 - Model doesn't support tool calling well
+- Model outputs malformed JSON (common with `gpt-oss-20b`)
 - Harmony parser issue (see below)
 
 **Fixes:**
-- Try a different model
+- Try a different model — we've had success with `mistralai/ministral-3b-instruct` on Linux
 - Check model supports function/tool calling
+- Experiment! Local LLM compatibility varies by platform and model version. Expect some hitches as you find what works best for your setup
 
 ### Harmony 0.3.5 Issue (LM Studio + gpt-oss-20b)
 
