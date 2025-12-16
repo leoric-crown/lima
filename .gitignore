@@ -14,6 +14,9 @@ scripts/reference
 # Data directories (audio, transcripts, notes)
 data/
 
+# Talk demo assets (may commit later)
+docs/assets
+
 # Logs
 logs/
 
