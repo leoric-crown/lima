@@ -9,7 +9,7 @@ This file documents the Docker image versions that have been tested and confirme
 | Service | Image | Tested Version | Notes |
 |---------|-------|----------------|-------|
 | PostgreSQL | `pgvector/pgvector:pg17` | 17.7 | Pinned to pg17 |
-| n8n | `docker.n8n.io/n8nio/n8n:latest` | 1.123.5 | Built via n8n.Dockerfile |
+| n8n | `docker.n8n.io/n8nio/n8n:1.123.5` | 1.123.5 | Pinned; n8n 2.0 breaks workflow imports |
 | ffmpeg | (installed in n8n image) | 6.1.2 | Alpine package |
 | Caddy | `caddy:2-alpine` | 2.10.2 | Pinned to major version 2 |
 | Whisper | `ghcr.io/speaches-ai/speaches:latest-cpu` | (see digest below) | Floating tag |
@@ -61,6 +61,7 @@ make down && make up
 
 ## Compatibility Notes
 
+- **n8n 1.123.5**: Pinned version; n8n 2.0 introduces breaking changes to workflow import format
 - **n8n 1.123+**: Requires API key for workflow import (fresh installs don't auto-create owner)
 - **pgvector pg17**: Uses IVFFlat indexes for vector similarity search
 - **Speaches**: OpenAI-compatible API at `/v1/audio/transcriptions`

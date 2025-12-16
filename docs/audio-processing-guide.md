@@ -19,7 +19,7 @@ n8n has no native audio processing nodes. To handle audio files, LIMA uses a **c
 The image is defined in `n8n.Dockerfile`:
 
 ```dockerfile
-FROM docker.n8n.io/n8nio/n8n:latest
+FROM docker.n8n.io/n8nio/n8n:1.123.5
 USER root
 RUN apk add --no-cache ffmpeg
 USER node

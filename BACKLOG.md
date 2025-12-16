@@ -9,6 +9,23 @@
 
 ## Current State: v0.3.1
 
+### n8n 2.0 Upgrade
+**Status:** Blocked - waiting for workflow export compatibility
+
+**Problem:** n8n 2.0 introduced breaking changes to workflow import/export format. Our workflow exports in `workflows/` are incompatible with 2.0.
+
+**Pinned version:** 1.123.5 (see `n8n.Dockerfile`)
+
+**Required steps:**
+- [ ] Test n8n 2.0 locally with fresh install
+- [ ] Identify specific breaking changes affecting our workflows
+- [ ] Update workflow JSON exports to 2.0 format
+- [ ] Test `make seed` with updated exports
+- [ ] Update Dockerfile to 2.0
+- [ ] Update VERSIONS.md
+
+---
+
 ### Voice Recorder UI ✓
 **Status:** Basic version complete - browser-based recording with webhook upload works.
 
