@@ -124,8 +124,10 @@ Optional:
 - `LOCAL_LLM_PORT`: Port for local LLM (default: 1234 for LM Studio, set to 11434 for Ollama)
 - `LLM_MODEL`: LLM model name for workflows (default: `openai/gpt-oss-20b`, must support tool calling)
 - `WHISPER_MODEL`: Default `Systran/faster-whisper-base`, options include tiny/small/medium/large-v3
+- `COMPUTE_TYPE`: Native CUDA whisper precision — `float16` (default), `int8`, `int8_float16` (halves large-v3 VRAM)
 - `NATIVE_WHISPER_HOST`: Bind address for native whisper (default: 0.0.0.0)
 - `NATIVE_WHISPER_PORT`: Port for native CUDA/MLX whisper server (default: 9001)
+- `WHISPER_IDLE_TIMEOUT`: Native whisper idle-unload seconds (default: 0 = disabled). Secondary VRAM release; the memo workflow's `Unload Whisper` node (`POST /unload`) is the deterministic path for GPU timesharing with a large LLM. Model/precision/timeout overrides must be **make command-line variables** (`make whisper-native WHISPER_MODEL=large-v3 COMPUTE_TYPE=int8_float16`), not env prefixes — `-include .env` + `export` shadows the calling environment.
 
 ## Service URLs
 

@@ -43,6 +43,21 @@
 - [ ] Recent notes panel
 - [ ] File tree view showing processed memos
 
+### Verify MLX whisper `/unload` actually reclaims Metal memory
+**Status:** Planned (low priority)
+
+`server_mlx.py` was given the same `POST /unload` endpoint, `WHISPER_IDLE_TIMEOUT`,
+load/unload lock, and `model_loaded` health field as the CUDA server, so the API
+is at parity. The Metal path drops the model reference, runs `gc.collect()`, and
+makes a best-effort `mlx.core.clear_cache()` call — but **actual VRAM
+reclamation on Apple Silicon is unverified** (developed and tested on the Linux
+CUDA rig). On Apple Silicon the GPU shares system RAM (unified memory), so
+reclaiming whisper's footprint matters far less than on a discrete 24GB card —
+hence low priority. To close this out: on an M-series Mac, run the same
+transcribe → `/unload` → check-residency sequence used for CUDA (`memory_pressure`
+or Activity Monitor GPU history) and confirm the `mlx.core` cache API name is
+current for the installed `mlx` version.
+
 ### Workflow Unification
 **Status:** Planned
 

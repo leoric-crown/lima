@@ -262,6 +262,16 @@ for (const chunk of $input.all()) {
 return [{ json: mergedTranscript }];
 ```
 
+> **Native whisper VRAM unload with chunking.** The live single-call workflow
+> unloads whisper (`POST /unload`, see
+> [native-whisper.md](native-whisper.md#vram-management-sharing-a-gpu-with-a-large-llm))
+> right after its one transcription and before the LLM step, so the model and a
+> large LLM never hold the GPU at once. If you adopt this parallel-chunking
+> pattern, the unload call belongs **after the last chunk's transcription** —
+> i.e. after the merge step, immediately before Extract Insights — not per chunk.
+> Unloading between chunks would just force a lazy reload on the next chunk and
+> waste the cold-start each time.
+
 ---
 
 ## Configuration Recommendations

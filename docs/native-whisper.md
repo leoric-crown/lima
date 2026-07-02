@@ -99,6 +99,58 @@ Set these in `.env` before starting:
 | `NATIVE_WHISPER_HOST` | `0.0.0.0` | Bind address |
 | `NATIVE_WHISPER_PORT` | `9001` | Server port |
 | `WHISPER_MODEL` | `Systran/faster-whisper-base` | Model to use |
+| `COMPUTE_TYPE` | `float16` | Precision: `float16`, `int8`, `int8_float16` (Linux/CUDA) |
+| `WHISPER_IDLE_TIMEOUT` | `0` (disabled) | Seconds of inactivity after which the model unloads to free VRAM |
+
+> **Model/precision overrides must be make command-line variables**, not env
+> prefixes — the Makefile's `-include .env` + `export` makes `.env` shadow the
+> calling environment. Use
+> `make whisper-native WHISPER_MODEL=large-v3 COMPUTE_TYPE=int8_float16`, not
+> `WHISPER_MODEL=large-v3 make whisper-native`.
+
+---
+
+## VRAM management: sharing a GPU with a large LLM
+
+The native server **loads the model lazily** on the first transcription and
+holds it in VRAM until released. On a 24GB GPU shared with a large LLM this
+matters: large-v3 int8 (2.2GB) plus a 30B-class LLM (20.3GB @ 16K) plus desktop
+overhead does not reliably fit if whisper stays resident. Two release
+mechanisms:
+
+**1. `POST /unload` (primary, deterministic).** Drops the model and forces real
+VRAM release; the next transcription lazily reloads.
+
+```bash
+curl -X POST http://localhost:9103/unload
+# → {"unloaded": true}   (false if no model was loaded)
+
+curl http://localhost:9103/health
+# → {"status":"ok","device":"cuda","model":"large-v3","model_loaded":false}
+```
+
+The **Voice Memo Processor (CUDA/MLX)** workflow already calls this: an
+`Unload Whisper` HTTP node sits between **Whisper Transcription** and **Extract
+Insights**, so whisper releases its VRAM in the moment before the LLM step
+loads. The node is **fail-soft** (`onError: continueRegularOutput`, 15s timeout,
+`neverError`) — if the native server is absent (e.g. you're running Docker
+Speaches instead), the unload call fails silently and the pipeline continues.
+Because Extract Insights reads the transcript via
+`$('Whisper Transcription').first().json.text` (by node name, not immediate
+input), the intervening unload node never disturbs the transcript.
+
+**2. `WHISPER_IDLE_TIMEOUT` (secondary, for ad-hoc callers).** A background task
+unloads the model after N idle seconds. This is a safety net for callers outside
+the memo pipeline — it does **not** replace the endpoint, because in the pipeline
+the LLM step runs seconds after transcription, inside any reasonable idle window,
+so a timer alone never frees VRAM in time. Disabled by default.
+
+```bash
+make whisper-native WHISPER_MODEL=large-v3 COMPUTE_TYPE=int8_float16 WHISPER_IDLE_TIMEOUT=600
+```
+
+`/health` is always cheap (never loads the model) and reports `model_loaded` so
+you can poll residency without triggering a load.
 
 ### Model Options
 

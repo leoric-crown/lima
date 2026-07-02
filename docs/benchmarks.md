@@ -118,13 +118,21 @@ downstream note extraction.
    about a second warm. Choose on accuracy vs VRAM only.
 2. **Only large-v3 survived the hard-word test, and it survives int8.** At
    `int8_float16` it needs 2.2GB — half of fp16 — with no observed quality loss.
-3. **Budget the LLM and Whisper together.** The native server loads lazily but
-   has **no idle unload** — the model stays resident until
-   `make whisper-native-stop`. Next to a 30B-class LLM (20.3GB @ 16K) plus
-   desktop compositor overhead, large-v3 fp16 (4.2GB) does not fit on 24GB, and
-   even large-v3-int8 (2.2GB) is marginal. `base`/`small` always fit. An
-   idle-unload timer in `server_cuda.py` would let large-v3 and a 30B share the
-   card sequentially (they never run at the same instant in the memo pipeline).
+3. **Budget the LLM and Whisper together, and unload deterministically.** Next
+   to a 30B-class LLM (20.3GB @ 16K) plus desktop compositor overhead, large-v3
+   fp16 (4.2GB) does not fit on 24GB, and even large-v3-int8 (2.2GB) is marginal.
+   `base`/`small` always fit. The fix is a **`POST /unload` endpoint** on the
+   native server (`server_cuda.py`): the memo workflow calls it between the
+   transcription step and the LLM step, so whisper releases its VRAM before the
+   LLM loads. Measured on this rig, in sequence on the one 24GB card: transcribe
+   (large-v3 int8 → 2,230 MiB resident) → `/unload` (process falls to 396 MiB,
+   bare CUDA context — the model weights are actually freed, not just
+   dereferenced) → qwen3-coder-30b loads (19.6GB) → total 21,967 MiB, fits.
+   A **pure idle-unload timer would not fix this** — the LLM step runs seconds
+   after transcription, inside any reasonable idle window, so the timer never
+   fires between them. `WHISPER_IDLE_TIMEOUT` exists as a secondary safety net
+   for ad-hoc callers outside the pipeline; the explicit endpoint is what makes
+   the coexistence deterministic.
 4. **Model/precision overrides must be make command-line variables:**
    `make whisper-native WHISPER_MODEL=large-v3 COMPUTE_TYPE=int8_float16`.
    The env-prefix form (`WHISPER_MODEL=x make whisper-native`) is silently
