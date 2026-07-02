@@ -94,6 +94,8 @@ Uses IVFFlat index for cosine similarity search on embeddings.
 
 See `docs/native-whisper.md` for details and benchmarks.
 
+Python is pinned to 3.13 via `services/whisper-server/.python-version` — onnxruntime publishes wheels behind latest CPython (Arch ships 3.14+); bump/remove the pin once wheels for the current CPython exist. The native server binds `0.0.0.0` (`NATIVE_WHISPER_HOST`) so the n8n container reaches it via the host LAN IP, and it is manual-start (`make whisper-native`) — not part of `make up`.
+
 ## MCP Server Integration
 
 Connect MCP servers for AI-assisted development. See `docs/MCP_SETUP.md` for full details.
