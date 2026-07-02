@@ -116,6 +116,26 @@ Set these in `.env` before starting:
 
 The Voice Memo workflow can be configured to use native whisper instead of Docker Speaches. Set `NATIVE_WHISPER_PORT` in `.env` before running `make seed` to configure the workflow automatically.
 
+### Host Firewall (Linux)
+
+The workflow calls the native server at the **host's LAN IP** (the n8n container can't use `localhost` — that's the container itself). Container→host traffic passes through the host firewall's input chain, so a default-deny firewall silently drops it: the request **times out** (rather than being refused) even though `curl` from the host works fine.
+
+Allow the whisper port from Docker's bridge subnets:
+
+```bash
+# ufw (Omarchy, Ubuntu, ...)
+sudo ufw allow in proto tcp from 172.16.0.0/12 to any port 9103 comment 'lima: n8n container -> native whisper'
+
+# firewalld (Fedora, ...)
+sudo firewall-cmd --permanent --zone=public --add-rich-rule='rule family=ipv4 source address=172.16.0.0/12 port port=9103 protocol=tcp accept' && sudo firewall-cmd --reload
+```
+
+Use your `NATIVE_WHISPER_PORT` value if you changed it. `172.16.0.0/12` covers all default Docker bridge networks while keeping the port closed to the rest of your LAN. Verify from inside the container:
+
+```bash
+docker exec lima-n8n wget -qO- -T 5 http://<host-lan-ip>:9103/health
+```
+
 ---
 
 ## Detailed Setup
