@@ -31,6 +31,9 @@ Practical use cases: meeting recaps, action item extraction, brainstorm capture.
 ### [Audio Processing Guide](audio-processing-guide.md)
 Advanced ffmpeg patterns for chunking long recordings and format conversion.
 
+### [Benchmarks](benchmarks.md)
+Measured numbers on real hardware: LLM serving layers (llama-swap vs Ollama) and Whisper model sizing (VRAM, speed, accuracy).
+
 ---
 
 ## When Things Go Wrong
