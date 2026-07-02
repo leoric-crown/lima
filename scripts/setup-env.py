@@ -17,11 +17,13 @@ from typing import Optional, Dict, Any
 class CredentialGenerator:
     """Generates secure credentials based on directive types."""
 
-    # Safe character set for password generation
-    # Excluded: $ (Docker), & (shell), ` (shell), \ (escape), " (quotes), ' (quotes)
-    # Excluded: | (pipe), ; (command separator), > < (redirection), ~ (home)
-    # Excluded: { } (brace expansion), ! (history expansion in some shells)
-    PASSWORD_CHARS = string.ascii_letters + string.digits + '@#%^*()_+-=[]:./?'
+    # Safe character set for password generation.
+    # Letters, digits, and _ - . only: passwords land in connection URIs
+    # (@ : / ? # break URL parsing), in Makefile-included .env files
+    # (# starts a comment), and in shells (() * [] ^ etc. break unquoted
+    # sourcing) — so all shell-, URL-, and make-special characters are excluded.
+    # Entropy comes from length: 64 symbols ~ 6 bits/char.
+    PASSWORD_CHARS = string.ascii_letters + string.digits + '_-.'
 
     def strong_password(self, length: int = 24) -> str:
         """Generate a strong mixed-character password."""

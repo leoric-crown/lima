@@ -1,17 +1,18 @@
 # LIMA - Custom n8n image with ffmpeg for audio processing
 # Build: docker build -f n8n.Dockerfile -t lima-n8n .
 #
-# Note: Pinned to 1.123.5 due to n8n 2.0 breaking workflow imports.
-# See VERSIONS.md for tested versions and BACKLOG.md for upgrade plans.
+# n8n images are Docker Hardened Images (no package manager), so ffmpeg/ffprobe
+# are copied in as static binaries instead of installed via apk.
+# See VERSIONS.md for tested versions.
 
-FROM docker.n8n.io/n8nio/n8n:1.123.5
+FROM mwader/static-ffmpeg:8.1.2 AS ffmpeg
 
-USER root
+FROM docker.n8n.io/n8nio/n8n:2.29.3
 
-# Install ffmpeg for audio splitting/manipulation
-RUN apk add --no-cache ffmpeg
+COPY --from=ffmpeg /ffmpeg /usr/local/bin/ffmpeg
+COPY --from=ffmpeg /ffprobe /usr/local/bin/ffprobe
 
 # Verify installation
-RUN ffmpeg -version
+RUN ffmpeg -version && ffprobe -version
 
 USER node

@@ -336,7 +336,7 @@
       "credentials": {
         "openAiApi": {
           "id": "eg9iQyRsQxnZkCbz",
-          "name": "LMStudio localhost"
+          "name": "Local model"
         }
       }
     },

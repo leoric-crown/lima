@@ -17,7 +17,10 @@ services:
   # Provides Claude Code / Cursor / Windsurf with n8n documentation and workflow management
   # GitHub: https://github.com/czlonkowski/n8n-mcp
   n8n-mcp:
-    image: ghcr.io/czlonkowski/n8n-mcp:latest
+    # Pin to a release whose bundled n8n node DB matches the instance version —
+    # n8n-mcp does NOT introspect the live instance for node schemas.
+    # v2.62.0 is built against n8n 2.27.4 (instance: 2.29.3).
+    image: ghcr.io/czlonkowski/n8n-mcp:2.62.0
     container_name: lima-n8n-mcp
     restart: unless-stopped
     depends_on:
@@ -31,6 +34,9 @@ services:
       AUTH_TOKEN: ${MCP_AUTH_TOKEN}
       N8N_API_URL: http://n8n:5678
       N8N_API_KEY: ${N8N_API_KEY:-}
+      # n8n-mcp >=2.50.2 SSRF hardening blocks private IPs unless permissive;
+      # required because N8N_API_URL above is a Docker-internal hostname
+      WEBHOOK_SECURITY_MODE: permissive
       LOG_LEVEL: ${MCP_LOG_LEVEL:-info}
     ports:
       - "${BIND_HOST:-127.0.0.1}:${MCP_PORT:-8042}:3000"
@@ -52,7 +58,11 @@ services:
       postgres:
         condition: service_healthy
     environment:
-      DATABASE_URI: postgresql://${N8N_DB_USER:-n8n_user}:${N8N_DB_PASSWORD}@postgres:5432/${POSTGRES_DB:-lima}
+      # Credentials passed via libpq env vars (not embedded in the URI) so
+      # passwords with URL-special characters (@ : / #) don't break parsing
+      DATABASE_URI: postgresql://postgres:5432/${POSTGRES_DB:-lima}
+      PGUSER: ${N8N_DB_USER:-n8n_user}
+      PGPASSWORD: ${N8N_DB_PASSWORD}
     command: ["--access-mode=unrestricted", "--transport=sse"]
     ports:
       - "${BIND_HOST:-127.0.0.1}:${POSTGRES_MCP_PORT:-8700}:8000"

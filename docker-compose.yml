@@ -74,6 +74,12 @@ services:
       N8N_BLOCK_ENV_ACCESS_IN_NODE: "true"
       N8N_ENFORCE_SETTINGS_FILE_PERMISSIONS: "true"
       N8N_GIT_NODE_DISABLE_BARE_REPOS: "true"
+      # n8n 2.x forward-compatibility: 2.0 excludes executeCommand/localFileTrigger
+      # by default and restricts file access to ~/.n8n-files — both are load-bearing
+      # for the voice-memo workflows (ffmpeg, /data drop zone)
+      NODES_EXCLUDE: "[]"
+      N8N_RESTRICT_FILE_ACCESS_TO: /data
+      N8N_DEFAULT_BINARY_DATA_MODE: filesystem
       # Features
       N8N_RUNNERS_ENABLED: "true"
       N8N_DIAGNOSTICS_ENABLED: "false"

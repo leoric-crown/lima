@@ -76,15 +76,14 @@ lima/
 - **postgres-mcp**: Direct database access via MCP (SSE transport, port 8700) - [source](https://github.com/crystaldba/postgres-mcp)
 - **pgadmin**: Database UI
 
-### Database Schema
+### Database
 
-The `init-data.sh` script creates:
-- `meetings`: Metadata (title, date, participants, tags)
-- `transcripts`: Full transcription text per meeting
-- `chunks`: Transcript segments with `vector(1536)` embeddings for semantic search
-- `insights`: Extracted decisions, actions, risks (typed, with assignee/due date)
-
-Uses IVFFlat index for cosine similarity search on embeddings.
+The `init-data.sh` script enables the `pgvector` and `uuid-ossp` extensions and
+creates the n8n database user — it creates no application tables. n8n manages its
+own schema; no LIMA workflow currently writes to the database (notes are markdown
+files on disk). The vector-enabled database is an extensibility invitation:
+transcript chunk embeddings and semantic search can be added later without
+changing infrastructure.
 
 ### Native Whisper Alternative
 

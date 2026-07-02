@@ -14,6 +14,8 @@ import platform
 import socket
 import subprocess
 import sys
+import urllib.error
+import urllib.request
 from pathlib import Path
 
 
@@ -67,10 +69,47 @@ def prepare_credential(file_path: Path, host_ip: str | None, llm_port: str | Non
     return content
 
 
-def import_credential(file_path: Path, host_ip: str | None, llm_port: str | None) -> bool:
-    """Import a single credential file."""
+def get_existing_credential_ids(n8n_url: str, api_key: str) -> set[str] | None:
+    """Fetch existing credential IDs via the n8n API (available in n8n 2.x).
+
+    Returns None if the endpoint is unavailable, so callers can fall back to
+    importing blindly (pre-2.x behavior).
+    """
+    req = urllib.request.Request(
+        f"{n8n_url.rstrip('/')}/api/v1/credentials",
+        headers={"X-N8N-API-KEY": api_key},
+    )
+    try:
+        with urllib.request.urlopen(req, timeout=10) as resp:
+            payload = json.load(resp)
+        return {c["id"] for c in payload.get("data", []) if c.get("id")}
+    except (urllib.error.URLError, OSError, ValueError, KeyError):
+        return None
+
+
+def import_credential(
+    file_path: Path,
+    host_ip: str | None,
+    llm_port: str | None,
+    existing_ids: set[str] | None,
+) -> bool:
+    """Import a single credential file.
+
+    The n8n CLI silently OVERWRITES credentials by ID, so skip any credential
+    whose ID already exists on the instance — otherwise re-seeding would clobber
+    live customizations (e.g. a user-edited base URL).
+    """
     name = file_path.stem
     print(f"Importing credential: {name}")
+
+    if existing_ids is not None:
+        try:
+            file_ids = {c.get("id") for c in json.loads(file_path.read_text()) if c.get("id")}
+        except (ValueError, TypeError, AttributeError):
+            file_ids = set()
+        if file_ids and file_ids <= existing_ids:
+            print("  Skipped (already exists)")
+            return True
 
     content = prepare_credential(file_path, host_ip, llm_port)
 
@@ -150,9 +189,13 @@ def main():
     creds_dir = SEED_DIR / "credentials"
     if creds_dir.exists():
         print("=== Importing credentials ===")
+        existing_ids = get_existing_credential_ids(n8n_url, api_key)
+        if existing_ids is None:
+            print("Note: cannot list existing credentials (n8n < 2.x?);")
+            print("      imports will overwrite credentials with matching IDs")
         cred_files = sorted(creds_dir.glob("*.json"))
         for cred_file in cred_files:
-            import_credential(cred_file, host_ip, llm_port)
+            import_credential(cred_file, host_ip, llm_port, existing_ids)
         print()
 
     # Import workflows

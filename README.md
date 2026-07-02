@@ -17,7 +17,7 @@
 ### Prerequisites
 
 - **Docker** ([Desktop](https://docker.com) for personal use, [Engine](https://docs.docker.com/engine/install/) for Linux/corporate)
-- **Local LLM**: [LM Studio](https://lmstudio.ai/) (recommended) or [Ollama](https://ollama.ai/)
+- **Local LLM**: [LM Studio](https://lmstudio.ai/) (recommended), [Ollama](https://ollama.ai/), or any OpenAI-compatible server (llama-swap, vLLM, ...)
 - **uv**: [astral.sh/uv](https://astral.sh/uv/) - Python package manager for LIMA's scripts
 - **make**: Usually pre-installed (see [Getting Started](docs/getting-started.md) if missing)
 
@@ -41,8 +41,8 @@ The interactive wizard will:
 
 ### 2. Activate and Record
 
-1. Start LM Studio (Developer → Start Server) or ensure Ollama is running
-2. In n8n (http://localhost:5678), open **Voice Memo Processor (Speaches)** and toggle **Active**
+1. Start your local LLM server (LM Studio: Developer → Start Server; or Ollama, llama-swap, etc.)
+2. In n8n (http://localhost:5678), open **Voice Memo Processor (Speaches)** and **Publish** it (n8n 2.x replaced the Active toggle with Save/Publish — a workflow runs its published version)
 3. Open http://localhost:8888/lima/recorder/
 4. Click the microphone, speak, click again to process
 
@@ -146,4 +146,4 @@ The [BACKLOG](BACKLOG.md) is full of ideas waiting to be explored:
 - **n8n** workflow automation (custom image with ffmpeg)
 - **Whisper** (Speaches) for transcription
 - **Caddy** reverse proxy
-- **LM Studio** or **Ollama** for local LLM inference
+- **LM Studio**, **Ollama**, or any OpenAI-compatible server for local LLM inference
