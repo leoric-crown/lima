@@ -121,8 +121,8 @@ Required in `.env` (generate with `openssl rand -base64 32` or `openssl rand -he
 Optional:
 - `N8N_API_KEY`: Generate in n8n UI (Settings > API) for workflow seeding and n8n-mcp
 - `N8N_PORT`: External port for n8n (default: 5678)
-- `LOCAL_LLM_PORT`: Port for local LLM (default: 1234 for LM Studio, set to 11434 for Ollama)
-- `LLM_MODEL`: LLM model name for workflows (default: `openai/gpt-oss-20b`, must support tool calling)
+- `LOCAL_LLM_PORT`: Port for local LLM (llama-swap: 9292 recommended; Ollama: 11434; LM Studio: 1234)
+- `LLM_MODEL`: LLM model name for workflows (must support tool calling; `qwen3-coder-30b`-class recommended, avoid thinking models and `gpt-oss-20b` for tool loops — see `docs/benchmarks.md`)
 - `WHISPER_MODEL`: Default `Systran/faster-whisper-base`, options include tiny/small/medium/large-v3
 - `COMPUTE_TYPE`: Native CUDA whisper precision — `float16` (default), `int8`, `int8_float16` (halves large-v3 VRAM)
 - `NATIVE_WHISPER_HOST`: Bind address for native whisper (default: 0.0.0.0)
@@ -170,7 +170,7 @@ Long files (>60 min) should be chunked for parallel transcription. See `docs/aud
 
 ## LLM Configuration
 
-For LM Studio, Ollama, and context window configuration, see `docs/customizing-your-ai.md`.
+For backend setup (llama-swap + llama.cpp recommended on NVIDIA/Linux; LM Studio, Ollama alternatives) and context window configuration, see `docs/customizing-your-ai.md`. Measured backend/model comparisons: `docs/benchmarks.md`.
 
 **Note:** n8n's Alpine container doesn't have `find -printf`, use `stat -c %Y` instead.
 

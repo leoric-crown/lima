@@ -4,16 +4,88 @@ LIMA uses a local LLM to extract insights from transcripts. This guide covers ho
 
 ## Choosing an LLM Backend
 
-| Feature | LM Studio | Ollama | Cloud (OpenAI, etc.) |
-|---------|-----------|--------|----------------------|
-| **Setup** | GUI app, download models visually | CLI, `ollama pull` | API key only |
-| **Ease of use** | Beginner-friendly | Developer-friendly | Easiest |
-| **Privacy** | 100% local | 100% local | Data leaves your machine |
-| **Cost** | Free | Free | Per-token pricing |
-| **Tool calling** | Good (with compatible models) | Good | Excellent |
-| **Best for** | Visual setup, experimentation | Automation, scripting | Production, convenience |
+| Feature | llama-swap + llama.cpp | LM Studio | Ollama | Cloud (OpenAI, etc.) |
+|---------|------------------------|-----------|--------|----------------------|
+| **Setup** | Two binaries + one YAML | GUI app, download models visually | CLI, `ollama pull` | API key only |
+| **Ease of use** | Developer-friendly | Beginner-friendly | Developer-friendly | Easiest |
+| **Privacy** | 100% local | 100% local | 100% local | Data leaves your machine |
+| **Cost** | Free (MIT) | Free (closed core) | Free (MIT) | Per-token pricing |
+| **Tool calling** | Excellent ([measured](benchmarks.md)) | Good (with compatible models) | Good, but fragile in agent loops with *thinking* models ([measured](benchmarks.md)) | Excellent |
+| **VRAM when idle** | Zero (per-model TTL → process exit) | Near-zero (JIT + auto-evict) | Zero (`keep_alive` expiry) | n/a |
+| **Best for** | NVIDIA Linux, agent workflows, shared/gaming GPUs | Visual setup, macOS, experimentation | Quick starts, model tasting | Convenience |
 
-**Recommendation:** Start with LM Studio if you're new to local LLMs. Switch to Ollama if you prefer CLI or need scripting. Use cloud only if local inference is too slow on your hardware.
+**Recommendation:** On NVIDIA/Linux, use **llama-swap + llama.cpp** — in side-by-side testing of LIMA's own workflows it was the only backend with zero tool-calling misbehavior, and its cold starts and idle-to-zero VRAM are excellent (see [Benchmarks](benchmarks.md)). LM Studio remains the friendliest path on macOS or if you want a GUI. Ollama works, with caveats for agent workflows (below). Use cloud only if local inference is too slow on your hardware.
+
+---
+
+## llama-swap + llama.cpp Setup (recommended on NVIDIA/Linux)
+
+[llama-swap](https://github.com/mostlygeek/llama-swap) is a small MIT-licensed proxy
+that spawns a [llama.cpp](https://github.com/ggml-org/llama.cpp) `llama-server`
+per model on demand, routes OpenAI-compatible requests by the request's `model`
+field, and kills the process after an idle TTL — VRAM genuinely returns to zero.
+One endpoint, many models, nothing resident when idle.
+
+### 1. Install
+
+- **Arch:** `yay -S llama.cpp-cuda llama-swap-bin` (llama.cpp compiles from source, expect ~10 min)
+- **Other:** [llama.cpp releases](https://github.com/ggml-org/llama.cpp/releases) + [llama-swap releases](https://github.com/mostlygeek/llama-swap/releases) (single Go binary), or llama-swap's CUDA Docker image
+
+### 2. Download a model (GGUF)
+
+```bash
+export HF_XET_HIGH_PERFORMANCE=1   # parallel chunked downloads — saturates fast lines
+uvx --from 'huggingface_hub[cli]' hf download \
+  unsloth/Qwen3-Coder-30B-A3B-Instruct-GGUF Qwen3-Coder-30B-A3B-Instruct-Q4_K_M.gguf \
+  --local-dir ~/.cache/llama.cpp
+```
+
+Model guidance (measured in [Benchmarks](benchmarks.md)): `Qwen3-Coder-30B-A3B`
+Q4_K_M (~18.6GB file, 20.3GB VRAM @ 16K context) is an excellent agent model for
+24GB cards; `Qwen3-8B` Q4_K_M (~5GB) for smaller cards or faster responses.
+**Avoid *thinking* models for tool-loop workflows**, and avoid `gpt-oss-20b`
+(documented tool-calling problems on every backend).
+
+### 3. Configure (`~/.config/llama-swap/config.yaml`)
+
+```yaml
+healthCheckTimeout: 300
+
+models:
+  "qwen3-coder-30b":
+    cmd: |
+      llama-server --port ${PORT}
+      -m /home/YOU/.cache/llama.cpp/Qwen3-Coder-30B-A3B-Instruct-Q4_K_M.gguf
+      --jinja -ngl 99 -c 16384
+    ttl: 300
+```
+
+`--jinja` enables the model's own chat template (required for reliable tool
+calling); `ttl: 300` unloads after 5 idle minutes. Add one block per model —
+requests pick the model by name, llama-swap swaps processes automatically.
+
+### 4. Run
+
+```bash
+llama-swap -config ~/.config/llama-swap/config.yaml -listen :9292 -watch-config
+```
+
+The dashboard at `http://localhost:9292` shows loaded models and logs.
+`POST /api/models/unload` force-unloads instantly (handy before gaming).
+If n8n runs in Docker and the server on the host, allow the Docker subnets
+through your firewall and use the host's LAN IP in the credential (same pattern
+as [native whisper](native-whisper.md)).
+
+### 5. n8n Credential Setup
+
+1. In n8n: **Settings → Credentials → Add → OpenAI API**
+2. Configure:
+   - **Name:** `llama-swap local`
+   - **API Key:** `local` (any non-empty string)
+   - **Base URL:** `http://host.docker.internal:9292/v1` (Linux: your host LAN IP)
+
+Set `LOCAL_LLM_PORT=9292` and `LLM_MODEL=qwen3-coder-30b` in `.env` before
+`make seed` to get this wired automatically.
 
 ---
 
@@ -101,6 +173,16 @@ Tool calling fails for `gpt-oss-20b` with "Unexpected end of content" parsing er
 
 ## Ollama Setup
 
+> **Agent-workflow caveats (measured, 2026-07 — see [Benchmarks](benchmarks.md)):**
+> with *thinking* models (e.g. `qwen3:8b`), Ollama's chat template caused
+> speculative/hallucinated tool calls in every multi-tool trial that the same
+> weights ran cleanly on llama.cpp; `/no_think` is ignored on the OpenAI-compat
+> route, roughly doubling agent-chain latency. Non-thinking models
+> (`qwen3-coder:30b`) worked fine. Two setup gotchas: the default context is
+> small and truncates silently (set `OLLAMA_CONTEXT_LENGTH=16384` via a systemd
+> override), and Ollama binds `127.0.0.1` by default — set
+> `OLLAMA_HOST=0.0.0.0:11434` so the n8n container can reach it.
+
 ### 1. Install Ollama
 
 ```bash
@@ -181,8 +263,8 @@ The context window determines how much text the model can process at once. Large
 |----------|---------|---------|
 | `N8N_API_KEY` | - | Enable workflow seeding and MCP |
 | `N8N_PORT` | 5678 | External port for n8n |
-| `LOCAL_LLM_PORT` | 1234 | LM Studio port (set to 11434 for Ollama) |
-| `LLM_MODEL` | `openai/gpt-oss-20b` | Model name for workflows (must support tool calling) |
+| `LOCAL_LLM_PORT` | 1234 | LLM server port (llama-swap example: 9292; Ollama: 11434; LM Studio: 1234) |
+| `LLM_MODEL` | `openai/gpt-oss-20b` | Model name for workflows (must support tool calling; `qwen3-coder-30b`-class recommended — see [Benchmarks](benchmarks.md)) |
 | `WHISPER_MODEL` | `Systran/faster-whisper-base` | Whisper model size |
 | `NATIVE_WHISPER_PORT` | 9001 | Port for native CUDA/MLX whisper |
 
