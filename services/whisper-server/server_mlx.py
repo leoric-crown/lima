@@ -111,7 +111,11 @@ async def _idle_monitor():
 
 @asynccontextmanager
 async def lifespan(app: FastAPI):
-    """Start the idle-unload monitor if WHISPER_IDLE_TIMEOUT is enabled."""
+    """Log the effective configuration; start the idle-unload monitor if enabled."""
+    print(
+        f"Configured: model={DEFAULT_MODEL} batch_size={BATCH_SIZE}"
+        f" idle_timeout={WHISPER_IDLE_TIMEOUT or 'off'} (lazy-load on first request)"
+    )
     task = None
     if WHISPER_IDLE_TIMEOUT > 0:
         print(f"Idle unload enabled: model unloads after {WHISPER_IDLE_TIMEOUT}s idle")
