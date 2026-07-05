@@ -82,7 +82,16 @@
       "latency_s": 1.132,
       "prompt_tokens": 585,
       "completion_tokens": 251,
-      "tokens_per_s": 221.8
+      "tokens_per_s": 221.8,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about 'spongy feel' is not directly supported by the transcript, though the transcript *mentions* it as a trend; it's a slight overreach to make it an action item."
+      }
      },
      {
       "id": "ami-ES2009c-0138",
@@ -124,7 +133,16 @@
       "latency_s": 0.932,
       "prompt_tokens": 562,
       "completion_tokens": 198,
-      "tokens_per_s": 212.4
+      "tokens_per_s": 212.4,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Nathan will present first' is not a general action item, but a statement about the meeting flow; it's a minor hallucination."
+      }
      },
      {
       "id": "ami-ES2009c-0139",
@@ -177,7 +195,16 @@
       "latency_s": 1.455,
       "prompt_tokens": 834,
       "completion_tokens": 313,
-      "tokens_per_s": 215.2
+      "tokens_per_s": 215.2,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present (paraphrased appropriately) and no extraneous information was added."
+      }
      },
      {
       "id": "icsi-Bro026-1162",
@@ -221,7 +248,16 @@
       "latency_s": 1.159,
       "prompt_tokens": 554,
       "completion_tokens": 251,
-      "tokens_per_s": 216.6
+      "tokens_per_s": 216.6,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 0,
+       "hallucinated_items": 3,
+       "fallback_appropriate": false,
+       "notes": "The action items and questions are not directly stated in the transcript and appear to be inferences or elaborations, thus are hallucinations. The summary and title are faithful."
+      }
      },
      {
       "id": "icsi-Bro026-1165",
@@ -261,7 +297,16 @@
       "latency_s": 1.0,
       "prompt_tokens": 604,
       "completion_tokens": 216,
-      "tokens_per_s": 215.9
+      "tokens_per_s": 215.9,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, and the tag list is invented."
+      }
      },
      {
       "id": "icsi-Bro026-1157",
@@ -304,7 +349,16 @@
       "latency_s": 0.894,
       "prompt_tokens": 528,
       "completion_tokens": 190,
-      "tokens_per_s": 212.5
+      "tokens_per_s": 212.5,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The extraction is excellent and faithfully represents the transcript's content, capturing all reference action items."
+      }
      },
      {
       "id": "ami-ES2003c-0039",
@@ -349,7 +403,16 @@
       "latency_s": 1.086,
       "prompt_tokens": 878,
       "completion_tokens": 228,
-      "tokens_per_s": 210.0
+      "tokens_per_s": 210.0,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Plan for annual design updates to stay current with market trends' is not directly supported by the transcript, though the general idea of trends changing is mentioned."
+      }
      },
      {
       "id": "ami-ES2003c-0036",
@@ -390,7 +453,16 @@
       "latency_s": 1.072,
       "prompt_tokens": 738,
       "completion_tokens": 228,
-      "tokens_per_s": 212.8
+      "tokens_per_s": 212.8,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The action items 'Review and finalize remote control component layout' and 'Develop prototype...' are not directly stated in the transcript, and the questions are also not explicitly asked."
+      }
      },
      {
       "id": "ami-ES2003c-0037",
@@ -440,7 +512,16 @@
       "latency_s": 1.332,
       "prompt_tokens": 776,
       "completion_tokens": 283,
-      "tokens_per_s": 212.4
+      "tokens_per_s": 212.4,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (materials, exact dimensions) and are therefore hallucinations."
+      }
      },
      {
       "id": "icsi-Bed009-0633",
@@ -476,7 +557,16 @@
       "latency_s": 0.759,
       "prompt_tokens": 487,
       "completion_tokens": 161,
-      "tokens_per_s": 212.0
+      "tokens_per_s": 212.0,
+      "expected_action_items": 1,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 1,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Develop a deep conceptual basis for semantic grammar' is not directly stated as an action item in the transcript, but rather a goal being discussed."
+      }
      },
      {
       "id": "icsi-Bed009-0626",
@@ -521,7 +611,16 @@
       "latency_s": 1.323,
       "prompt_tokens": 772,
       "completion_tokens": 284,
-      "tokens_per_s": 214.6
+      "tokens_per_s": 214.6,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 1,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The action items contain items not directly mentioned in the transcript (Deep Mail review, GPS data analysis). The questions are also not directly asked or implied in the transcript."
+      }
      },
      {
       "id": "icsi-Bed009-0629",
@@ -561,7 +660,16 @@
       "latency_s": 0.886,
       "prompt_tokens": 523,
       "completion_tokens": 184,
-      "tokens_per_s": 207.7
+      "tokens_per_s": 207.7,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Research GPU pricing for server upgrade' is completely fabricated and not present in the transcript."
+      }
      },
      {
       "id": "ami-IS1004a-0312",
@@ -597,7 +705,16 @@
       "latency_s": 0.824,
       "prompt_tokens": 556,
       "completion_tokens": 178,
-      "tokens_per_s": 215.9
+      "tokens_per_s": 215.9,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Prepare for whiteboard training and note-taking' is not directly stated in the transcript; it's an inference."
+      }
      },
      {
       "id": "ami-IS1004a-0313",
@@ -633,7 +750,16 @@
       "latency_s": 0.669,
       "prompt_tokens": 527,
       "completion_tokens": 143,
-      "tokens_per_s": 213.8
+      "tokens_per_s": 213.8,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Research spider web building material for flying mechanism' is not directly stated in the transcript, it's an interpretation."
+      }
      },
      {
       "id": "ami-IS1004a-0314",
@@ -671,7 +797,16 @@
       "latency_s": 0.721,
       "prompt_tokens": 585,
       "completion_tokens": 154,
-      "tokens_per_s": 213.6
+      "tokens_per_s": 213.6,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Research elephant walking pattern details' is not directly stated in the transcript, it's an interpretation of the description."
+      }
      },
      {
       "id": "icsi-Bed011-0656",
@@ -710,7 +845,16 @@
       "latency_s": 0.755,
       "prompt_tokens": 463,
       "completion_tokens": 162,
-      "tokens_per_s": 214.6
+      "tokens_per_s": 214.6,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, but are reasonable inferences; however, strict faithfulness requires avoiding inferences."
+      }
      },
      {
       "id": "icsi-Bed011-0657",
@@ -755,7 +899,16 @@
       "latency_s": 1.179,
       "prompt_tokens": 468,
       "completion_tokens": 260,
-      "tokens_per_s": 220.6
+      "tokens_per_s": 220.6,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly supported by the transcript (specific improvements, exact timeline). 'Adjust NAACL attendance plans' is a slight overreach; the transcript only states funding was affected."
+      }
      },
      {
       "id": "icsi-Bed011-0653",
@@ -795,7 +948,16 @@
       "latency_s": 0.861,
       "prompt_tokens": 482,
       "completion_tokens": 182,
-      "tokens_per_s": 211.3
+      "tokens_per_s": 211.3,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The 'Monitor collection progress toward 100 items' action item is not directly stated in the transcript, it's an inference."
+      }
      },
      {
       "id": "ami-IS1001b-0279",
@@ -833,7 +995,16 @@
       "latency_s": 0.765,
       "prompt_tokens": 458,
       "completion_tokens": 166,
-      "tokens_per_s": 217.1
+      "tokens_per_s": 217.1,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no information was invented."
+      }
      },
      {
       "id": "ami-IS1001b-0284",
@@ -872,7 +1043,16 @@
       "latency_s": 0.657,
       "prompt_tokens": 463,
       "completion_tokens": 141,
-      "tokens_per_s": 214.6
+      "tokens_per_s": 214.6,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 2,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Review individual action items sent by email' and 'Take notes during meeting if desired' are slightly more detailed than the transcript supports, and thus represent minor hallucinations."
+      }
      },
      {
       "id": "ami-IS1001b-0283",
@@ -910,7 +1090,16 @@
       "latency_s": 0.672,
       "prompt_tokens": 466,
       "completion_tokens": 145,
-      "tokens_per_s": 215.9
+      "tokens_per_s": 215.9,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, but are reasonable inferences; however, strict faithfulness requires avoiding inferences."
+      }
      },
      {
       "id": "icsi-Bro008-0970",
@@ -951,7 +1140,16 @@
       "latency_s": 0.963,
       "prompt_tokens": 585,
       "completion_tokens": 210,
-      "tokens_per_s": 218.1
+      "tokens_per_s": 218.1,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly prompted by the transcript, and feel like follow-ups rather than extracted needs."
+      }
      },
      {
       "id": "icsi-Bro008-0975",
@@ -989,7 +1187,16 @@
       "latency_s": 0.813,
       "prompt_tokens": 587,
       "completion_tokens": 169,
-      "tokens_per_s": 207.9
+      "tokens_per_s": 207.9,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 2,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The output is generally faithful, but the title and summary are somewhat generic. It accurately captures the action items from the reference."
+      }
      },
      {
       "id": "icsi-Bro008-0977",
@@ -1032,7 +1239,16 @@
       "latency_s": 1.02,
       "prompt_tokens": 498,
       "completion_tokens": 224,
-      "tokens_per_s": 219.7
+      "tokens_per_s": 219.7,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about specific benefits of training on different languages is not directly supported by the transcript."
+      }
      },
      {
       "id": "ami-TS3012d-0532",
@@ -1074,7 +1290,16 @@
       "latency_s": 0.804,
       "prompt_tokens": 569,
       "completion_tokens": 172,
-      "tokens_per_s": 213.9
+      "tokens_per_s": 213.9,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about 'How will the prototype presentation be handled?' is not directly stated in the transcript, it's an inference."
+      }
      },
      {
       "id": "icsi-Bed012-0659",
@@ -1115,7 +1340,16 @@
       "latency_s": 0.913,
       "prompt_tokens": 489,
       "completion_tokens": 198,
-      "tokens_per_s": 216.8
+      "tokens_per_s": 216.8,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section introduces items not directly stated in the transcript (e.g., 'What specific construction scenarios...'). Also, the detail about merging *three* components is a slight over-specification."
+      }
      },
      {
       "id": "icsi-Bed012-0658",
@@ -1158,7 +1392,16 @@
       "latency_s": 0.995,
       "prompt_tokens": 578,
       "completion_tokens": 212,
-      "tokens_per_s": 213.2
+      "tokens_per_s": 213.2,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Analyze output to determine user intent' and question 'What specific information does the user want to know about the location?' are not directly supported by the transcript."
+      }
      },
      {
       "id": "icsi-Bed012-0661",
@@ -1201,7 +1444,16 @@
       "latency_s": 1.034,
       "prompt_tokens": 543,
       "completion_tokens": 225,
-      "tokens_per_s": 217.5
+      "tokens_per_s": 217.5,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly supported by the transcript (supported construction types, handling mapping between types)."
+      }
      },
      {
       "id": "ami-ES2006b-0087",
@@ -1244,7 +1496,16 @@
       "latency_s": 0.799,
       "prompt_tokens": 526,
       "completion_tokens": 170,
-      "tokens_per_s": 212.6
+      "tokens_per_s": 212.6,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (budget, use cases) and are therefore hallucinations."
+      }
      },
      {
       "id": "ami-ES2006b-0083",
@@ -1290,7 +1551,16 @@
       "latency_s": 1.178,
       "prompt_tokens": 934,
       "completion_tokens": 247,
-      "tokens_per_s": 209.7
+      "tokens_per_s": 209.7,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly prompted by the transcript, and the action item 'Identify and document all remote control components' is a restatement of the work being done, not a new action item."
+      }
      },
      {
       "id": "ami-ES2006b-0084",
@@ -1336,7 +1606,16 @@
       "latency_s": 1.303,
       "prompt_tokens": 881,
       "completion_tokens": 274,
-      "tokens_per_s": 210.3
+      "tokens_per_s": 210.3,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly asked or implied in the transcript, and the action items include 'research existing designs' which is an inference, not a stated action item. Otherwise, the extraction is quite faithful."
+      }
      }
     ],
     "stt": [
@@ -1376,7 +1655,16 @@
       "latency_s": 0.772,
       "prompt_tokens": 464,
       "completion_tokens": 166,
-      "tokens_per_s": 214.9
+      "tokens_per_s": 214.9,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Should we proceed with self-hosting or switch to a cheaper model?' is not directly stated in the transcript, it's an inference based on the discussion."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-02_project_planning",
@@ -1417,7 +1705,16 @@
       "latency_s": 0.984,
       "prompt_tokens": 542,
       "completion_tokens": 214,
-      "tokens_per_s": 217.4
+      "tokens_per_s": 217.4,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The item 'Research audio quality optimization techniques' is a bit more specific than the transcript warrants; 'Plan for handling audio quality...' is sufficient."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-03_todo_list",
@@ -1464,7 +1761,16 @@
       "latency_s": 1.099,
       "prompt_tokens": 539,
       "completion_tokens": 238,
-      "tokens_per_s": 216.6
+      "tokens_per_s": 216.6,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-04_meeting_notes",
@@ -1505,7 +1811,16 @@
       "latency_s": 0.939,
       "prompt_tokens": 556,
       "completion_tokens": 202,
-      "tokens_per_s": 215.1
+      "tokens_per_s": 215.1,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-05_parenting_question",
@@ -1550,7 +1865,16 @@
       "latency_s": 1.261,
       "prompt_tokens": 536,
       "completion_tokens": 279,
-      "tokens_per_s": 221.3
+      "tokens_per_s": 221.3,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'What does Dov's preference for upright holding mean?' is not directly asked in the transcript, it's a rephrasing of 'Does that mean anything?'"
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-06_technical_troubleshooting",
@@ -1598,7 +1922,16 @@
       "latency_s": 1.2,
       "prompt_tokens": 516,
       "completion_tokens": 265,
-      "tokens_per_s": 220.8
+      "tokens_per_s": 220.8,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about 'specific night-time conditions' is not directly supported by the transcript; it's an inference, not a direct observation."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-07_blog_outline",
@@ -1639,7 +1972,16 @@
       "latency_s": 0.997,
       "prompt_tokens": 556,
       "completion_tokens": 212,
-      "tokens_per_s": 212.6
+      "tokens_per_s": 212.6,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, accurately paraphrased."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-08_calendar_scheduling",
@@ -1683,7 +2025,16 @@
       "latency_s": 1.778,
       "prompt_tokens": 578,
       "completion_tokens": 395,
-      "tokens_per_s": 222.1
+      "tokens_per_s": 222.1,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The 'questions' list is empty, which is correct, but the 'tags' field is not evaluated and two action items (reminder and zoom link) are not in the reference."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-09_research_note",
@@ -1725,7 +2076,16 @@
       "latency_s": 0.971,
       "prompt_tokens": 513,
       "completion_tokens": 211,
-      "tokens_per_s": 217.4
+      "tokens_per_s": 217.4,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-10_project_update",
@@ -1761,7 +2121,16 @@
       "latency_s": 0.775,
       "prompt_tokens": 525,
       "completion_tokens": 168,
-      "tokens_per_s": 216.9
+      "tokens_per_s": 216.9,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no information is invented."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-11_ai_prompt_creation",
@@ -1806,7 +2175,16 @@
       "latency_s": 1.006,
       "prompt_tokens": 497,
       "completion_tokens": 219,
-      "tokens_per_s": 217.7
+      "tokens_per_s": 217.7,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (urgency levels, conflicting priorities, criteria for brainstorming vs. tasks) and thus are hallucinations."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-12_agent_instructions",
@@ -1844,7 +2222,16 @@
       "latency_s": 0.605,
       "prompt_tokens": 411,
       "completion_tokens": 130,
-      "tokens_per_s": 214.8
+      "tokens_per_s": 214.8,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, accurately paraphrased."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-13_pharmacy_pickup",
@@ -1889,7 +2276,16 @@
       "latency_s": 1.03,
       "prompt_tokens": 507,
       "completion_tokens": 229,
-      "tokens_per_s": 222.3
+      "tokens_per_s": 222.3,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-14_household_chores",
@@ -1929,7 +2325,16 @@
       "latency_s": 0.906,
       "prompt_tokens": 522,
       "completion_tokens": 198,
-      "tokens_per_s": 218.5
+      "tokens_per_s": 218.5,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-15_grocery_shopping",
@@ -1975,7 +2380,16 @@
       "latency_s": 1.103,
       "prompt_tokens": 546,
       "completion_tokens": 242,
-      "tokens_per_s": 219.5
+      "tokens_per_s": 219.5,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript and comprehensive capture of action items. The detail in the action items (specifying whole milk, good coffee) is a strength."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-16_general_ai_prompt",
@@ -2022,7 +2436,16 @@
       "latency_s": 1.378,
       "prompt_tokens": 1276,
       "completion_tokens": 287,
-      "tokens_per_s": 208.3
+      "tokens_per_s": 208.3,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The action items include some very specific suggestions (e.g., 'Prepare meals...') that, while *in* the transcript, aren't core *action items* in the same way as the reference list's more strategic points. Also, 'Organize desk and workspace for efficiency' and 'Record final voice notes for next day planning' are not core action items."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-01_email_dictation",
@@ -2060,7 +2483,16 @@
       "latency_s": 0.747,
       "prompt_tokens": 469,
       "completion_tokens": 154,
-      "tokens_per_s": 206.1
+      "tokens_per_s": 206.1,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'What are the specific cost concerns with GPT-4 calls?' is not directly stated in the transcript, though the concern is present."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-02_project_planning",
@@ -2105,7 +2537,16 @@
       "latency_s": 1.183,
       "prompt_tokens": 542,
       "completion_tokens": 261,
-      "tokens_per_s": 220.5
+      "tokens_per_s": 220.5,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-03_todo_list",
@@ -2146,7 +2587,16 @@
       "latency_s": 1.078,
       "prompt_tokens": 548,
       "completion_tokens": 233,
-      "tokens_per_s": 216.1
+      "tokens_per_s": 216.1,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-04_meeting_notes",
@@ -2185,7 +2635,16 @@
       "latency_s": 0.856,
       "prompt_tokens": 562,
       "completion_tokens": 183,
-      "tokens_per_s": 213.8
+      "tokens_per_s": 213.8,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present, and no information was invented."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-05_parenting_question",
@@ -2223,7 +2682,16 @@
       "latency_s": 0.926,
       "prompt_tokens": 553,
       "completion_tokens": 200,
-      "tokens_per_s": 216.0
+      "tokens_per_s": 216.0,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Try gentle rocking, swaddling, or using a baby carrier...' is a suggestion from the transcript, not a direct action *to be taken* by the user, and thus is a slight hallucination."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-06_technical_troubleshooting",
@@ -2268,7 +2736,16 @@
       "latency_s": 1.046,
       "prompt_tokens": 518,
       "completion_tokens": 226,
-      "tokens_per_s": 216.1
+      "tokens_per_s": 216.1,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about specific firmware versions is not directly supported by the transcript; it's a reasonable follow-up, but not *in* the memo."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-07_blog_outline",
@@ -2313,7 +2790,16 @@
       "latency_s": 1.009,
       "prompt_tokens": 560,
       "completion_tokens": 216,
-      "tokens_per_s": 214.0
+      "tokens_per_s": 214.0,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly asked for in the transcript, and the action items are slightly more granular than the reference, but overall very faithful."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-08_calendar_scheduling",
@@ -2352,7 +2838,16 @@
       "latency_s": 1.261,
       "prompt_tokens": 570,
       "completion_tokens": 272,
-      "tokens_per_s": 215.8
+      "tokens_per_s": 215.8,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript and complete capture of all reference action items."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-09_research_note",
@@ -2386,7 +2881,16 @@
       "latency_s": 0.407,
       "prompt_tokens": 316,
       "completion_tokens": 82,
-      "tokens_per_s": 201.4
+      "tokens_per_s": 201.4,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 0,
+       "hallucinated_items": 6,
+       "fallback_appropriate": true,
+       "notes": "The extracted note fabricates action items and key points not directly stated in the very short, introductory transcript."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-10_project_update",
@@ -2424,7 +2928,16 @@
       "latency_s": 0.777,
       "prompt_tokens": 524,
       "completion_tokens": 170,
-      "tokens_per_s": 218.8
+      "tokens_per_s": 218.8,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items were captured, and no extraneous information was added."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-11_ai_prompt_creation",
@@ -2464,7 +2977,16 @@
       "latency_s": 0.94,
       "prompt_tokens": 560,
       "completion_tokens": 204,
-      "tokens_per_s": 217.0
+      "tokens_per_s": 217.0,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 0,
+       "hallucinated_items": 5,
+       "fallback_appropriate": true,
+       "notes": "The extracted action items are all descriptions *of* tasks the AI should perform, not tasks *from* the memo. The memo describes how to build an AI assistant, it doesn't contain a to-do list for a person."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-12_agent_instructions",
@@ -2498,7 +3020,16 @@
       "latency_s": 0.402,
       "prompt_tokens": 315,
       "completion_tokens": 82,
-      "tokens_per_s": 203.9
+      "tokens_per_s": 203.9,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 0,
+       "hallucinated_items": 6,
+       "fallback_appropriate": true,
+       "notes": "The extracted note invents action items and key points not explicitly stated in the very short, introductory transcript."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-13_pharmacy_pickup",
@@ -2544,7 +3075,16 @@
       "latency_s": 1.111,
       "prompt_tokens": 508,
       "completion_tokens": 250,
-      "tokens_per_s": 224.9
+      "tokens_per_s": 224.9,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Are the vitamins for after pregnancy still recommended?' is not directly stated in the transcript; it's implied Sarah *asked* for them, not that their recommendation is in question."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-14_household_chores",
@@ -2585,7 +3125,16 @@
       "latency_s": 0.963,
       "prompt_tokens": 531,
       "completion_tokens": 211,
-      "tokens_per_s": 219.2
+      "tokens_per_s": 219.2,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-15_grocery_shopping",
@@ -2631,7 +3180,16 @@
       "latency_s": 1.171,
       "prompt_tokens": 543,
       "completion_tokens": 255,
-      "tokens_per_s": 217.8
+      "tokens_per_s": 217.8,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and accurately paraphrased, and no extraneous information is included."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-16_general_ai_prompt",
@@ -2675,7 +3233,16 @@
       "latency_s": 1.061,
       "prompt_tokens": 661,
       "completion_tokens": 225,
-      "tokens_per_s": 212.1
+      "tokens_per_s": 212.1,
+      "expected_action_items": 11,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 11,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present (with appropriate paraphrasing)."
+      }
      },
      {
       "id": "stt-openai/whisper-1-01_email_dictation",
@@ -2718,7 +3285,16 @@
       "latency_s": 0.961,
       "prompt_tokens": 485,
       "completion_tokens": 205,
-      "tokens_per_s": 213.4
+      "tokens_per_s": 213.4,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items were captured faithfully and specifically."
+      }
      },
      {
       "id": "stt-openai/whisper-1-02_project_planning",
@@ -2764,7 +3340,16 @@
       "latency_s": 1.169,
       "prompt_tokens": 517,
       "completion_tokens": 258,
-      "tokens_per_s": 220.8
+      "tokens_per_s": 220.8,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'What framework should I use for development?' is a bit too leading; the transcript only mentions *considering* frameworks."
+      }
      },
      {
       "id": "stt-openai/whisper-1-03_todo_list",
@@ -2809,7 +3394,16 @@
       "latency_s": 1.239,
       "prompt_tokens": 536,
       "completion_tokens": 269,
-      "tokens_per_s": 217.2
+      "tokens_per_s": 217.2,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript, but inferred—still, they are not *faithful* to the transcript. Tags are also not grounded in the transcript."
+      }
      },
      {
       "id": "stt-openai/whisper-1-04_meeting_notes",
@@ -2852,7 +3446,16 @@
       "latency_s": 1.028,
       "prompt_tokens": 555,
       "completion_tokens": 222,
-      "tokens_per_s": 215.9
+      "tokens_per_s": 215.9,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not explicitly stated in the transcript, but are reasonable inferences; however, strict faithfulness requires only what is *said*."
+      }
      },
      {
       "id": "stt-openai/whisper-1-05_parenting_question",
@@ -2897,7 +3500,16 @@
       "latency_s": 1.237,
       "prompt_tokens": 536,
       "completion_tokens": 271,
-      "tokens_per_s": 219.1
+      "tokens_per_s": 219.1,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Could this be colic?' is not directly asked in the transcript, though Sarah *thinks* it might be colic. This is a minor hallucination."
+      }
      },
      {
       "id": "stt-openai/whisper-1-06_technical_troubleshooting",
@@ -2945,7 +3557,16 @@
       "latency_s": 1.241,
       "prompt_tokens": 515,
       "completion_tokens": 271,
-      "tokens_per_s": 218.3
+      "tokens_per_s": 218.3,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (e.g., specific firmware versions), and 'Test different coordinator options' is not explicitly mentioned as an action."
+      }
      },
      {
       "id": "stt-openai/whisper-1-07_blog_outline",
@@ -2990,7 +3611,16 @@
       "latency_s": 1.017,
       "prompt_tokens": 548,
       "completion_tokens": 220,
-      "tokens_per_s": 216.3
+      "tokens_per_s": 216.3,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section asks for specifics not explicitly stated in the transcript, and the action items include 'Analyze how this workflow has changed approach to information gathering' which is a slight overinterpretation of the final sentence."
+      }
      },
      {
       "id": "stt-openai/whisper-1-08_calendar_scheduling",
@@ -3031,7 +3661,16 @@
       "latency_s": 1.368,
       "prompt_tokens": 572,
       "completion_tokens": 302,
-      "tokens_per_s": 220.8
+      "tokens_per_s": 220.8,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/whisper-1-09_research_note",
@@ -3078,7 +3717,16 @@
       "latency_s": 1.153,
       "prompt_tokens": 514,
       "completion_tokens": 252,
-      "tokens_per_s": 218.6
+      "tokens_per_s": 218.6,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'What are the specific edge cases with Israeli-English accent?' is not directly supported by the transcript, though it's a reasonable follow-up."
+      }
      },
      {
       "id": "stt-openai/whisper-1-10_project_update",
@@ -3117,7 +3765,16 @@
       "latency_s": 0.864,
       "prompt_tokens": 529,
       "completion_tokens": 183,
-      "tokens_per_s": 211.9
+      "tokens_per_s": 211.9,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness and extraction; all reference action items were captured accurately."
+      }
      },
      {
       "id": "stt-openai/whisper-1-11_ai_prompt_creation",
@@ -3161,7 +3818,16 @@
       "latency_s": 1.011,
       "prompt_tokens": 487,
       "completion_tokens": 222,
-      "tokens_per_s": 219.7
+      "tokens_per_s": 219.7,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (prioritization, specific vocabulary, fragmented sentences) and thus are hallucinations."
+      }
      },
      {
       "id": "stt-openai/whisper-1-12_agent_instructions",
@@ -3199,7 +3865,16 @@
       "latency_s": 0.641,
       "prompt_tokens": 405,
       "completion_tokens": 139,
-      "tokens_per_s": 216.9
+      "tokens_per_s": 216.9,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and accurately paraphrased, and no information was added that isn't in the transcript."
+      }
      },
      {
       "id": "stt-openai/whisper-1-13_pharmacy_pickup",
@@ -3243,7 +3918,16 @@
       "latency_s": 0.879,
       "prompt_tokens": 487,
       "completion_tokens": 197,
-      "tokens_per_s": 224.1
+      "tokens_per_s": 224.1,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The 'saline drops for nose and ears' is slightly inaccurate; the transcript only mentions the nose."
+      }
      },
      {
       "id": "stt-openai/whisper-1-14_household_chores",
@@ -3283,7 +3967,16 @@
       "latency_s": 0.874,
       "prompt_tokens": 522,
       "completion_tokens": 191,
-      "tokens_per_s": 218.5
+      "tokens_per_s": 218.5,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items were captured faithfully and specifically, and no information was invented."
+      }
      },
      {
       "id": "stt-openai/whisper-1-15_grocery_shopping",
@@ -3328,7 +4021,16 @@
       "latency_s": 1.159,
       "prompt_tokens": 540,
       "completion_tokens": 252,
-      "tokens_per_s": 217.4
+      "tokens_per_s": 217.4,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/whisper-1-16_general_ai_prompt",
@@ -3374,7 +4076,16 @@
       "latency_s": 1.079,
       "prompt_tokens": 481,
       "completion_tokens": 238,
-      "tokens_per_s": 220.6
+      "tokens_per_s": 220.6,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section introduces items not directly stated in the transcript, and the tags are also not present in the source text, but the core extraction is very faithful."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-01_email_dictation",
@@ -3416,7 +4127,16 @@
       "latency_s": 0.826,
       "prompt_tokens": 493,
       "completion_tokens": 180,
-      "tokens_per_s": 217.9
+      "tokens_per_s": 217.9,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Propose meeting on Tuesday afternoon or Wednesday' is slightly off; the transcript only asks *if* Tuesday afternoon works, not a proposal to meet then."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-02_project_planning",
@@ -3460,7 +4180,16 @@
       "latency_s": 1.136,
       "prompt_tokens": 543,
       "completion_tokens": 250,
-      "tokens_per_s": 220.1
+      "tokens_per_s": 220.1,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about best audio quality settings is not directly stated in the transcript, it's an inference."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-03_todo_list",
@@ -3508,7 +4237,16 @@
       "latency_s": 1.329,
       "prompt_tokens": 539,
       "completion_tokens": 289,
-      "tokens_per_s": 217.5
+      "tokens_per_s": 217.5,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript, but inferred—still, they are not *faithful* to the transcript. Tags are also not requested/evaluated."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-04_meeting_notes",
@@ -3548,7 +4286,16 @@
       "latency_s": 0.891,
       "prompt_tokens": 550,
       "completion_tokens": 191,
-      "tokens_per_s": 214.4
+      "tokens_per_s": 214.4,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The 'Cleanup Docker images...' action item is not directly stated as an action item in the transcript, though it is discussed as a need. It's a minor hallucination."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-05_parenting_question",
@@ -3595,7 +4342,16 @@
       "latency_s": 1.354,
       "prompt_tokens": 540,
       "completion_tokens": 291,
-      "tokens_per_s": 214.9
+      "tokens_per_s": 214.9,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The item 'Monitor for any signs of colic' is a slight hallucination, as the transcript only mentions Sarah *thinking* it might be colic, not a directive to monitor for it."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-06_technical_troubleshooting",
@@ -3641,7 +4397,16 @@
       "latency_s": 1.136,
       "prompt_tokens": 521,
       "completion_tokens": 237,
-      "tokens_per_s": 208.6
+      "tokens_per_s": 208.6,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about the USB connection is not directly supported by the transcript, though it's a reasonable inference."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-07_blog_outline",
@@ -3686,7 +4451,16 @@
       "latency_s": 1.066,
       "prompt_tokens": 553,
       "completion_tokens": 225,
-      "tokens_per_s": 211.0
+      "tokens_per_s": 211.0,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly supported by the transcript (e.g., 'exact technical specifications'). The action items are mostly good, but 'Create blog post outline with three main sections' is inaccurate - the speaker mentions *five* sections."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-08_calendar_scheduling",
@@ -3729,7 +4503,16 @@
       "latency_s": 1.731,
       "prompt_tokens": 580,
       "completion_tokens": 382,
-      "tokens_per_s": 220.6
+      "tokens_per_s": 220.6,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript and complete capture of all reference action items."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-09_research_note",
@@ -3772,7 +4555,16 @@
       "latency_s": 1.013,
       "prompt_tokens": 509,
       "completion_tokens": 221,
-      "tokens_per_s": 218.2
+      "tokens_per_s": 218.2,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-10_project_update",
@@ -3814,7 +4606,16 @@
       "latency_s": 0.975,
       "prompt_tokens": 524,
       "completion_tokens": 210,
-      "tokens_per_s": 215.5
+      "tokens_per_s": 215.5,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section introduces items not directly stated in the transcript, and the summary is a bit verbose but still faithful."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-11_ai_prompt_creation",
@@ -3858,7 +4659,16 @@
       "latency_s": 1.005,
       "prompt_tokens": 488,
       "completion_tokens": 217,
-      "tokens_per_s": 215.9
+      "tokens_per_s": 215.9,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness and extraction; all reference action items are present, and no extraneous information was added."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-12_agent_instructions",
@@ -3896,7 +4706,16 @@
       "latency_s": 0.62,
       "prompt_tokens": 413,
       "completion_tokens": 131,
-      "tokens_per_s": 211.5
+      "tokens_per_s": 211.5,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and accurately paraphrased."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-13_pharmacy_pickup",
@@ -3941,7 +4760,16 @@
       "latency_s": 1.066,
       "prompt_tokens": 510,
       "completion_tokens": 236,
-      "tokens_per_s": 221.4
+      "tokens_per_s": 221.4,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-14_household_chores",
@@ -3981,7 +4809,16 @@
       "latency_s": 0.965,
       "prompt_tokens": 526,
       "completion_tokens": 207,
-      "tokens_per_s": 214.6
+      "tokens_per_s": 214.6,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-15_grocery_shopping",
@@ -4025,7 +4862,16 @@
       "latency_s": 1.053,
       "prompt_tokens": 540,
       "completion_tokens": 227,
-      "tokens_per_s": 215.7
+      "tokens_per_s": 215.7,
+      "expected_action_items": 9,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 9,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript and comprehensive capture of action items."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-16_general_ai_prompt",
@@ -4071,7 +4917,16 @@
       "latency_s": 1.089,
       "prompt_tokens": 487,
       "completion_tokens": 234,
-      "tokens_per_s": 214.8
+      "tokens_per_s": 214.8,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 0,
+       "hallucinated_items": 6,
+       "fallback_appropriate": true,
+       "notes": "The extracted action items and questions are all directly suggested within the transcript, but the reference has no expected action items, so they are all technically hallucinations. The title and summary are excellent."
+      }
      }
     ],
     "garbled": [
@@ -4105,7 +4960,16 @@
       "latency_s": 0.396,
       "prompt_tokens": 392,
       "completion_tokens": 79,
-      "tokens_per_s": 199.4
+      "tokens_per_s": 199.4,
+      "expected_action_items": 1,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 1,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The output is faithful and accurately reflects the repetitive nature of the transcript, though the tags are not strictly necessary given the simplicity."
+      }
      },
      {
       "id": "syn-garbled-01",
@@ -4136,7 +5000,16 @@
       "latency_s": 0.352,
       "prompt_tokens": 362,
       "completion_tokens": 75,
-      "tokens_per_s": 212.8
+      "tokens_per_s": 212.8,
+      "expected_action_items": 1,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 1,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The output is excellent and faithfully represents the repetitive transcript."
+      }
      },
      {
       "id": "syn-garbled-03",
@@ -4164,7 +5037,16 @@
       "latency_s": 0.249,
       "prompt_tokens": 298,
       "completion_tokens": 54,
-      "tokens_per_s": 217.3
+      "tokens_per_s": 217.3,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 0,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The 'tags' field is not grounded in the transcript and appears fabricated."
+      }
      },
      {
       "id": "syn-garbled-04",
@@ -4199,7 +5081,16 @@
       "latency_s": 0.574,
       "prompt_tokens": 341,
       "completion_tokens": 129,
-      "tokens_per_s": 224.7
+      "tokens_per_s": 224.7,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 0,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, and are instead interpretations of the vague discussion; the tags are also invented."
+      }
      },
      {
       "id": "syn-garbled-05",
@@ -4237,7 +5128,16 @@
       "latency_s": 0.539,
       "prompt_tokens": 350,
       "completion_tokens": 122,
-      "tokens_per_s": 226.4
+      "tokens_per_s": 226.4,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 2,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, and are inferences; also, 'Consider budget implications...' is a bit strong given the vague phrasing in the source."
+      }
      },
      {
       "id": "syn-garbled-07",
@@ -4274,9 +5174,53 @@
       "latency_s": 0.563,
       "prompt_tokens": 400,
       "completion_tokens": 126,
-      "tokens_per_s": 223.7
+      "tokens_per_s": 223.7,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 1,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly supported by the transcript; the transcript only shows someone *asking* what time, not a question *from* the speaker."
+      }
      }
     ]
+   },
+   "judged": {
+    "real": {
+     "n": 31,
+     "title_quality_mean": 4.806,
+     "summary_quality_mean": 4.806,
+     "action_item_recall": 0.912,
+     "hallucinated_per_memo": 1.548,
+     "fallback_accuracy": 0.968
+    },
+    "stt": {
+     "n_clusters": 16,
+     "n_rows": 64,
+     "title_quality_mean": 4.938,
+     "summary_quality_mean": 4.938,
+     "action_item_recall": 0.988,
+     "hallucinated_per_memo": 1.156,
+     "fallback_accuracy": 1.0
+    },
+    "garbled": {
+     "n": 6,
+     "title_quality_mean": 3.667,
+     "summary_quality_mean": 3.667,
+     "action_item_recall": 0.833,
+     "hallucinated_per_memo": 1.333,
+     "fallback_accuracy": 1.0
+    },
+    "all_rows_unclustered": {
+     "n": 101,
+     "title_quality_mean": 4.822,
+     "summary_quality_mean": 4.822,
+     "action_item_recall": 0.966,
+     "hallucinated_per_memo": 1.287,
+     "fallback_accuracy": 0.99
+    }
    }
   },
   {
@@ -4342,7 +5286,16 @@
       "latency_s": 1.387,
       "prompt_tokens": 585,
       "completion_tokens": 306,
-      "tokens_per_s": 220.6
+      "tokens_per_s": 220.6,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Should remote controls have tomato-shaped designs?' is a misinterpretation of the speaker's disclaimer ('not saying we should have, you know, tomato shaped remote controls')."
+      }
      },
      {
       "id": "ami-ES2009c-0138",
@@ -4383,7 +5336,16 @@
       "latency_s": 1.022,
       "prompt_tokens": 562,
       "completion_tokens": 221,
-      "tokens_per_s": 216.3
+      "tokens_per_s": 216.3,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present and accurately paraphrased."
+      }
      },
      {
       "id": "ami-ES2009c-0139",
@@ -4431,7 +5393,16 @@
       "latency_s": 1.783,
       "prompt_tokens": 834,
       "completion_tokens": 388,
-      "tokens_per_s": 217.7
+      "tokens_per_s": 217.7,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present (paraphrased appropriately), and no extraneous information was added."
+      }
      },
      {
       "id": "icsi-Bro026-1162",
@@ -4470,7 +5441,16 @@
       "latency_s": 1.178,
       "prompt_tokens": 554,
       "completion_tokens": 256,
-      "tokens_per_s": 217.3
+      "tokens_per_s": 217.3,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 0,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The extraction is excellent and very faithful to the transcript, despite there being no action items to capture."
+      }
      },
      {
       "id": "icsi-Bro026-1165",
@@ -4512,7 +5492,16 @@
       "latency_s": 1.354,
       "prompt_tokens": 604,
       "completion_tokens": 297,
-      "tokens_per_s": 219.3
+      "tokens_per_s": 219.3,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about improving the 'gross' experiment-based approach is not directly stated in the transcript, but is a reasonable inference; however, strict faithfulness requires it not be counted."
+      }
      },
      {
       "id": "icsi-Bro026-1157",
@@ -4552,7 +5541,16 @@
       "latency_s": 1.055,
       "prompt_tokens": 528,
       "completion_tokens": 230,
-      "tokens_per_s": 217.9
+      "tokens_per_s": 217.9,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no information is invented."
+      }
      },
      {
       "id": "ami-ES2003c-0039",
@@ -4598,7 +5596,16 @@
       "latency_s": 1.773,
       "prompt_tokens": 878,
       "completion_tokens": 381,
-      "tokens_per_s": 214.9
+      "tokens_per_s": 214.9,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction. Faithfully captures the core discussion and action items from the transcript without adding extraneous information."
+      }
      },
      {
       "id": "ami-ES2003c-0036",
@@ -4642,7 +5649,16 @@
       "latency_s": 1.474,
       "prompt_tokens": 738,
       "completion_tokens": 316,
-      "tokens_per_s": 214.5
+      "tokens_per_s": 214.5,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The action items 'Review the next slide' and 'Determine exact placement of joystick and buttons relative to fingers' are not directly supported by the transcript and appear to be inferences or elaborations."
+      }
      },
      {
       "id": "ami-ES2003c-0037",
@@ -4694,7 +5710,16 @@
       "latency_s": 2.03,
       "prompt_tokens": 776,
       "completion_tokens": 432,
-      "tokens_per_s": 212.8
+      "tokens_per_s": 212.8,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present (paraphrased appropriately), and there's no hallucination."
+      }
      },
      {
       "id": "icsi-Bed009-0633",
@@ -4728,7 +5753,16 @@
       "latency_s": 0.967,
       "prompt_tokens": 487,
       "completion_tokens": 201,
-      "tokens_per_s": 207.8
+      "tokens_per_s": 207.8,
+      "expected_action_items": 1,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 1,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness; the summary and key points accurately reflect the transcript's content, and the single action item is correctly identified."
+      }
      },
      {
       "id": "icsi-Bed009-0626",
@@ -4779,7 +5813,16 @@
       "latency_s": 1.917,
       "prompt_tokens": 772,
       "completion_tokens": 419,
-      "tokens_per_s": 218.5
+      "tokens_per_s": 218.5,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The action items are well-captured, but the key_points and questions contain details not explicitly stated in the transcript (e.g., 'Review GPS algorithm results from the Deep Mail project', 'How does the tower navigation system currently handle the road network routing?')."
+      }
      },
      {
       "id": "icsi-Bed009-0629",
@@ -4819,7 +5862,16 @@
       "latency_s": 1.202,
       "prompt_tokens": 523,
       "completion_tokens": 257,
-      "tokens_per_s": 213.8
+      "tokens_per_s": 213.8,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about how much thought has been given to the tourist domain is not directly stated in the transcript, but inferred."
+      }
      },
      {
       "id": "ami-IS1004a-0312",
@@ -4859,7 +5911,16 @@
       "latency_s": 1.093,
       "prompt_tokens": 556,
       "completion_tokens": 238,
-      "tokens_per_s": 217.7
+      "tokens_per_s": 217.7,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'What specific tasks will each person work on individually?' is not directly asked or implied in the transcript, it's a reasonable follow-up but not faithful to the content."
+      }
      },
      {
       "id": "ami-IS1004a-0313",
@@ -4896,7 +5957,16 @@
       "latency_s": 0.918,
       "prompt_tokens": 527,
       "completion_tokens": 200,
-      "tokens_per_s": 217.9
+      "tokens_per_s": 217.9,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no information is invented."
+      }
      },
      {
       "id": "ami-IS1004a-0314",
@@ -4937,7 +6007,16 @@
       "latency_s": 0.997,
       "prompt_tokens": 585,
       "completion_tokens": 215,
-      "tokens_per_s": 215.7
+      "tokens_per_s": 215.7,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Include trunk and eye details in the drawing' is not directly stated in the transcript, it's an inference from the description."
+      }
      },
      {
       "id": "icsi-Bed011-0656",
@@ -4978,7 +6057,16 @@
       "latency_s": 1.176,
       "prompt_tokens": 463,
       "completion_tokens": 260,
-      "tokens_per_s": 221.1
+      "tokens_per_s": 221.1,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, and represent inferences. The 'tags' are also not grounded in the transcript."
+      }
      },
      {
       "id": "icsi-Bed011-0657",
@@ -5021,7 +6109,16 @@
       "latency_s": 1.247,
       "prompt_tokens": 468,
       "completion_tokens": 276,
-      "tokens_per_s": 221.3
+      "tokens_per_s": 221.3,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, but rather implied by the speaker's musings; also, 'Prepare for Rainer M Malaka's visit' is a bit strong given the context."
+      }
      },
      {
       "id": "icsi-Bed011-0653",
@@ -5064,7 +6161,16 @@
       "latency_s": 1.162,
       "prompt_tokens": 482,
       "completion_tokens": 256,
-      "tokens_per_s": 220.3
+      "tokens_per_s": 220.3,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly supported by the transcript (e.g., clarifying '5-4 per week' is seeking detail not present in the memo itself). The 'Monitor progress...' action item is also not explicitly stated."
+      }
      },
      {
       "id": "ami-IS1001b-0279",
@@ -5106,7 +6212,16 @@
       "latency_s": 1.098,
       "prompt_tokens": 458,
       "completion_tokens": 240,
-      "tokens_per_s": 218.7
+      "tokens_per_s": 218.7,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no information was invented."
+      }
      },
      {
       "id": "ami-IS1001b-0284",
@@ -5146,7 +6261,16 @@
       "latency_s": 0.877,
       "prompt_tokens": 463,
       "completion_tokens": 191,
-      "tokens_per_s": 217.9
+      "tokens_per_s": 217.9,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Take notes if desired' is not a clear directive; it reflects a suggestion in the transcript, not an assigned action."
+      }
      },
      {
       "id": "ami-IS1001b-0283",
@@ -5186,7 +6310,16 @@
       "latency_s": 1.023,
       "prompt_tokens": 466,
       "completion_tokens": 224,
-      "tokens_per_s": 219.0
+      "tokens_per_s": 219.0,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, accurately paraphrased."
+      }
      },
      {
       "id": "icsi-Bro008-0970",
@@ -5228,7 +6361,16 @@
       "latency_s": 1.414,
       "prompt_tokens": 585,
       "completion_tokens": 311,
-      "tokens_per_s": 219.9
+      "tokens_per_s": 219.9,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, but are reasonable inferences; however, strict faithfulness requires avoiding inferences."
+      }
      },
      {
       "id": "icsi-Bro008-0975",
@@ -5267,7 +6409,16 @@
       "latency_s": 1.167,
       "prompt_tokens": 587,
       "completion_tokens": 251,
-      "tokens_per_s": 215.2
+      "tokens_per_s": 215.2,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The extraction is excellent; all action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "icsi-Bro008-0977",
@@ -5309,7 +6460,16 @@
       "latency_s": 1.534,
       "prompt_tokens": 498,
       "completion_tokens": 334,
-      "tokens_per_s": 217.7
+      "tokens_per_s": 217.7,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The extraction is excellent and faithfully represents the transcript's content, including the open question about the return date."
+      }
      },
      {
       "id": "ami-TS3012d-0532",
@@ -5349,7 +6509,16 @@
       "latency_s": 0.8,
       "prompt_tokens": 569,
       "completion_tokens": 171,
-      "tokens_per_s": 213.8
+      "tokens_per_s": 213.8,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 4,
+       "summary_quality": 4,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The 'Review financial implications' action item is not directly stated in the transcript, though financial issues are mentioned."
+      }
      },
      {
       "id": "icsi-Bed012-0659",
@@ -5391,7 +6560,16 @@
       "latency_s": 1.328,
       "prompt_tokens": 489,
       "completion_tokens": 292,
-      "tokens_per_s": 219.9
+      "tokens_per_s": 219.9,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (e.g., 'How would the Bayesian network handle merging the three things into a response?')."
+      }
      },
      {
       "id": "icsi-Bed012-0658",
@@ -5435,7 +6613,16 @@
       "latency_s": 1.268,
       "prompt_tokens": 578,
       "completion_tokens": 275,
-      "tokens_per_s": 216.9
+      "tokens_per_s": 216.9,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Evaluate whether the user wants to know the location or wants to go there' in action_items is a restatement of the problem, not an action item."
+      }
      },
      {
       "id": "icsi-Bed012-0661",
@@ -5474,7 +6661,16 @@
       "latency_s": 1.352,
       "prompt_tokens": 543,
       "completion_tokens": 297,
-      "tokens_per_s": 219.7
+      "tokens_per_s": 219.7,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about mapping *any* construction to 'Where-Is' is not directly supported by the transcript, and feels like an extrapolation."
+      }
      },
      {
       "id": "ami-ES2006b-0087",
@@ -5517,7 +6713,16 @@
       "latency_s": 1.004,
       "prompt_tokens": 526,
       "completion_tokens": 215,
-      "tokens_per_s": 214.2
+      "tokens_per_s": 214.2,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (e.g., 'How will the solar power charging be implemented?'). Also, 'Design a minimalist, functional, and aesthetically pleasing device' is a bit prescriptive for an action item."
+      }
      },
      {
       "id": "ami-ES2006b-0083",
@@ -5564,7 +6769,16 @@
       "latency_s": 1.567,
       "prompt_tokens": 934,
       "completion_tokens": 332,
-      "tokens_per_s": 211.9
+      "tokens_per_s": 211.9,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly asked in the transcript, but inferred. Otherwise, excellent faithfulness and detail."
+      }
      },
      {
       "id": "ami-ES2006b-0084",
@@ -5607,7 +6821,16 @@
       "latency_s": 1.318,
       "prompt_tokens": 881,
       "completion_tokens": 275,
-      "tokens_per_s": 208.7
+      "tokens_per_s": 208.7,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly asked in the transcript (e.g., 'What specific user preferences should be prioritized...'). Also, the tag list is not grounded in the transcript."
+      }
      }
     ],
     "stt": [
@@ -5652,7 +6875,16 @@
       "latency_s": 1.185,
       "prompt_tokens": 464,
       "completion_tokens": 255,
-      "tokens_per_s": 215.2
+      "tokens_per_s": 215.2,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-02_project_planning",
@@ -5698,7 +6930,16 @@
       "latency_s": 1.459,
       "prompt_tokens": 542,
       "completion_tokens": 319,
-      "tokens_per_s": 218.7
+      "tokens_per_s": 218.7,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no extraneous information is included."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-03_todo_list",
@@ -5742,7 +6983,16 @@
       "latency_s": 1.386,
       "prompt_tokens": 539,
       "completion_tokens": 295,
-      "tokens_per_s": 212.8
+      "tokens_per_s": 212.8,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (e.g., *What exactly changed...*), and the tags are not required/evaluated."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-04_meeting_notes",
@@ -5787,7 +7037,16 @@
       "latency_s": 1.47,
       "prompt_tokens": 556,
       "completion_tokens": 320,
-      "tokens_per_s": 217.6
+      "tokens_per_s": 217.6,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about exact cost implications is not directly stated in the transcript, it's an inference."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-05_parenting_question",
@@ -5834,7 +7093,16 @@
       "latency_s": 1.514,
       "prompt_tokens": 536,
       "completion_tokens": 334,
-      "tokens_per_s": 220.6
+      "tokens_per_s": 220.6,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no information is invented."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-06_technical_troubleshooting",
@@ -5880,7 +7148,16 @@
       "latency_s": 1.371,
       "prompt_tokens": 516,
       "completion_tokens": 302,
-      "tokens_per_s": 220.3
+      "tokens_per_s": 220.3,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-07_blog_outline",
@@ -5923,7 +7200,16 @@
       "latency_s": 1.251,
       "prompt_tokens": 556,
       "completion_tokens": 274,
-      "tokens_per_s": 219.0
+      "tokens_per_s": 219.0,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present (even if slightly rephrased)."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-08_calendar_scheduling",
@@ -5968,7 +7254,16 @@
       "latency_s": 2.166,
       "prompt_tokens": 578,
       "completion_tokens": 476,
-      "tokens_per_s": 219.7
+      "tokens_per_s": 219.7,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The 'questions' section fabricates questions not explicitly asked for in the transcript, and the tags are not grounded in the transcript."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-09_research_note",
@@ -6015,7 +7310,16 @@
       "latency_s": 1.376,
       "prompt_tokens": 513,
       "completion_tokens": 301,
-      "tokens_per_s": 218.8
+      "tokens_per_s": 218.8,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'What is the expected performance difference across different STT services?' is not directly stated or implied in the transcript; it's an extrapolation."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-10_project_update",
@@ -6057,7 +7361,16 @@
       "latency_s": 1.076,
       "prompt_tokens": 525,
       "completion_tokens": 234,
-      "tokens_per_s": 217.6
+      "tokens_per_s": 217.6,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript, but inferred; these are counted as hallucinations despite being reasonable follow-ups."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-11_ai_prompt_creation",
@@ -6101,7 +7414,16 @@
       "latency_s": 1.251,
       "prompt_tokens": 497,
       "completion_tokens": 272,
-      "tokens_per_s": 217.5
+      "tokens_per_s": 217.5,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (prioritization of urgency, specific technical vocabulary, handling incomplete thoughts *as tasks*), though they are reasonable inferences. These are still hallucinations."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-12_agent_instructions",
@@ -6142,7 +7464,16 @@
       "latency_s": 0.893,
       "prompt_tokens": 411,
       "completion_tokens": 195,
-      "tokens_per_s": 218.3
+      "tokens_per_s": 218.3,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present (with reasonable paraphrasing)."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-13_pharmacy_pickup",
@@ -6191,7 +7522,16 @@
       "latency_s": 1.387,
       "prompt_tokens": 507,
       "completion_tokens": 305,
-      "tokens_per_s": 220.0
+      "tokens_per_s": 220.0,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question about whether Sarah wants folic acid *and* iron is a slight over-interpretation; she said 'folic acid and maybe some iron', so it's not definitively both."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-14_household_chores",
@@ -6235,7 +7575,16 @@
       "latency_s": 1.172,
       "prompt_tokens": 522,
       "completion_tokens": 256,
-      "tokens_per_s": 218.4
+      "tokens_per_s": 218.4,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, but are reasonable inferences; however, strict faithfulness requires avoiding inferences."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-15_grocery_shopping",
@@ -6288,7 +7637,16 @@
       "latency_s": 1.575,
       "prompt_tokens": 546,
       "completion_tokens": 345,
-      "tokens_per_s": 219.0
+      "tokens_per_s": 219.0,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items that are not explicitly asked in the transcript, but rather implied or logical follow-ups. This constitutes hallucination."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-audio-preview-16_general_ai_prompt",
@@ -6333,7 +7691,16 @@
       "latency_s": 1.741,
       "prompt_tokens": 1276,
       "completion_tokens": 359,
-      "tokens_per_s": 206.2
+      "tokens_per_s": 206.2,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The model accurately captures the core advice, but includes several action items that are *examples* of the advice (e.g., specific tasks for each time block) rather than the overarching recommendations. It also includes details not explicitly stated in the transcript."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-01_email_dictation",
@@ -6375,7 +7742,16 @@
       "latency_s": 1.182,
       "prompt_tokens": 469,
       "completion_tokens": 247,
-      "tokens_per_s": 208.9
+      "tokens_per_s": 208.9,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present, and the summary/title are faithful to the transcript."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-02_project_planning",
@@ -6420,7 +7796,16 @@
       "latency_s": 1.409,
       "prompt_tokens": 542,
       "completion_tokens": 310,
-      "tokens_per_s": 220.0
+      "tokens_per_s": 220.0,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The action item 'Estimate time needed to build the app' is not directly stated in the transcript, though implied. Otherwise, excellent faithfulness."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-03_todo_list",
@@ -6465,7 +7850,16 @@
       "latency_s": 1.387,
       "prompt_tokens": 548,
       "completion_tokens": 299,
-      "tokens_per_s": 215.6
+      "tokens_per_s": 215.6,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript, but inferred—still, they are not *faithful* to the transcript. Tags are also not requested/evaluated."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-04_meeting_notes",
@@ -6510,7 +7904,16 @@
       "latency_s": 1.357,
       "prompt_tokens": 562,
       "completion_tokens": 294,
-      "tokens_per_s": 216.7
+      "tokens_per_s": 216.7,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'How much time will it take to clean up the bloated Docker images?' is not directly stated in the transcript, though the need to clean them up *is*."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-05_parenting_question",
@@ -6551,7 +7954,16 @@
       "latency_s": 1.194,
       "prompt_tokens": 553,
       "completion_tokens": 260,
-      "tokens_per_s": 217.7
+      "tokens_per_s": 217.7,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Is the fussiness likely due to colic or just the 'witching hour'?' is not directly stated or implied in the transcript; it's an inference."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-06_technical_troubleshooting",
@@ -6597,7 +8009,16 @@
       "latency_s": 1.441,
       "prompt_tokens": 518,
       "completion_tokens": 314,
-      "tokens_per_s": 217.9
+      "tokens_per_s": 217.9,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-07_blog_outline",
@@ -6643,7 +8064,16 @@
       "latency_s": 1.611,
       "prompt_tokens": 560,
       "completion_tokens": 347,
-      "tokens_per_s": 215.4
+      "tokens_per_s": 215.4,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present (with reasonable paraphrasing)."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-08_calendar_scheduling",
@@ -6688,7 +8118,16 @@
       "latency_s": 1.991,
       "prompt_tokens": 570,
       "completion_tokens": 435,
-      "tokens_per_s": 218.4
+      "tokens_per_s": 218.4,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not explicitly asked as questions in the transcript (e.g., 'What should I prepare for the dentist appointment?')."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-09_research_note",
@@ -6718,7 +8157,16 @@
       "latency_s": 0.446,
       "prompt_tokens": 316,
       "completion_tokens": 85,
-      "tokens_per_s": 190.4
+      "tokens_per_s": 190.4,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 0,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The extraction is faithful to the very short transcript, though there were no action items to capture as expected."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-10_project_update",
@@ -6762,7 +8210,16 @@
       "latency_s": 1.206,
       "prompt_tokens": 524,
       "completion_tokens": 268,
-      "tokens_per_s": 222.3
+      "tokens_per_s": 222.3,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, but are reasonable inferences; however, strict faithfulness requires avoiding inferences."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-11_ai_prompt_creation",
@@ -6809,7 +8266,16 @@
       "latency_s": 1.388,
       "prompt_tokens": 560,
       "completion_tokens": 305,
-      "tokens_per_s": 219.8
+      "tokens_per_s": 219.8,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 0,
+       "hallucinated_items": 5,
+       "fallback_appropriate": false,
+       "notes": "The model invented several action items and questions that are not present in the transcript, despite the reference list being empty. It also created tags."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-12_agent_instructions",
@@ -6840,7 +8306,16 @@
       "latency_s": 0.427,
       "prompt_tokens": 315,
       "completion_tokens": 90,
-      "tokens_per_s": 211.0
+      "tokens_per_s": 211.0,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 0,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The extraction is faithful to the transcript, but there were no action items to capture as the reference list was empty."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-13_pharmacy_pickup",
@@ -6887,7 +8362,16 @@
       "latency_s": 1.406,
       "prompt_tokens": 508,
       "completion_tokens": 313,
-      "tokens_per_s": 222.6
+      "tokens_per_s": 222.6,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Should Sarah's iron supplement be included in the purchase?' is a slight misinterpretation; the transcript indicates Sarah *asked* for it, not a question of whether to buy it."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-14_household_chores",
@@ -6933,7 +8417,16 @@
       "latency_s": 1.312,
       "prompt_tokens": 531,
       "completion_tokens": 287,
-      "tokens_per_s": 218.8
+      "tokens_per_s": 218.8,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript, but inferred - this is still hallucination. The level of detail in the action items is excellent."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-15_grocery_shopping",
@@ -6982,7 +8475,16 @@
       "latency_s": 1.626,
       "prompt_tokens": 543,
       "completion_tokens": 354,
-      "tokens_per_s": 217.7
+      "tokens_per_s": 217.7,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (brand preferences), and the tags are not strictly necessary for faithfulness."
+      }
      },
      {
       "id": "stt-openai/gpt-4o-mini-audio-preview-16_general_ai_prompt",
@@ -7028,7 +8530,16 @@
       "latency_s": 1.415,
       "prompt_tokens": 661,
       "completion_tokens": 303,
-      "tokens_per_s": 214.1
+      "tokens_per_s": 214.1,
+      "expected_action_items": 11,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 9,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all captured action items are well-supported by the source text."
+      }
      },
      {
       "id": "stt-openai/whisper-1-01_email_dictation",
@@ -7072,7 +8583,16 @@
       "latency_s": 1.145,
       "prompt_tokens": 485,
       "completion_tokens": 246,
-      "tokens_per_s": 214.9
+      "tokens_per_s": 214.9,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Should we look into self-hosting or switching to a cheaper model?' is a rephrasing of Mike *suggesting* it, not a direct question asked *of* Sarah."
+      }
      },
      {
       "id": "stt-openai/whisper-1-02_project_planning",
@@ -7119,7 +8639,16 @@
       "latency_s": 1.433,
       "prompt_tokens": 517,
       "completion_tokens": 314,
-      "tokens_per_s": 219.1
+      "tokens_per_s": 219.1,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness and detail; all reference action items are present, and no extraneous information is added."
+      }
      },
      {
       "id": "stt-openai/whisper-1-03_todo_list",
@@ -7164,7 +8693,16 @@
       "latency_s": 1.463,
       "prompt_tokens": 536,
       "completion_tokens": 319,
-      "tokens_per_s": 218.0
+      "tokens_per_s": 218.0,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript, but inferred—still, they are not *faithful* to the transcript."
+      }
      },
      {
       "id": "stt-openai/whisper-1-04_meeting_notes",
@@ -7207,7 +8745,16 @@
       "latency_s": 1.317,
       "prompt_tokens": 555,
       "completion_tokens": 286,
-      "tokens_per_s": 217.2
+      "tokens_per_s": 217.2,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-openai/whisper-1-05_parenting_question",
@@ -7254,7 +8801,16 @@
       "latency_s": 1.643,
       "prompt_tokens": 536,
       "completion_tokens": 357,
-      "tokens_per_s": 217.3
+      "tokens_per_s": 217.3,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no information is invented."
+      }
      },
      {
       "id": "stt-openai/whisper-1-06_technical_troubleshooting",
@@ -7301,7 +8857,16 @@
       "latency_s": 1.532,
       "prompt_tokens": 515,
       "completion_tokens": 331,
-      "tokens_per_s": 216.1
+      "tokens_per_s": 216.1,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Test the setup with a different coordinator type' is not directly stated in the transcript, though it's a reasonable inference, it's still a hallucination."
+      }
      },
      {
       "id": "stt-openai/whisper-1-07_blog_outline",
@@ -7346,7 +8911,16 @@
       "latency_s": 1.311,
       "prompt_tokens": 548,
       "completion_tokens": 285,
-      "tokens_per_s": 217.3
+      "tokens_per_s": 217.3,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly asked in the transcript (prioritization of advice). Also, 'Create screenshots of the N8n workflow' is more specific than the transcript suggests."
+      }
      },
      {
       "id": "stt-openai/whisper-1-08_calendar_scheduling",
@@ -7389,7 +8963,16 @@
       "latency_s": 2.008,
       "prompt_tokens": 572,
       "completion_tokens": 444,
-      "tokens_per_s": 221.1
+      "tokens_per_s": 221.1,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present and accurately represented."
+      }
      },
      {
       "id": "stt-openai/whisper-1-09_research_note",
@@ -7435,7 +9018,16 @@
       "latency_s": 1.312,
       "prompt_tokens": 514,
       "completion_tokens": 289,
-      "tokens_per_s": 220.3
+      "tokens_per_s": 220.3,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and accurately reflect the transcript. The questions are also well-formed and relevant."
+      }
      },
      {
       "id": "stt-openai/whisper-1-10_project_update",
@@ -7479,7 +9071,16 @@
       "latency_s": 1.281,
       "prompt_tokens": 529,
       "completion_tokens": 280,
-      "tokens_per_s": 218.5
+      "tokens_per_s": 218.5,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (how to *design* synthetic data), and the tags are overly detailed/not strictly necessary."
+      }
      },
      {
       "id": "stt-openai/whisper-1-11_ai_prompt_creation",
@@ -7526,7 +9127,16 @@
       "latency_s": 1.52,
       "prompt_tokens": 487,
       "completion_tokens": 334,
-      "tokens_per_s": 219.7
+      "tokens_per_s": 219.7,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 4,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (e.g., performance metrics), and some action items are slightly more specific than the transcript warrants (e.g., 'Finalize' vs. 'Create')."
+      }
      },
      {
       "id": "stt-openai/whisper-1-12_agent_instructions",
@@ -7568,7 +9178,16 @@
       "latency_s": 1.031,
       "prompt_tokens": 405,
       "completion_tokens": 225,
-      "tokens_per_s": 218.3
+      "tokens_per_s": 218.3,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness and detail; the action items are well-extracted and accurately reflect the transcript's requests."
+      }
      },
      {
       "id": "stt-openai/whisper-1-13_pharmacy_pickup",
@@ -7615,7 +9234,16 @@
       "latency_s": 1.338,
       "prompt_tokens": 487,
       "completion_tokens": 295,
-      "tokens_per_s": 220.5
+      "tokens_per_s": 220.5,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The 'saline drops for nose and ears' is a slight hallucination; the transcript only mentions the nose."
+      }
      },
      {
       "id": "stt-openai/whisper-1-14_household_chores",
@@ -7658,7 +9286,16 @@
       "latency_s": 1.088,
       "prompt_tokens": 522,
       "completion_tokens": 237,
-      "tokens_per_s": 217.8
+      "tokens_per_s": 217.8,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript, but inferred—still, they are not *faithful* to the transcript. The tags are also not required and thus count as hallucinated."
+      }
      },
      {
       "id": "stt-openai/whisper-1-15_grocery_shopping",
@@ -7709,7 +9346,16 @@
       "latency_s": 1.637,
       "prompt_tokens": 540,
       "completion_tokens": 358,
-      "tokens_per_s": 218.6
+      "tokens_per_s": 218.6,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly asked for in the transcript (e.g., 'How much coffee should I buy?')."
+      }
      },
      {
       "id": "stt-openai/whisper-1-16_general_ai_prompt",
@@ -7761,7 +9407,16 @@
       "latency_s": 1.61,
       "prompt_tokens": 481,
       "completion_tokens": 354,
-      "tokens_per_s": 219.9
+      "tokens_per_s": 219.9,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present and accurately reflect the speaker's requests."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-01_email_dictation",
@@ -7803,7 +9458,16 @@
       "latency_s": 1.117,
       "prompt_tokens": 493,
       "completion_tokens": 243,
-      "tokens_per_s": 217.6
+      "tokens_per_s": 217.6,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Are you free Tuesday afternoon or Wednesday?' hallucinates 'Wednesday' which wasn't in the transcript."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-02_project_planning",
@@ -7850,7 +9514,16 @@
       "latency_s": 1.53,
       "prompt_tokens": 543,
       "completion_tokens": 340,
-      "tokens_per_s": 222.2
+      "tokens_per_s": 222.2,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness and detail; the extraction accurately reflects the transcript's content and intent."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-03_todo_list",
@@ -7894,7 +9567,16 @@
       "latency_s": 1.329,
       "prompt_tokens": 539,
       "completion_tokens": 290,
-      "tokens_per_s": 218.2
+      "tokens_per_s": 218.2,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (asking *what* changed, or *what* edge cases might arise) - these are inferences, not faithful extraction."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-04_meeting_notes",
@@ -7938,7 +9620,16 @@
       "latency_s": 1.315,
       "prompt_tokens": 550,
       "completion_tokens": 285,
-      "tokens_per_s": 216.7
+      "tokens_per_s": 216.7,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'How much time will the self-hosted model fine-tuning take?' is not directly asked in the transcript, though the duration *is* discussed."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-05_parenting_question",
@@ -7983,7 +9674,16 @@
       "latency_s": 1.278,
       "prompt_tokens": 540,
       "completion_tokens": 282,
-      "tokens_per_s": 220.7
+      "tokens_per_s": 220.7,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no information is invented."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-06_technical_troubleshooting",
@@ -8031,7 +9731,16 @@
       "latency_s": 1.525,
       "prompt_tokens": 521,
       "completion_tokens": 335,
-      "tokens_per_s": 219.7
+      "tokens_per_s": 219.7,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'Will upgrading the coordinator or adding a repeater solve the issue?' is not directly stated in the transcript, it's an inference."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-07_blog_outline",
@@ -8078,7 +9787,16 @@
       "latency_s": 1.506,
       "prompt_tokens": 553,
       "completion_tokens": 328,
-      "tokens_per_s": 217.9
+      "tokens_per_s": 217.9,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'How exactly does the voice notes app send webhooks to N810?' is not directly answered in the transcript, making it a slight hallucination."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-08_calendar_scheduling",
@@ -8120,7 +9838,16 @@
       "latency_s": 1.702,
       "prompt_tokens": 580,
       "completion_tokens": 374,
-      "tokens_per_s": 219.7
+      "tokens_per_s": 219.7,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript and accurate extraction of all action items."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-09_research_note",
@@ -8164,7 +9891,16 @@
       "latency_s": 1.322,
       "prompt_tokens": 509,
       "completion_tokens": 290,
-      "tokens_per_s": 219.4
+      "tokens_per_s": 219.4,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-10_project_update",
@@ -8205,7 +9941,16 @@
       "latency_s": 1.236,
       "prompt_tokens": 524,
       "completion_tokens": 268,
-      "tokens_per_s": 216.8
+      "tokens_per_s": 216.8,
+      "expected_action_items": 3,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 3,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The key point about 'server GPU pricing' is not mentioned in the transcript and appears to be a hallucination."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-11_ai_prompt_creation",
@@ -8251,7 +9996,16 @@
       "latency_s": 1.257,
       "prompt_tokens": 488,
       "completion_tokens": 275,
-      "tokens_per_s": 218.7
+      "tokens_per_s": 218.7,
+      "expected_action_items": 6,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 6,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated in the transcript (e.g., 'What specific urgency levels should be used?')."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-12_agent_instructions",
@@ -8293,7 +10047,16 @@
       "latency_s": 0.957,
       "prompt_tokens": 413,
       "completion_tokens": 204,
-      "tokens_per_s": 213.1
+      "tokens_per_s": 213.1,
+      "expected_action_items": 4,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 4,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness and detail; the action items are well-extracted and accurately reflect the transcript's requests."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-13_pharmacy_pickup",
@@ -8338,7 +10101,16 @@
       "latency_s": 1.217,
       "prompt_tokens": 510,
       "completion_tokens": 268,
-      "tokens_per_s": 220.3
+      "tokens_per_s": 220.3,
+      "expected_action_items": 7,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 7,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent extraction; all reference action items are present and faithfully represented in the output."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-14_household_chores",
@@ -8384,7 +10156,16 @@
       "latency_s": 1.22,
       "prompt_tokens": 526,
       "completion_tokens": 265,
-      "tokens_per_s": 217.2
+      "tokens_per_s": 217.2,
+      "expected_action_items": 5,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 5,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions section contains items not directly stated as questions in the transcript, but rather inferences or follow-ups."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-15_grocery_shopping",
@@ -8432,7 +10213,16 @@
       "latency_s": 1.681,
       "prompt_tokens": 540,
       "completion_tokens": 370,
-      "tokens_per_s": 220.1
+      "tokens_per_s": 220.1,
+      "expected_action_items": 9,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 9,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "Excellent faithfulness to the transcript; all reference action items are present, and no extraneous information was added."
+      }
      },
      {
       "id": "stt-speechmatics/nova-2-16_general_ai_prompt",
@@ -8481,7 +10271,16 @@
       "latency_s": 1.47,
       "prompt_tokens": 487,
       "completion_tokens": 321,
-      "tokens_per_s": 218.3
+      "tokens_per_s": 218.3,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 0,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The model accurately extracted information from the transcript, but the REFERENCE action items were empty, so it received a 0 for action_items_captured despite correctly identifying potential actions."
+      }
      }
     ],
     "garbled": [
@@ -8515,7 +10314,16 @@
       "latency_s": 0.448,
       "prompt_tokens": 392,
       "completion_tokens": 90,
-      "tokens_per_s": 200.9
+      "tokens_per_s": 200.9,
+      "expected_action_items": 1,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 1,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The output is excellent; it accurately reflects the repetitive nature of the transcript without adding extraneous information."
+      }
      },
      {
       "id": "syn-garbled-01",
@@ -8549,7 +10357,16 @@
       "latency_s": 0.451,
       "prompt_tokens": 362,
       "completion_tokens": 101,
-      "tokens_per_s": 223.9
+      "tokens_per_s": 223.9,
+      "expected_action_items": 1,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 1,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The key point about repetition isn't strictly *necessary* and could be considered a hallucination, though minor."
+      }
      },
      {
       "id": "syn-garbled-03",
@@ -8578,7 +10395,16 @@
       "latency_s": 0.285,
       "prompt_tokens": 298,
       "completion_tokens": 63,
-      "tokens_per_s": 221.4
+      "tokens_per_s": 221.4,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 0,
+       "hallucinated_items": 0,
+       "fallback_appropriate": true,
+       "notes": "The summary and key points are accurate but very generic; a more specific summary isn't possible given the input, so this isn't a major flaw."
+      }
      },
      {
       "id": "syn-garbled-04",
@@ -8612,7 +10438,16 @@
       "latency_s": 0.667,
       "prompt_tokens": 341,
       "completion_tokens": 150,
-      "tokens_per_s": 224.9
+      "tokens_per_s": 224.9,
+      "expected_action_items": 0,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 0,
+       "hallucinated_items": 3,
+       "fallback_appropriate": true,
+       "notes": "The key_points and questions contain details not explicitly stated in the transcript (e.g., 'needs further clarification')."
+      }
      },
      {
       "id": "syn-garbled-05",
@@ -8650,7 +10485,16 @@
       "latency_s": 0.753,
       "prompt_tokens": 350,
       "completion_tokens": 170,
-      "tokens_per_s": 225.8
+      "tokens_per_s": 225.8,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 5,
+       "summary_quality": 5,
+       "action_items_captured": 2,
+       "hallucinated_items": 1,
+       "fallback_appropriate": true,
+       "notes": "The question 'What is the final decision on the meeting rescheduling?' is not directly supported by the transcript; the speaker only mentions *considering* rescheduling."
+      }
      },
      {
       "id": "syn-garbled-07",
@@ -8687,10 +10531,59 @@
       "latency_s": 0.635,
       "prompt_tokens": 400,
       "completion_tokens": 142,
-      "tokens_per_s": 223.7
+      "tokens_per_s": 223.7,
+      "expected_action_items": 2,
+      "judgement": {
+       "title_quality": 3,
+       "summary_quality": 3,
+       "action_items_captured": 1,
+       "hallucinated_items": 2,
+       "fallback_appropriate": true,
+       "notes": "The questions are not directly stated in the transcript, and the action item is slightly off (texting mom, not Sarah)."
+      }
      }
     ]
+   },
+   "judged": {
+    "real": {
+     "n": 31,
+     "title_quality_mean": 4.968,
+     "summary_quality_mean": 4.968,
+     "action_item_recall": 0.98,
+     "hallucinated_per_memo": 0.968,
+     "fallback_accuracy": 1.0
+    },
+    "stt": {
+     "n_clusters": 16,
+     "n_rows": 64,
+     "title_quality_mean": 5.0,
+     "summary_quality_mean": 5.0,
+     "action_item_recall": 0.985,
+     "hallucinated_per_memo": 1.109,
+     "fallback_accuracy": 0.984
+    },
+    "garbled": {
+     "n": 6,
+     "title_quality_mean": 4.0,
+     "summary_quality_mean": 4.0,
+     "action_item_recall": 0.833,
+     "hallucinated_per_memo": 1.167,
+     "fallback_accuracy": 1.0
+    },
+    "all_rows_unclustered": {
+     "n": 101,
+     "title_quality_mean": 4.931,
+     "summary_quality_mean": 4.931,
+     "action_item_recall": 0.981,
+     "hallucinated_per_memo": 1.069,
+     "fallback_accuracy": 0.99
+    }
    }
   }
- ]
+ ],
+ "judge": {
+  "model": "gemma-3-27b",
+  "design": "two-phase: blind reference action items, then grading",
+  "judged_at": "2026-07-05T22:29:14.527450+00:00"
+ }
 }

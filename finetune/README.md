@@ -213,6 +213,54 @@ How to read this honestly:
   above are entirely from the held-out real/STT/garbled slices, judged by
   gemma-3-27b against the cached blind reference.
 
+## Frontier-teacher experiment (2026-07-05, ~$6 of API credit)
+
+Same corpus inputs, same split membership, same recipe, same judge — only the
+teacher changed. `claude_teacher.py` auditioned Claude teachers over the
+held-out eval slices (Batch API + structured outputs standing in for
+llama.cpp's constrained decoding), then relabeled the 438 training inputs
+with the winner (claude-sonnet-5) and trained a second student from
+`corpus/claude/`. Deployed as `lima-extractor-4b-claude` (llama-swap route).
+
+| gemma judge, blind ref, all rows (n=101) | halluc./memo | recall | summary 2–3 sent | tags kebab |
+|---|---|---|---|---|
+| **teachers (ceilings)** | | | | |
+| qwen3-coder-30b — local Q4_K_M (M1.1) | 0.78 | 0.94 | 0.14–0.53 | 0.96 |
+| claude-sonnet-5 — API audition | 0.455 | 0.942 | 0.906 | 1.00 |
+| claude-opus-4-8 — API audition | **0.257** | 0.952 | 0.958 | 1.00 |
+| **students (deployed Q4_K_M, same pass)** | | | | |
+| lima-extractor-4b (qwen labels) | 1.287 | 0.966 | 0.188 | 1.00 |
+| lima-extractor-4b-claude (sonnet labels) | **1.069** | **0.981** | 0.663 | 1.00 |
+
+Data: `../scripts/benchmark_results/extraction_judged_20260705_162914.json`
+(students, one controlled pass), `_163354.json` (opus audition),
+`_153147.json` (sonnet audition).
+
+How to read this honestly:
+
+- **Teacher quality propagates to the student.** The sonnet-taught student
+  cuts hallucination 17% overall and 37% on the real slice (0.97 vs 1.55)
+  while *raising* recall (0.98 vs 0.91 real) — the qwen-taught student's
+  precision/coverage trade turned out to be a label-quality artifact, not a
+  law. It also inherits the summary contract its teacher honors (0.66 vs
+  0.19) at identical VRAM and speed.
+- **Students stay ~0.5–0.6 hallucinated/memo above their teacher** in both
+  runs — the teacher moves the student's ceiling, but the teacher→student
+  gap looks recipe/capacity-bound, not label-bound.
+- **Frontier ceilings**: Opus grounds 3× better than the local 30B (0.257 vs
+  0.78) and is the only model to zero out hallucination on the garbled
+  probes. Distilling from Opus labels (~$6 batched) is the obvious next rung.
+- The qwen student measured 1.178 in the M3 pass and 1.287 here — treat
+  ±0.1 as the judge's run-to-run noise band; rankings were stable.
+- One student regression: tag-count discipline dipped (0.74 vs 0.92 in-range)
+  — sonnet labels are 1.00 on eval, so this is student under-fitting, not
+  label noise.
+- Audition/label condition differences vs the local teacher, inherent to the
+  swap: API default temperature (local used 0.2) and structured-outputs
+  enforcement instead of GGUF grammar. Batch-queue lesson: `request_counts`
+  can read `processing=101` while ~90% of the work is already done — cancel
+  finalizes and releases completed results.
+
 ## Milestones
 
 ```mermaid
