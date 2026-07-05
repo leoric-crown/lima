@@ -1,0 +1,194 @@
+{
+ "timestamp": "2026-07-05T09:02:03.515826+00:00",
+ "task": "lima-extraction-v0.3.1",
+ "temperature": 0.2,
+ "constrained_decoding": true,
+ "system": {
+  "timestamp": "2026-07-05T09:02:03.516335+00:00",
+  "hostname": "leoric-ws",
+  "os": "Linux",
+  "os_version": "#1 SMP PREEMPT_DYNAMIC Sat, 23 May 2026 14:21:20 +0000",
+  "platform": "Linux-7.0.10-arch1-1-x86_64-with-glibc2.43",
+  "cpu": "AMD Ryzen 7 3700X 8-Core Processor",
+  "cpu_cores_physical": 8,
+  "cpu_cores_logical": 16,
+  "ram_gb": 62.7,
+  "gpu": {
+   "name": "NVIDIA GeForce RTX 4090",
+   "vram_mb": 24564,
+   "driver_version": "610.43.02"
+  }
+ },
+ "conditions": [
+  {
+   "model": "qwen3-8b",
+   "cold_start_s": 6.74,
+   "vram_loaded_mib": 9335,
+   "vram_idle_mib": 2008,
+   "records_ok": 4,
+   "records_failed": 0,
+   "grade_rates": {
+    "is_fallback": 0.0,
+    "title_5_10_words": 0.75,
+    "summary_2_3_sentences": 0.0,
+    "tags_2_5": 1.0,
+    "tags_kebab_case": 0.75,
+    "nonempty_key_points_or_fallback": 1.0
+   },
+   "latency_median_s": 4.009,
+   "tokens_per_s_median": 147.0,
+   "slices": {
+    "real": [
+     {
+      "id": "ami-ES2009c-0140",
+      "output": {
+       "title": "Remote Control Market Trends and Design Insights",
+       "summary": "Discussion of current market trends in remote control design, emphasizing the shift toward innovative, user-friendly interfaces and organic aesthetics influenced by broader design trends in fashion, furniture, and technology.",
+       "key_points": [
+        "Consumer demand for newer, more exciting remote controls that move away from basic, functional designs.",
+        "Organic, nature-inspired trends (e.g., wood, natural colors, sleek clean lines) are prevalent across industries and could influence remote control design.",
+        "Challenges include balancing innovative design with cost-effective solutions (e.g., touch plate interfaces).",
+        "Proposed design ideas: organic shapes, varied menu interface elements, and natural material integration."
+       ],
+       "action_items": [
+        "Research organic design trends in fashion/furniture for remote control inspiration.",
+        "Explore cost-effective alternatives to touch-screen interfaces (e.g., customizable menu shapes).",
+        "Assess feasibility of integrating natural materials (e.g., wood) into remote control designs."
+       ],
+       "questions": [
+        "How can organic design elements be incorporated without compromising functionality?",
+        "What are viable alternatives to expensive touch-screen interfaces?",
+        "Is the 'spongy' texture mentioned a design direction or a garbled thought?"
+       ],
+       "tags": [
+        "market trends",
+        "design",
+        "user interface",
+        "needs-review"
+       ]
+      },
+      "grade": {
+       "is_fallback": false,
+       "title_5_10_words": true,
+       "summary_2_3_sentences": false,
+       "tags_2_5": true,
+       "tags_kebab_case": false,
+       "nonempty_key_points_or_fallback": true
+      },
+      "latency_s": 4.52,
+      "prompt_tokens": 585,
+      "completion_tokens": 664,
+      "tokens_per_s": 146.9
+     },
+     {
+      "id": "ami-ES2009c-0138",
+      "output": {
+       "title": "Meeting Prep: Conceptual Design Discussion",
+       "summary": "Preparing for a meeting to finalize conceptual design decisions for the prototype, clarify roles, and discuss remote control design.",
+       "key_points": [
+        "Meeting focus: Conceptual design (abstract to concrete ideas) for prototype development",
+        "Apology for unclear roles in previous meeting; commitment to clarify roles this time",
+        "Plan to review past discussions, present ideas, and make decisions on remote control functionality and appearance",
+        "Open format: Presenters to be determined, with Nathan scheduled to start"
+       ],
+       "action_items": [
+        "Prepare PowerPoint presentation for meeting",
+        "Clarify and document roles for all participants",
+        "Facilitate presentation session and decision-making process",
+        "Confirm Nathan's participation and presentation order"
+       ],
+       "questions": [
+        "What specific aspects of conceptual design need clarification?",
+        "What were the key outcomes from the last meeting that should be reviewed?"
+       ],
+       "tags": [
+        "meeting-prep",
+        "conceptual-design",
+        "prototype",
+        "remote-control"
+       ]
+      },
+      "grade": {
+       "is_fallback": false,
+       "title_5_10_words": true,
+       "summary_2_3_sentences": false,
+       "tags_2_5": true,
+       "tags_kebab_case": true,
+       "nonempty_key_points_or_fallback": true
+      },
+      "latency_s": 3.695,
+      "prompt_tokens": 562,
+      "completion_tokens": 543,
+      "tokens_per_s": 147.0
+     }
+    ],
+    "garbled": [
+     {
+      "id": "syn-garbled-00",
+      "output": {
+       "title": "Pick up milk and eggs",
+       "summary": "Need to pick up milk and eggs from the store after work today.",
+       "key_points": [
+        "Pick up milk and eggs from the store after work today"
+       ],
+       "action_items": [
+        "Pick up milk and eggs from the store after work today"
+       ],
+       "questions": [],
+       "tags": [
+        "shopping",
+        "groceries"
+       ]
+      },
+      "grade": {
+       "is_fallback": false,
+       "title_5_10_words": true,
+       "summary_2_3_sentences": false,
+       "tags_2_5": true,
+       "tags_kebab_case": true,
+       "nonempty_key_points_or_fallback": true
+      },
+      "latency_s": 4.009,
+      "prompt_tokens": 392,
+      "completion_tokens": 585,
+      "tokens_per_s": 145.9
+     },
+     {
+      "id": "syn-garbled-01",
+      "output": {
+       "title": "Grocery Pickup Reminder",
+       "summary": "Need to pick up milk and eggs from the store before dinner tonight.",
+       "key_points": [
+        "Milk",
+        "Eggs",
+        "Store pickup",
+        "Before dinner tonight"
+       ],
+       "action_items": [
+        "Pick up milk and eggs from the store before dinner tonight"
+       ],
+       "questions": [],
+       "tags": [
+        "shopping",
+        "dinner",
+        "errands"
+       ]
+      },
+      "grade": {
+       "is_fallback": false,
+       "title_5_10_words": false,
+       "summary_2_3_sentences": false,
+       "tags_2_5": true,
+       "tags_kebab_case": true,
+       "nonempty_key_points_or_fallback": true
+      },
+      "latency_s": 2.831,
+      "prompt_tokens": 362,
+      "completion_tokens": 416,
+      "tokens_per_s": 147.0
+     }
+    ]
+   }
+  }
+ ]
+}
