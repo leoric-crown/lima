@@ -28,8 +28,9 @@ flowchart LR
     LBL --> LR["labeled_real.jsonl"]
     LBL --> LS["labeled_synthetic.jsonl"]
 
-    LR --> FIN["make_splits.py final<br>+ hard leak check"]
-    LS --> FIN
+    LR --> NORM["normalize_labels.py<br>tag contract post-processor"]
+    LS --> NORM
+    NORM --> FIN["make_splits.py final<br>+ hard leak check"]
     FIN --> TR["train.jsonl — 389"]
     FIN --> VA["val.jsonl — 43"]
     FIN -- "teacher-failed artifacts" --> EVB["eval_boundary_garbled.jsonl — 6"]
@@ -65,6 +66,10 @@ id (synthetic), never by row. Assembled by `make_splits.py`; the manifest
   llama.cpp schema-constrained decoding ON (the same condition every eval
   uses). `label_teacher.py`. Records carry `gen_version`/`label_version`;
   resume skips only rows produced by current code.
+- **Label normalization** — `normalize_labels.py` applies the tag contract
+  (lowercase kebab, 2–5 tags) the schema *describes* but constrained decoding
+  cannot enforce; the teacher violates it in ~9% of raw labels. Deterministic
+  post-processor, raw labels preserved alongside.
 
 ## Eval slices (`corpus/eval/` + `corpus/eval_real.jsonl`) — never trained on
 
@@ -106,23 +111,46 @@ flowchart TD
     style FT stroke-dasharray: 5 5
 ```
 
-## Measured baselines (M1, 2026-07-05)
+## Measured baselines (M1.1, 2026-07-05)
 
-Full data: `../scripts/benchmark_results/extraction_judged_20260705_033305.json`.
+Full data: `../scripts/benchmark_results/extraction_judged_20260705_044004.json`
+(single controlled benchmark pass; two-phase judge — expected action items
+extracted blind per transcript into `judge_reference.json`, then each output
+graded against that fixed reference. The original M1 judge computed "expected"
+while reading each model's output, which anchored the denominator per model;
+those numbers were retired after peer review.)
 
-| judge scores, 101 records | 30B teacher | 8B (prod) | 4B student |
+| judge scores (blind reference) | 30B teacher | 8B (prod) | 4B student |
 |---|---|---|---|
-| title / summary quality (1–5) | 4.77 / 4.76 | 4.75 / 4.79 | 4.82 / 4.84 |
-| action-item recall | 0.99 | 0.96 | 0.98 |
-| **hallucinated items / memo** | **0.41** | 0.83 | **1.59** |
-| fallback accuracy (garbled slice) | ~1.0 | — | 0.33 |
-| tags kebab-case (code grade) | 0.91 | 0.51 | 0.20 |
-| VRAM loaded / cold start / median latency | 21.6GB / 5.5s / 1.1s | 9.3GB / 4.8s / 5.1s | 6.8GB / 2.7s / 1.8s |
+| title / summary quality (1–5) | 4.83 / 4.74 | 4.84 / 4.80 | 4.91 / 4.91 |
+| action-item recall | 0.94 | 0.94 | 0.98 |
+| **hallucinated items / memo** | **0.78** | 1.21 | **2.11** |
+| tags kebab-case (code grade, non-fallback rows) | 0.96 | 0.50 | 0.22 |
+| VRAM net / cold start / post-warm median | 19.6GB / 5.4s / 1.1s | 7.3GB / 5.4s / 4.5s | 5.2GB / 1.7s / 1.8s |
 
-The finding that defines M2: **surface quality is flat across model sizes;
-the gap is grounding** (4x hallucination rate) **and format discipline**.
-Also: the 30B MoE is the *fastest* per memo — the cost axis being right-sized
-here is VRAM residency, not speed.
+How to read this honestly:
+
+- **The judge's 1–5 quality rubric saturates** (the STT slice scores 5/5 for
+  every model on nearly every row) — it does not discriminate at this
+  granularity and is reported for completeness, not as a claim.
+- **Recall is not the gap either** — the 4B actually captures the *most*
+  reference action items (0.98) because it over-extracts.
+- **The discriminating metric is grounding**: hallucinated items/memo runs
+  0.78 → 1.21 → 2.11, a monotonic ~2.7x gap. The 4B's profile is
+  "highest coverage, most fabrication" — so M2 tunes for **precision and
+  format discipline**, not coverage or fluency.
+- The garbled slice (n=6 ambiguous boundary probes) is reported as
+  *appropriateness*, not "fallback accuracy": the teacher emits zero literal
+  fallbacks on it, and the judge's appropriateness call is unstable across
+  runs on these deliberately ambiguous inputs. No headline claim rests on it.
+- The STT slice is **16 memos × 4 STT systems** — aggregated per memo
+  (n_clusters=16), not as 64 independent rows.
+- The 2–3-sentence summary contract is failed by *every* model **including
+  the teacher** (0.14–0.53) — a prompt-vs-behavior gap in production itself,
+  left visible rather than patched.
+- VRAM is net (loaded minus idle desktop); latency is post-warm median —
+  cold start is reported separately. The 30B MoE is the *fastest* per memo;
+  the axis being right-sized is VRAM residency, not speed.
 
 ## Milestones
 
@@ -180,6 +208,8 @@ python3 make_splits.py real
 python3 generate_synthetic.py --count 260          # needs llama-swap on :9292
 python3 label_teacher.py --input corpus/synthetic_memos.jsonl --out corpus/labeled_synthetic.jsonl
 python3 label_teacher.py --input corpus/train_pool_real.jsonl --out corpus/labeled_real.jsonl
-python3 make_splits.py final
+python3 normalize_labels.py
+python3 make_splits.py final --labeled-real corpus/labeled_real_normalized.jsonl \
+    --labeled-synthetic corpus/labeled_synthetic_normalized.jsonl
 python3 build_stt_eval.py --src /tmp/stt
 ```

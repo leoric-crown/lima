@@ -1,0 +1,613 @@
+{
+ "judge_model": "gemma-3-27b",
+ "refs": {
+  "ami-ES2009c-0140": [
+   "Explore natural colors for remote control design.",
+   "Investigate using wood as a material option.",
+   "Research organic/sleek design aesthetics.",
+   "Consider customizable menu bullet shapes.",
+   "Re-evaluate touch screen interface options."
+  ],
+  "ami-ES2009c-0138": [
+   "Create a PowerPoint presentation.",
+   "Clarify roles for meeting participants.",
+   "Finalize decisions on the prototype.",
+   "Collate discussion points from the last meeting.",
+   "Firm up the design of the remote control."
+  ],
+  "ami-ES2009c-0139": [
+   "Investigate lithium battery options with alternative manufacturers.",
+   "Research feasibility of kinetic energy powering a touchscreen.",
+   "Explore visible light emission as a remote control feature, ensuring eye safety.",
+   "Determine optimal case thickness (3-4 millimeters).",
+   "Evaluate cost implications of scroll buttons versus standard buttons.",
+   "Confirm rubber push button compatibility with a curved case."
+  ],
+  "icsi-Bro026-1162": [],
+  "icsi-Bro026-1165": [
+   "Explore automating feedback from error rates (word or syllable level) into category adjustments.",
+   "Investigate incorporating error feedback into the category building loop."
+  ],
+  "icsi-Bro026-1157": [
+   "Decide focus areas given limited time.",
+   "Freeze a set of software options.",
+   "Define what will be kept constant for initial testing."
+  ],
+  "ami-ES2003c-0039": [
+   "Interface designer to consider fruit/vegetable design options.",
+   "Evaluate practicality of spongy material for remote control.",
+   "If using spongy material, determine how to integrate LEDs and lights.",
+   "If using spongy material, develop marketing points around durability/damage resistance."
+  ],
+  "ami-ES2003c-0036": [
+   "Lay out elements on remote based on human hand anatomy.",
+   "Design remote with joystick, two function buttons, and LCD screen.",
+   "Implement basic mode with joystick for channel/volume control.",
+   "Implement menu mode for further functions.",
+   "Explore using rubber for ergonomic design (left/right hand compatibility)."
+  ],
+  "ami-ES2003c-0037": [
+   "Add pictures to the design.",
+   "Design articulation for left/right-handed use (above joystick).",
+   "Design articulation for left/right-handed use (below LCD).",
+   "Determine battery placement.",
+   "Develop software for computer programming.",
+   "Design computer connection cable.",
+   "Create a computer-free programming mode."
+  ],
+  "icsi-Bed009-0633": [
+   "Nancy will deliver a talk on modeling how children learn deep semantic grammar."
+  ],
+  "icsi-Bed009-0626": [
+   "Bring slides (to a future meeting/presentation).",
+   "Remove problematic road network segment (from the algorithm)."
+  ],
+  "icsi-Bed009-0629": [
+   "Investigate the transition diagram idea for conversation grammar.",
+   "Understand the requirements of the tourist domain beyond simple information retrieval.",
+   "Reconsider the functional module design to allow for interaction with the tourism component."
+  ],
+  "ami-IS1004a-0312": [
+   "Familiarize team with meeting room tools (specifically whiteboard).",
+   "Complete functional design phase (individually).",
+   "Complete conceptual design phase (individually).",
+   "Complete detailed design phase (individually)."
+  ],
+  "ami-IS1004a-0313": [
+   "Draw a spider.",
+   "Think of a favourite animal (already done)."
+  ],
+  "ami-IS1004a-0314": [
+   "Draw an elephant.",
+   "Try to draw an elephant."
+  ],
+  "icsi-Bed011-0656": [
+   "Choose a set of lexical and phrasal constructions.",
+   "Manually explain a portion of the utterances using the chosen constructions.",
+   "Select constructions partly based on research interests."
+  ],
+  "icsi-Bed011-0657": [
+   "Sort out Santa Barbara conference attendance.",
+   "Respond to action planner guy's proposal (already done, but remains an open item).",
+   "Consider renaming the module 'dialogue manager'."
+  ],
+  "icsi-Bed011-0653": [
+   "Email additional high-level tourist tasks to the team.",
+   "Maintain a collection rate of approximately four subjects per week."
+  ],
+  "ami-IS1001b-0279": [
+   "Summarize meeting & post to shared folder.",
+   "Present new project requirements.",
+   "Decide on remote control functions.",
+   "Assign next tasks."
+  ],
+  "ami-IS1001b-0284": [
+   "Send presentations via email before the next meeting.",
+   "Create and share a meeting summary in a shared folder.",
+   "Resend action items via email."
+  ],
+  "ami-IS1001b-0283": [
+   "Discuss reducing the number of buttons on the remote.",
+   "Limit initial remote control release to TVs.",
+   "Incorporate corporate logo and colors into remote design.",
+   "Define remote control characteristics (buttons, functions)."
+  ],
+  "icsi-Bro008-0970": [
+   "Investigate combining the best ideas from different systems.",
+   "Assess resource usage to avoid excessive consumption."
+  ],
+  "icsi-Bro008-0975": [
+   "Analyze the data to identify key characteristics.",
+   "Consider further work if more time were available."
+  ],
+  "icsi-Bro008-0977": [
+   "Investigate if multiple neural networks perform better than a single network.",
+   "Explore training networks on data with varying acoustic conditions.",
+   "Confirm travel return date from Europe."
+  ],
+  "ami-TS3012d-0532": [
+   "Present the prototype.",
+   "Implement LCD.",
+   "Implement speech recognition."
+  ],
+  "icsi-Bed012-0659": [
+   "Explore using a Bayes net to solve reasoning problems with uncertainty.",
+   "Define nodes for each construction to merge relevant information.",
+   "Limit the scope to a finite number of constructions to make node generation feasible."
+  ],
+  "icsi-Bed012-0658": [
+   "Implement solution in Perl.",
+   "Reverse the logic to prioritize determining if someone wants to know location vs. go there."
+  ],
+  "icsi-Bed012-0661": [
+   "Investigate if a construction parser can determine communicative intent.",
+   "Map input to 'Where-Is' construction to determine intent.",
+   "Weight nodes appropriately based on determined intent."
+  ],
+  "ami-ES2006b-0087": [
+   "Aim for designs that are both functional and beautiful.",
+   "Consider a long battery life.",
+   "Explore solar power as a charging option.",
+   "Investigate adding a locator feature."
+  ],
+  "ami-ES2006b-0083": [
+   "Get feedback from marketing.",
+   "Get feedback from the user interface team.",
+   "Integrate technical design into product design.",
+   "Remove teletext functionality.",
+   "Limit remote control functionality to television.",
+   "Incorporate company color and slogan into the design."
+  ],
+  "ami-ES2006b-0084": [
+   "Prioritize a small physical size for the remote control.",
+   "Ensure the remote control is easy to use and follows established conventions (e.g., on/off button location, color).",
+   "Include on/off, channel numbers, and volume buttons.",
+   "Consider a menu button for brightness and similar settings."
+  ],
+  "stt-openai/gpt-4o-audio-preview-01_email_dictation": [
+   "Reschedule meeting to discuss API costs.",
+   "Prepare cost breakdown for API usage.",
+   "Investigate options for reducing API costs (self-hosting or cheaper models).",
+   "Address Docker image size to improve deployment speed."
+  ],
+  "stt-openai/gpt-4o-audio-preview-02_project_planning": [
+   "Consider building a voice notes app.",
+   "Evaluate integrating a new app with n8n workflows.",
+   "Research audio transcription options (Whisper/Deepgram).",
+   "Investigate React Native or native Android development.",
+   "Plan for handling audio quality and network issues.",
+   "Consider adding local storage with retry functionality.",
+   "Re-evaluate need for a new app versus workflow improvement."
+  ],
+  "stt-openai/gpt-4o-audio-preview-03_todo_list": [
+   "Fix failing GitHub Actions workflow.",
+   "Set up home automation for nursery lights.",
+   "Call pediatrician's office about Dove's appointment.",
+   "Experiment with OpenAI's Whisper model.",
+   "Update blog with a new post."
+  ],
+  "stt-openai/gpt-4o-audio-preview-04_meeting_notes": [
+   "Research and compare costs of different AI approaches.",
+   "Investigate infrastructure needed for self-hosting models.",
+   "Experiment with fine-tuning a smaller AI model.",
+   "Reconvene next Friday to decide on a path forward."
+  ],
+  "stt-openai/gpt-4o-audio-preview-05_parenting_question": [
+   "Discuss Dov's evening fussiness with pediatrician at one-month checkup.",
+   "Research strategies to soothe Dov's evening fussiness.",
+   "Try holding Dov upright when fussy."
+  ],
+  "stt-openai/gpt-4o-audio-preview-06_technical_troubleshooting": [
+   "Check for firmware updates for the motion sensors.",
+   "Research Zigbee repeaters.",
+   "Research/consider upgrading the Zigbee coordinator."
+  ],
+  "stt-openai/gpt-4o-audio-preview-07_blog_outline": [
+   "Write a blog post about voice note workflows for parents.",
+   "Create an outline for the blog post (sections on: benefits, technical setup, prompting strategy, examples, conclusion).",
+   "Document technical setup with screenshots (voice notes app to n8n, n8n processing, AI agent).",
+   "Detail AI prompting strategy for evidence-based parenting advice.",
+   "Compile practical examples of questions and AI responses (anonymize personal details).",
+   "Write a conclusion on the impact of this workflow."
+  ],
+  "stt-openai/gpt-4o-audio-preview-08_calendar_scheduling": [
+   "Schedule Dov's pediatrician appointment for Nov 14th, 10:30 AM.",
+   "Book dentist appointment for speaker on Nov 15th, 2:00 PM.",
+   "Schedule client video call for Nov 16th, 11:00 AM.",
+   "Schedule Sarah's postpartum checkup for Nov 17th, 9:00 AM.",
+   "Schedule grocery pickup for Nov 19th, 4:00 PM."
+  ],
+  "stt-openai/gpt-4o-audio-preview-09_research_note": [
+   "Test speech-to-text accuracy with varying accent strengths.",
+   "Create a dataset of voice notes with different accent levels.",
+   "Benchmark Deepgram, Whisper, Google Speech-to-Text, and Azure.",
+   "Find a way to quantify accent strength consistently.",
+   "Explore using native English speakers to rate accent level.",
+   "Investigate phonetic analysis tools for accent measurement."
+  ],
+  "stt-openai/gpt-4o-audio-preview-10_project_update": [
+   "Create synthetic data to supplement the existing dataset.",
+   "Record voice notes intentionally for specific test cases.",
+   "Anonymize personal information in the dataset."
+  ],
+  "stt-openai/gpt-4o-audio-preview-11_ai_prompt_creation": [
+   "Create a system prompt for an AI agent.",
+   "Design the agent to extract actionable items from voice notes.",
+   "Enable the agent to categorize items by type (to-do, research, problems, reminders).",
+   "Enable the agent to categorize item urgency.",
+   "Ensure the agent understands technical vocabulary.",
+   "Instruct the agent on handling incomplete thoughts/brainstorming."
+  ],
+  "stt-openai/gpt-4o-audio-preview-12_agent_instructions": [
+   "Identify stale GitHub repositories (no updates in 6+ months).",
+   "Update documentation or archive stale repositories.",
+   "Standardize folder structure across active projects.",
+   "Set up automated deployment pipelines for missing repositories."
+  ],
+  "stt-openai/gpt-4o-audio-preview-13_pharmacy_pickup": [
+   "Refill ADHD medication prescription.",
+   "Confirm vitamin request with Sarah (folic acid & iron).",
+   "Buy diaper rash cream.",
+   "Buy saline drops for baby.",
+   "Check for infant thermometer.",
+   "Buy band-aids and antiseptic cream."
+  ],
+  "stt-openai/gpt-4o-audio-preview-14_household_chores": [
+   "Do laundry (including separate baby clothes load).",
+   "Deep clean the kitchen.",
+   "Vacuum living room and bedroom.",
+   "Take out trash and recycling.",
+   "Organize Dove's room."
+  ],
+  "stt-openai/gpt-4o-audio-preview-15_grocery_shopping": [
+   "Buy milk.",
+   "Buy bread (two loaves).",
+   "Buy chicken breasts and vegetables (broccoli, carrots, sweet potatoes).",
+   "Buy coffee (good brand).",
+   "Buy yogurt and fruit (bananas).",
+   "Buy dish soap and disinfectant wipes.",
+   "Check for easy meal options (e.g., pre-made salads)."
+  ],
+  "stt-openai/gpt-4o-audio-preview-16_general_ai_prompt": [
+   "Track daily activities to identify time wasters.",
+   "Create a list of quick tasks for small pockets of time.",
+   "Batch similar tasks together.",
+   "Schedule tasks based on energy levels.",
+   "Adjust routine as needed to maintain flexibility.",
+   "Prioritize rest and self-care."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-01_email_dictation": [
+   "Reschedule meeting to discuss API costs.",
+   "Prepare cost breakdown for API usage.",
+   "Investigate options for reducing API costs (self-hosting or cheaper models).",
+   "Address Docker image size to improve deployment speed."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-02_project_planning": [
+   "Consider building a voice notes app.",
+   "Evaluate integrating a custom app with personal workflows.",
+   "Research audio quality optimization.",
+   "Investigate handling network issues during recording.",
+   "Plan for local storage with retry functionality.",
+   "Re-evaluate need for a new app versus workflow improvement."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-03_todo_list": [
+   "Fix failing GitHub Actions workflow.",
+   "Set up nursery lights with Home Assistant.",
+   "Call pediatrician's office about Dove's appointment.",
+   "Experiment with OpenAI's Whisper model.",
+   "Update blog with a new post."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-04_meeting_notes": [
+   "Compare costs of different AI approaches.",
+   "Research infrastructure for self-hosting models.",
+   "Experiment with model fine-tuning.",
+   "Reconvene next Friday to decide on a path forward.",
+   "Clean up Docker images (reduce size)."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-05_parenting_question": [
+   "Discuss possible colic with pediatrician.",
+   "Consult pediatrician at one-month checkup."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-06_technical_troubleshooting": [
+   "Check for firmware updates for the motion sensors.",
+   "Investigate adding a Zigbee repeater.",
+   "Research/consider upgrading the Zigbee coordinator."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-07_blog_outline": [
+   "Write a blog post about voice note workflows for new parents.",
+   "Create an outline for the blog post (sections on: benefits, setup, prompting, examples, conclusion).",
+   "Document technical setup with screenshots (voice notes app to n8n, n8n processing, AI agent).",
+   "Detail AI prompting strategy for evidence-based parenting advice.",
+   "Provide practical examples of questions and AI responses (anonymized).",
+   "Write a conclusion on the impact of this workflow."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-08_calendar_scheduling": [
+   "Schedule Dove's pediatrician appointment for Nov 14th, 10:30 AM.",
+   "Book dentist appointment for speaker on Nov 15th, 2 PM.",
+   "Schedule client video call for Nov 16th, 11 AM.",
+   "Schedule Sarah's postpartum checkup for Nov 17th, 9 AM.",
+   "Schedule grocery pickup for Nov 19th, 4 PM."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-09_research_note": [],
+  "stt-openai/gpt-4o-mini-audio-preview-10_project_update": [
+   "Create synthetic data to supplement the existing dataset.",
+   "Record voice notes intentionally for specific test cases.",
+   "Anonymize personal information in the dataset."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-11_ai_prompt_creation": [],
+  "stt-openai/gpt-4o-mini-audio-preview-12_agent_instructions": [],
+  "stt-openai/gpt-4o-mini-audio-preview-13_pharmacy_pickup": [
+   "Refill ADHD prescription.",
+   "Confirm vitamin request with Sarah (folic acid & iron).",
+   "Buy diaper rash cream.",
+   "Buy saline drops for baby.",
+   "Check for reliable infant thermometer.",
+   "Buy band-aids and antiseptic cream."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-14_household_chores": [
+   "Do laundry (including a separate load of baby clothes).",
+   "Deep clean the kitchen.",
+   "Vacuum living room and bedroom.",
+   "Take out trash and recycling.",
+   "Organize baby's room."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-15_grocery_shopping": [
+   "Buy milk.",
+   "Buy bread (two loaves).",
+   "Buy chicken breast and vegetables (broccoli, carrots, sweet potatoes).",
+   "Buy coffee (good brand).",
+   "Buy yogurt and fruit (bananas).",
+   "Buy dish soap and disinfectant wipes.",
+   "Check for easy meal options (e.g., pre-made salads)."
+  ],
+  "stt-openai/gpt-4o-mini-audio-preview-16_general_ai_prompt": [
+   "Minimize distractions by scheduling email/social media checks.",
+   "Use concise messaging to streamline communication.",
+   "Record voice notes in one session for later transcription.",
+   "Schedule a block for emails and admin tasks.",
+   "Use short breaks for quick tasks.",
+   "Work during son's naps.",
+   "Tackle creative tasks in the morning.",
+   "Do routine tasks in the afternoon.",
+   "Listen to and transcribe voice notes in the afternoon.",
+   "Allow for schedule flexibility.",
+   "Prioritize high-impact tasks."
+  ],
+  "stt-openai/whisper-1-01_email_dictation": [
+   "Email Sarah to follow up on budget review.",
+   "Schedule a meeting with Sarah to discuss API costs.",
+   "Prepare cost breakdown for Sarah.",
+   "Investigate self-hosting or cheaper models for API.",
+   "Address Docker image size to improve deployment speed."
+  ],
+  "stt-openai/whisper-1-02_project_planning": [
+   "Explore building a voice notes app.",
+   "Investigate integrating a custom app with existing workflows.",
+   "Research audio recording quality for mobile.",
+   "Plan for handling network issues during audio upload.",
+   "Consider adding local storage with retry functionality.",
+   "Re-evaluate need for a new app versus workflow improvement."
+  ],
+  "stt-openai/whisper-1-03_todo_list": [
+   "Fix failing GitHub Actions workflow.",
+   "Set up nursery lights with Home Assistant.",
+   "Call pediatrician's office about Dove's appointment.",
+   "Experiment with OpenAI's Whisper model.",
+   "Update blog with a new post."
+  ],
+  "stt-openai/whisper-1-04_meeting_notes": [
+   "Research cost of different AI approaches.",
+   "Investigate infrastructure for self-hosting models.",
+   "Experiment with model fine-tuning.",
+   "Clean up Docker images."
+  ],
+  "stt-openai/whisper-1-05_parenting_question": [
+   "Discuss Dov's evening fussiness with the pediatrician at the one-month checkup.",
+   "Research strategies to soothe Dov's evening fussiness.",
+   "Try holding Dov upright when he is fussy."
+  ],
+  "stt-openai/whisper-1-06_technical_troubleshooting": [
+   "Check for firmware updates for the motion sensors.",
+   "Investigate adding a ZigBee repeater.",
+   "Research/consider upgrading the ZigBee coordinator."
+  ],
+  "stt-openai/whisper-1-07_blog_outline": [
+   "Write a blog post about voice note workflows for parents.",
+   "Create an outline for the blog post (sections: why voice notes, technical setup, AI prompting, examples, conclusion).",
+   "Document technical setup with screenshots (voice notes app to N8n, N8n processing, AI agent).",
+   "Detail AI prompting strategy and system prompt.",
+   "Provide practical examples of questions and AI responses (anonymized).",
+   "Write a conclusion about the impact of this workflow."
+  ],
+  "stt-openai/whisper-1-08_calendar_scheduling": [
+   "Schedule Dov's paediatrician appointment for Nov 14th, 10:30am.",
+   "Schedule personal dentist appointment for Nov 15th, 2pm.",
+   "Schedule client video call for Nov 16th, 11am.",
+   "Schedule Sarah's postpartum check-up for Nov 17th, 9am.",
+   "Schedule grocery pick-up for Nov 19th, 4pm."
+  ],
+  "stt-openai/whisper-1-09_research_note": [
+   "Test speech-to-text accuracy with varying accent strengths.",
+   "Create a dataset of speech recordings with different accent levels.",
+   "Benchmark speech-to-text services (DeepGram, Whisper, Google, Azure).",
+   "Determine a method for quantifying accent strength.",
+   "Explore using native English speakers to rate accent levels.",
+   "Investigate phonetic analysis tools for accent quantification."
+  ],
+  "stt-openai/whisper-1-10_project_update": [
+   "Create synthetic data to address gaps in the dataset.",
+   "Record voice notes on specific topics.",
+   "Anonymize personal information in the dataset."
+  ],
+  "stt-openai/whisper-1-11_ai_prompt_creation": [
+   "Create a system prompt for an AI agent.",
+   "Design the agent to categorize content types (to-do, research, problems, reminders).",
+   "Design the agent to categorize urgency levels.",
+   "Instruct the agent to handle technical vocabulary.",
+   "Instruct the agent to differentiate brainstorming from commitments.",
+   "Instruct the agent to handle incomplete thoughts."
+  ],
+  "stt-openai/whisper-1-12_agent_instructions": [
+   "Identify stale GitHub repositories (no updates in 6+ months).",
+   "Update documentation/archive stale repositories.",
+   "Standardize folder structure across active projects.",
+   "Set up automated deployment pipelines for missing repositories."
+  ],
+  "stt-openai/whisper-1-13_pharmacy_pickup": [
+   "Refill ADHD prescription.",
+   "Confirm prescription refill count with pharmacist.",
+   "Pick up folic acid and iron supplement for Sarah.",
+   "Buy diaper rash cream.",
+   "Buy saline drops for baby's nose.",
+   "Check for a reliable infant thermometer.",
+   "Buy band-aids and antiseptic cream."
+  ],
+  "stt-openai/whisper-1-14_household_chores": [
+   "Do laundry (including separate load for baby clothes).",
+   "Deep clean the kitchen.",
+   "Vacuum living room and bedroom.",
+   "Take out trash and recycling.",
+   "Organize baby's room."
+  ],
+  "stt-openai/whisper-1-15_grocery_shopping": [
+   "Buy milk.",
+   "Buy bread (two loaves).",
+   "Buy chicken breast and vegetables (broccoli, carrots, sweet potatoes).",
+   "Buy coffee.",
+   "Buy yogurt and fruit (bananas).",
+   "Buy dish soap and disinfectant wipes.",
+   "Check for pre-made salad/easy meal options."
+  ],
+  "stt-openai/whisper-1-16_general_ai_prompt": [
+   "Analyze daily routine for optimizations.",
+   "Identify time wasters.",
+   "Suggest batch processing for tasks.",
+   "Find pockets of time for effective use.",
+   "Consider energy levels when scheduling work.",
+   "Match work type to cognitive load/alertness."
+  ],
+  "stt-speechmatics/nova-2-01_email_dictation": [
+   "Send email to Sarah following up on budget review.",
+   "Schedule meeting with Sarah to discuss API costs.",
+   "Prepare cost breakdown for Sarah.",
+   "Investigate options for reducing API costs (self-hosting or cheaper model).",
+   "Address large Docker image sizes to improve deployment speed."
+  ],
+  "stt-speechmatics/nova-2-02_project_planning": [
+   "Consider building a voice notes app.",
+   "Investigate audio quality options.",
+   "Research handling networking issues.",
+   "Explore local storage implementation.",
+   "Evaluate need for a new app versus workflow improvement."
+  ],
+  "stt-speechmatics/nova-2-03_todo_list": [
+   "Fix failing GitHub Actions workflow.",
+   "Set up nursery lights with Home Assistant.",
+   "Call pediatrician's office about Dave's appointment.",
+   "Experiment with OpenAI's Whisper model.",
+   "Update blog with a new post."
+  ],
+  "stt-speechmatics/nova-2-04_meeting_notes": [
+   "Research and compare costs of different AI approaches.",
+   "Investigate infrastructure needed for self-hosting models.",
+   "Experiment with fine-tuning models.",
+   "Reconvene next Friday to decide on a path forward."
+  ],
+  "stt-speechmatics/nova-2-05_parenting_question": [
+   "Discuss Dov's evening fussiness with pediatrician at next week's checkup.",
+   "Research strategies for managing evening fussiness/\"witching hour\".",
+   "Try holding Dov upright when fussy."
+  ],
+  "stt-speechmatics/nova-2-06_technical_troubleshooting": [
+   "Check for firmware updates for motion sensors.",
+   "Investigate adding a Zigbee repeater.",
+   "Research/consider upgrading the Zigbee coordinator."
+  ],
+  "stt-speechmatics/nova-2-07_blog_outline": [
+   "Write a blog post about voice note workflows for new parents.",
+   "Create an outline for the blog post (sections: why voice notes, technical setup, AI prompting, practical examples, conclusion).",
+   "Document technical setup with screenshots.",
+   "Develop AI prompting strategy details for the blog post.",
+   "Prepare anonymized examples of questions and AI responses.",
+   "Write a conclusion summarizing the benefits of the workflow."
+  ],
+  "stt-speechmatics/nova-2-08_calendar_scheduling": [
+   "Schedule Dov's pediatrician appointment for Nov 14th at 10:30 AM.",
+   "Book dentist appointment for speaker on Nov 15th at 2 PM.",
+   "Schedule client video call for Nov 16th at 11 AM.",
+   "Schedule Sara's postpartum checkup for Nov 17th at 9 AM.",
+   "Schedule grocery pickup for Nov 19th at 4 PM."
+  ],
+  "stt-speechmatics/nova-2-09_research_note": [
+   "Test speech-to-text accuracy with varying accent strengths.",
+   "Create a dataset of voice notes with different accent levels.",
+   "Benchmark Deepgram, OpenAI Whisper, Google Speech-to-Text, and Azure.",
+   "Find a way to quantify accent strength consistently.",
+   "Explore using native English speakers to rate accent level.",
+   "Investigate phonetic analysis tools for accent quantification."
+  ],
+  "stt-speechmatics/nova-2-10_project_update": [
+   "Create synthetic data to address dataset gaps.",
+   "Record voice notes intentionally for specific test cases.",
+   "Anonymize personal information in the dataset."
+  ],
+  "stt-speechmatics/nova-2-11_ai_prompt_creation": [
+   "Create a system prompt for an AI agent.",
+   "Design the agent to categorize content types (to-do items, questions, problems, reminders).",
+   "Design the agent to categorize urgency levels.",
+   "Instruct the agent to distinguish between thoughts and tasks.",
+   "Instruct the agent to handle technical vocabulary.",
+   "Instruct the agent to handle incomplete thoughts/brainstorming."
+  ],
+  "stt-speechmatics/nova-2-12_agent_instructions": [
+   "Identify stale GitHub repositories (no updates in 6+ months).",
+   "Update documentation or archive stale repositories.",
+   "Standardize folder structure across active projects.",
+   "Set up automated deployment pipelines for missing repositories."
+  ],
+  "stt-speechmatics/nova-2-13_pharmacy_pickup": [
+   "Refill ADHD prescription.",
+   "Confirm refill availability with pharmacist.",
+   "Buy folic acid and iron supplement for Sarah.",
+   "Buy diaper rash cream.",
+   "Buy saline drops for babies.",
+   "Check for infant thermometer.",
+   "Buy Band-Aids and antiseptic cream."
+  ],
+  "stt-speechmatics/nova-2-14_household_chores": [
+   "Do laundry (including separate load for baby clothes).",
+   "Deep clean the kitchen.",
+   "Vacuum living room and bedroom.",
+   "Take out trash and recycling.",
+   "Organize Dov's room."
+  ],
+  "stt-speechmatics/nova-2-15_grocery_shopping": [
+   "Make grocery run.",
+   "List grocery needs.",
+   "Buy whole milk.",
+   "Buy bread (two loaves).",
+   "Buy chicken breast and vegetables (broccoli, carrots, sweet potatoes).",
+   "Buy coffee.",
+   "Buy yogurt and bananas.",
+   "Buy dish soap and disinfectant wipes.",
+   "Check for pre-made salad options."
+  ],
+  "stt-speechmatics/nova-2-16_general_ai_prompt": [],
+  "syn-garbled-00": [
+   "Buy milk and eggs after work."
+  ],
+  "syn-garbled-01": [
+   "Buy milk and eggs."
+  ],
+  "syn-garbled-03": [],
+  "syn-garbled-04": [],
+  "syn-garbled-05": [
+   "Reschedule meeting to tomorrow.",
+   "Return phone call."
+  ],
+  "syn-garbled-07": [
+   "Text mom later.",
+   "Suggest a meeting time this weekend (potentially cancelled)."
+  ]
+ }
+}

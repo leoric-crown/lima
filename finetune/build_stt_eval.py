@@ -5,7 +5,8 @@ Source: https://huggingface.co/datasets/danielrosehill/STT-Voice-Notes-Evals
 (Apache 2.0, DOI 10.57967/hf/6317). The memos are SCRIPTED readings, not
 spontaneous speech — so we use the bundled raw STT outputs (real transcription
 noise: punctuation loss, name mangling) as eval INPUTS, not the clean ground
-truths. The ground truth text rides along as reference for the LLM judge.
+truths. The ground truth text rides along for reference/analysis only; the
+LLM judge scores against the noisy transcript the model actually saw.
 
 This slice is eval-only. It must never be labeled for training.
 

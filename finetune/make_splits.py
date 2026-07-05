@@ -97,6 +97,12 @@ def stage_final(labeled_real: Path, labeled_synthetic: Path, seed: int):
     leaks = [r["id"] for r in real if r["meeting"] in eval_meetings]
     if leaks:
         raise SystemExit(f"LEAK: labeled train rows from eval meetings: {leaks}")
+    pool = set(manifest["train_pool_ids"])
+    got = {r["id"] for r in real}
+    if got != pool:
+        raise SystemExit(
+            f"MANIFEST MISMATCH: labeled real ids != train pool "
+            f"(missing {len(pool - got)}, unexpected {len(got - pool)})")
 
     synthetic = load_jsonl(labeled_synthetic)
     # eval-routed: declared boundary cells, plus any garbled cell the teacher
@@ -124,8 +130,11 @@ def stage_final(labeled_real: Path, labeled_synthetic: Path, seed: int):
 
     dump_jsonl(train, CORPUS / "train.jsonl")
     dump_jsonl(val, CORPUS / "val.jsonl")
+    boundary_path = CORPUS / "eval" / "eval_boundary_garbled.jsonl"
     if boundary:
-        dump_jsonl(boundary, CORPUS / "eval" / "eval_boundary_garbled.jsonl")
+        dump_jsonl(boundary, boundary_path)
+    elif boundary_path.exists():
+        boundary_path.unlink()  # stale from a prior assembly
     print(f"train: {len(train)}  val: {len(val)}  boundary->eval: {len(boundary)}")
 
 

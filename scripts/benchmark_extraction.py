@@ -118,16 +118,23 @@ def code_grade(output: dict) -> dict:
 
     Schema syntax is guaranteed by constrained decoding; these measure whether
     the model follows the softer contracts the production prompt implies.
+    Style checks are None (not graded) on fallback outputs — the production
+    fallback legitimately has one tag and a one-sentence summary.
     """
+    is_fallback = output["title"] == FALLBACK_TITLE
+    if is_fallback:
+        return {"is_fallback": True, "title_5_10_words": None,
+                "summary_2_3_sentences": None, "tags_2_5": None,
+                "tags_kebab_case": None, "nonempty_key_points_or_fallback": True}
     title_words = len(output["title"].split())
     sentences = [s for s in re.split(r"[.!?]+\s*", output["summary"]) if s.strip()]
     return {
-        "is_fallback": output["title"] == FALLBACK_TITLE,
+        "is_fallback": False,
         "title_5_10_words": 5 <= title_words <= 10,
         "summary_2_3_sentences": 2 <= len(sentences) <= 3,
         "tags_2_5": 2 <= len(output["tags"]) <= 5,
         "tags_kebab_case": all(KEBAB_RE.match(t) for t in output["tags"]) if output["tags"] else False,
-        "nonempty_key_points_or_fallback": bool(output["key_points"]) or output["title"] == FALLBACK_TITLE,
+        "nonempty_key_points_or_fallback": bool(output["key_points"]),
     }
 
 
@@ -164,17 +171,22 @@ def run_condition(model: str, base_url: str, swap_root: str,
     ok = [r for rows in results.values() for r in rows if "output" in r]
     grade_rates = {}
     for check in next(iter(ok))["grade"]:
-        grade_rates[check] = round(sum(r["grade"][check] for r in ok) / len(ok), 3)
+        applicable = [r["grade"][check] for r in ok if r["grade"][check] is not None]
+        grade_rates[check] = round(sum(applicable) / len(applicable), 3) if applicable else None
     lat = sorted(r["latency_s"] for r in ok)
     return {
         "model": model,
         "cold_start_s": cold_start_s,
         "vram_loaded_mib": vram_loaded,
         "vram_idle_mib": vram_idle,
+        # net = model residency; loaded includes whatever else the GPU holds
+        "vram_net_mib": (vram_loaded - vram_idle)
+        if vram_loaded is not None and vram_idle is not None else None,
         "records_ok": len(ok),
         "records_failed": sum(len(rows) for rows in results.values()) - len(ok),
         "grade_rates": grade_rates,
-        "latency_median_s": lat[len(lat) // 2],
+        # post-warm: the cold-start warmup call precedes all timed records
+        "postwarm_latency_median_s": lat[len(lat) // 2],
         "tokens_per_s_median": sorted(r["tokens_per_s"] for r in ok if r["tokens_per_s"])[len(ok) // 2],
         "slices": results,
     }
@@ -216,9 +228,9 @@ def main():
         json.dumps(report, indent=1, ensure_ascii=False))
     print(f"\nresults -> {out}")
     for c in conditions:
-        print(f"  {c['model']}: cold {c['cold_start_s']}s | VRAM {c['vram_loaded_mib']} MiB | "
-              f"median {c['latency_median_s']}s/memo @ {c['tokens_per_s_median']} tok/s | "
-              f"grades {c['grade_rates']}")
+        print(f"  {c['model']}: cold {c['cold_start_s']}s | VRAM net {c['vram_net_mib']} MiB "
+              f"(total {c['vram_loaded_mib']}) | post-warm median {c['postwarm_latency_median_s']}s/memo "
+              f"@ {c['tokens_per_s_median']} tok/s | grades {c['grade_rates']}")
 
 
 if __name__ == "__main__":
