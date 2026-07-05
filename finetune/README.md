@@ -99,7 +99,7 @@ flowchart TD
         T["qwen3-coder-30b<br>teacher, 21.6GB"]
         P["qwen3-8b<br>current prod, 9.3GB"]
         S["qwen3-4b<br>student base, 6.8GB"]
-        FT["qwen3-4b + QLoRA<br>(M3, pending)"]
+        FT["lima-extractor-4b<br>tuned student (M2/M3)"]
     end
 
     EV --> BE["benchmark_extraction.py<br>production prompt + schema (extraction_task.py)<br>constrained decoding ON for every condition"]
@@ -108,7 +108,6 @@ flowchart TD
     RES --> JU["judge_extraction.py<br>gemma-3-27b — non-Qwen family,<br>scores vs TRANSCRIPT (teacher falsifiable)"]
     JU --> OUT["title/summary quality · action-item recall<br>hallucinated items/memo · fallback accuracy"]
 
-    style FT stroke-dasharray: 5 5
 ```
 
 ## Measured baselines (M1.1, 2026-07-05)
@@ -152,24 +151,87 @@ How to read this honestly:
   cold start is reported separately. The 30B MoE is the *fastest* per memo;
   the axis being right-sized is VRAM residency, not speed.
 
+## M2 — QLoRA training (2026-07-05)
+
+`train_qlora.py`: Qwen/Qwen3-4B-Instruct-2507, NF4 double-quant base
+(bitsandbytes), LoRA r=16 alpha=32 on q_proj/v_proj (5.9M trainable, 0.15%),
+completion-only loss (prompt tokens masked), lr 2e-4 cosine, effective batch
+16, 3 epochs = 75 steps, ~9 min on the RTX 4090. One run, no sweep. Val loss
+1.61 → 0.61, flattening by epoch 3 (0.648 / 0.616 / 0.612).
+
+Prompts are the production task from `extraction_task.py` rendered with the
+model's own chat template; targets are the normalized teacher labels as
+compact JSON + `<|im_end|>`. Each example is asserted token-for-token against
+the template's full-conversation render, and `verify_template.py` confirmed
+the HF training template matches what llama.cpp `--jinja` serves from the
+GGUF (exact string match on the production message shape) — checked on both
+the base and the tuned GGUF.
+
+Training env: uv project in this directory (`pyproject.toml`, Python pinned
+3.13 for torch/bitsandbytes wheels). Artifacts land in `runs/` (gitignored):
+adapter, merged bf16 checkpoint, `run_meta.json` with the full log history.
+
+## M3 — deployed comparison (2026-07-05)
+
+Deploy path: `merge_adapter.py` (bf16 merge — never merge into 4-bit) →
+`convert_hf_to_gguf.py` f16 → `llama-quantize` Q4_K_M →
+`~/.cache/llama.cpp/lima-extractor-4b-Q4_K_M.gguf` → llama-swap route
+`lima-extractor-4b`. Both conditions below are the *deployed quantized*
+artifacts measured in one controlled pass (same harness, judge, and cached
+blind reference as M1.1). Full data:
+`../scripts/benchmark_results/extraction_judged_20260705_134640.json`.
+
+| deployed Q4_K_M, same pass | qwen3-4b (base) | lima-extractor-4b (tuned) | teacher ref (M1.1) |
+|---|---|---|---|
+| **hallucinated items / memo (all rows)** | 2.09 | **1.18** | 0.78 |
+| — real slice / stt slice (n=16 clusters) | 1.87 / 2.22 | 1.52 / 1.02 | — |
+| action-item recall | 0.99 | 0.97 | 0.94 |
+| tags kebab-case (code grade) | 0.18 | **1.00** | 0.96 |
+| tags 2–5 count | 0.57 | 0.93 | — |
+| title / summary quality (1–5, saturated) | 4.92 / 4.92 | 4.82 / 4.82 | 4.83 / 4.74 |
+| VRAM net / cold start / post-warm median | 5.2GB / 2.7s / 2.0s | 5.2GB / 1.6s / **1.0s** | 19.6GB / 5.4s / 1.1s |
+
+How to read this honestly:
+
+- **The tune did what it was aimed at**: hallucinated items/memo drops 44%
+  (2.09 → 1.18), landing at the 8B prod model's level (1.21 in M1.1) in a
+  5.2GB footprint; tag format discipline goes from worst-in-family (0.18) to
+  perfect (1.00). Post-warm latency halves because outputs got teacher-concise.
+- **The cost is a small recall dip** — 0.99 → 0.97 overall, and 0.98 → 0.93
+  on the real (spontaneous speech) slice. That is the intended precision/
+  coverage trade, but it is a real trade, not a free win.
+- **Still not teacher-grade grounding**: 1.18 vs 0.78 hallucinated/memo. The
+  distillation closed roughly half the gap in one run.
+- The tuned model inherits the teacher's short-summary style: the 2–3-sentence
+  contract rate *falls* from 0.51 to 0.15 — consistent with the teacher's own
+  failure of that contract (documented in M1.1); title-length compliance also
+  drifts down (0.82 → 0.65). Distillation copies the teacher's prompt-vs-
+  behavior gaps along with its strengths.
+- The base-4B rerun reproduced M1.1 within noise (2.09 vs 2.11 hallucinated/
+  memo) — the harness is stable across runs.
+- Self-distillation caveat still applies to synthetic-style data; the numbers
+  above are entirely from the held-out real/STT/garbled slices, judged by
+  gemma-3-27b against the cached blind reference.
+
 ## Milestones
 
 ```mermaid
 flowchart LR
     M0["M0 — corpus<br>DONE (1e4d579)"] --> M1["M1 — harness + baselines<br>DONE (96c21d8)"]
-    M1 --> M2["M2 — QLoRA run<br>NEXT: train_qlora.py<br>(NF4, r=16, alpha=32, q/v,<br>completion-only loss)"]
-    M2 --> M3["M3 — deploy + re-benchmark<br>merge -> GGUF -> quantize -> llama-swap<br>compare quantized-tuned vs quantized-base"]
+    M1 --> M2["M2 — QLoRA run<br>DONE: train_qlora.py<br>val loss 1.61 -> 0.61"]
+    M2 --> M3["M3 — deploy + re-benchmark<br>DONE: lima-extractor-4b<br>hallucination 2.09 -> 1.18, kebab 1.00"]
 
     style M0 fill:#2d6a4f,color:#fff
     style M1 fill:#2d6a4f,color:#fff
-    style M2 stroke-dasharray: 5 5
-    style M3 stroke-dasharray: 5 5
+    style M2 fill:#2d6a4f,color:#fff
+    style M3 fill:#2d6a4f,color:#fff
 ```
 
-Prereqs already on disk for M2: `corpus/train.jsonl` + `val.jsonl`,
-Qwen/Qwen3-4B-Instruct-2507 HF weights (hub cache), llama-swap routes for
-`qwen3-4b` and the `gemma-3-27b` judge. Training-time chat template must be
-verified against the GGUF's serving template before trusting any M3 number.
+Possible next steps (not committed to): recover the real-slice recall dip
+(0.93) with a second epoch pass over real-only data or a mixed-precision
+target; attack the remaining grounding gap to the teacher (1.18 vs 0.78);
+swap the production n8n workflow's `LLM_MODEL` to `lima-extractor-4b` after
+a burn-in period.
 
 ## Known limitations (read before citing numbers)
 
@@ -212,4 +274,25 @@ python3 normalize_labels.py
 python3 make_splits.py final --labeled-real corpus/labeled_real_normalized.jsonl \
     --labeled-synthetic corpus/labeled_synthetic_normalized.jsonl
 python3 build_stt_eval.py --src /tmp/stt
+```
+
+Train + deploy (M2/M3):
+
+```bash
+uv sync                                            # Python pinned 3.13
+llama-server -m ~/.cache/llama.cpp/<base>.gguf --jinja --port 9393 -ngl 0 &
+uv run verify_template.py --gguf-url http://localhost:9393   # must MATCH
+uv run train_qlora.py                              # ~9 min on a 4090
+uv run merge_adapter.py --adapter runs/qlora-r16-a32-qv/adapter \
+    --out runs/qlora-r16-a32-qv/merged
+git clone --depth 1 https://github.com/ggml-org/llama.cpp /tmp/llama.cpp
+uv run --with gguf --with sentencepiece --with mistral-common \
+    python /tmp/llama.cpp/convert_hf_to_gguf.py runs/qlora-r16-a32-qv/merged \
+    --outfile /tmp/lima-extractor-4b-f16.gguf --outtype f16
+llama-quantize /tmp/lima-extractor-4b-f16.gguf \
+    ~/.cache/llama.cpp/lima-extractor-4b-Q4_K_M.gguf Q4_K_M
+# add the lima-extractor-4b route to ~/.config/llama-swap/config.yaml, then:
+cd ../scripts
+uv run benchmark_extraction.py --models qwen3-4b,lima-extractor-4b
+uv run judge_extraction.py benchmark_results/extraction_latest.json
 ```
