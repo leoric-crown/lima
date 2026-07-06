@@ -228,38 +228,45 @@ with the winner (claude-sonnet-5) and trained a second student from
 | qwen3-coder-30b — local Q4_K_M (M1.1) | 0.78 | 0.94 | 0.14–0.53 | 0.96 |
 | claude-sonnet-5 — API audition | 0.455 | 0.942 | 0.906 | 1.00 |
 | claude-opus-4-8 — API audition | **0.257** | 0.952 | 0.958 | 1.00 |
-| **students (deployed Q4_K_M, same pass)** | | | | |
-| lima-extractor-4b (qwen labels) | 1.287 | 0.966 | 0.188 | 1.00 |
-| lima-extractor-4b-claude (sonnet labels) | **1.069** | **0.981** | 0.663 | 1.00 |
+| **students (deployed Q4_K_M, three-way pass)** | | | | |
+| lima-extractor-4b (qwen labels) | 1.158 | 0.976 | 0.149 | 1.00 |
+| lima-extractor-4b-claude (sonnet labels) | 1.208 | 0.971 | 0.762 | 0.99 |
+| lima-extractor-4b-opus (opus labels) | **0.673** | 0.976 | 0.713 | 1.00 |
 
-Data: `../scripts/benchmark_results/extraction_judged_20260705_162914.json`
-(students, one controlled pass), `_163354.json` (opus audition),
-`_153147.json` (sonnet audition).
+Data: `../scripts/benchmark_results/extraction_judged_20260705_190023.json`
+(three students, one controlled pass; an earlier two-way pass is
+`_162914.json`), `_163354.json` (opus audition), `_153147.json` (sonnet
+audition).
 
 How to read this honestly:
 
-- **Teacher quality propagates to the student.** The sonnet-taught student
-  cuts hallucination 17% overall and 37% on the real slice (0.97 vs 1.55)
-  while *raising* recall (0.98 vs 0.91 real) — the qwen-taught student's
-  precision/coverage trade turned out to be a label-quality artifact, not a
-  law. It also inherits the summary contract its teacher honors (0.66 vs
-  0.19) at identical VRAM and speed.
-- **Students stay ~0.5–0.6 hallucinated/memo above their teacher** in both
-  runs — the teacher moves the student's ceiling, but the teacher→student
-  gap looks recipe/capacity-bound, not label-bound.
-- **Frontier ceilings**: Opus grounds 3× better than the local 30B (0.257 vs
-  0.78) and is the only model to zero out hallucination on the garbled
-  probes. Distilling from Opus labels (~$6 batched) is the obvious next rung.
-- The qwen student measured 1.178 in the M3 pass and 1.287 here — treat
-  ±0.1 as the judge's run-to-run noise band; rankings were stable.
-- One student regression: tag-count discipline dipped (0.74 vs 0.92 in-range)
-  — sonnet labels are 1.00 on eval, so this is student under-fitting, not
-  label noise.
+- **The headline: the Opus-taught 4B out-grounds the 30B teacher this project
+  started with** — 0.673 vs 0.78 hallucinated/memo, at 5.2GB instead of
+  19.6GB, with recall intact (0.976) and near-teacher format discipline
+  (summary contract 0.71 vs the local teacher's 0.14–0.53; tags 0.97/1.00).
+  Label quality is a real lever, and a strong enough teacher lifts the
+  student past larger local models.
+- **The qwen- vs sonnet-taught difference did NOT survive replication.** The
+  two-way pass had sonnet-taught ahead (1.069 vs 1.287); the three-way pass
+  reverses them (1.208 vs 1.158). Across all passes the two sit in an
+  overlapping ~1.05–1.29 band — treat overall-hallucination differences
+  under ~0.15 as judge noise. What *does* replicate: the sonnet-taught
+  student's real-slice edge (1.07 vs 1.32 here, 0.97 vs 1.55 in the two-way
+  pass) and its inherited summary contract (0.76 vs 0.15). The opus-taught
+  student's margin (~0.5) is far outside the noise band.
+- **The teacher→student gap is not constant** — qwen 0.78→~1.2, sonnet
+  0.455→~1.1, opus 0.257→0.673. Better labels narrow it in absolute terms;
+  why the opus labels transfer so much better than sonnet's (both are
+  cleaner than qwen's) is an open question worth a look at label styles.
+- Frontier ceilings for reference: opus 0.257 / sonnet 0.455 vs local 30B
+  0.78, judged identically. Opus is the only model at zero hallucinations on
+  the garbled probes.
 - Audition/label condition differences vs the local teacher, inherent to the
   swap: API default temperature (local used 0.2) and structured-outputs
   enforcement instead of GGUF grammar. Batch-queue lesson: `request_counts`
-  can read `processing=101` while ~90% of the work is already done — cancel
-  finalizes and releases completed results.
+  can read `processing=N` while ~90% of the work is already done — cancel
+  finalizes and releases completed results (billed only for processed rows);
+  tiny remainders are cheaper to finish synchronously than to re-queue.
 
 ## Milestones
 
